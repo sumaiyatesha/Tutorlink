@@ -1,0 +1,99 @@
+/* DashboardStatCard.css — Reusable stat card styling */
+
+.dash-stat-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 16px;
+  transition: transform 0.2s ease, border-color 0.2s ease;
+}
+
+.dash-stat-card:hover {
+  transform: translateY(-2px);
+  border-color: #c7d2fe;
+}
+
+.dash-stat-top {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.dash-stat-icon-bg {
+  width: 46px;
+  height: 46px;
+  border-radius: 12px;
+  background: #eef2ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 22px;
+}
+
+.dash-stat-title-area {
+  display: flex;
+  flex-direction: column;
+}
+
+.dash-stat-title {
+  font-size: 13px;
+  font-weight: 600;
+  color: #64748b;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin: 0;
+}
+
+.dash-stat-value {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-top: 2px;
+}
+
+/* Progress bar inside card */
+.dash-progress-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.dash-progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.dash-progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+
+.dash-stat-subtitle {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+.dash-stat-action-link {
+  font-size: 13px;
+  font-weight: 600;
+  color: #667eea;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.dash-stat-action-link:hover {
+  text-decoration: underline;
+}

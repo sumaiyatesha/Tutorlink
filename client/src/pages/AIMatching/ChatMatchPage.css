@@ -1,0 +1,33 @@
+/* ChatMatchPage.css */
+
+.chat-match-page-layout {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.chat-match-page-main {
+  flex: 1;
+  padding: 40px 30px;
+  max-width: 1200px;
+}
+
+.chat-match-page-main.with-sidebar {
+  margin-left: 260px;
+}
+
+.chat-match-page-main.full-width {
+  margin-left: 0;
+  margin: 0 auto;
+}
+
+.chat-match-page-content {
+  width: 100%;
+}
+
+@media (max-width: 768px) {
+  .chat-match-page-main.with-sidebar {
+    margin-left: 0;
+    padding: 20px 16px;
+  }
+}

@@ -1,0 +1,170 @@
+/* GuardianPosts.css — Styles for Guardian Posts List View */
+
+.guardian-posts-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.guardian-posts-main {
+  flex: 1;
+  margin-left: 260px;
+  padding: 32px 40px;
+  max-width: 1100px;
+}
+
+.guardian-posts-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.guardian-posts-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}
+
+.guardian-posts-header p {
+  font-size: 15px;
+  color: #64748b;
+}
+
+.btn-create-post-header {
+  padding: 12px 20px;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  text-decoration: none;
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.btn-create-post-header:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.4);
+}
+
+.posts-error-banner {
+  background-color: #fef2f2;
+  color: #ef4444;
+  padding: 12px 16px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  font-weight: 600;
+}
+
+.guardian-posts-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.guardian-post-card {
+  background-color: #ffffff;
+  border-radius: 14px;
+  padding: 24px;
+  border: 1px solid #e2e8f0;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.guardian-post-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.guardian-post-card-top {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 16px;
+}
+
+.post-header-info h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin-top: 8px;
+  margin-bottom: 4px;
+}
+
+.post-location {
+  font-size: 14px;
+  color: #64748b;
+}
+
+.post-salary-tag {
+  font-size: 20px;
+  font-weight: 800;
+  color: #667eea;
+  background-color: #f0f3ff;
+  padding: 8px 16px;
+  border-radius: 10px;
+}
+
+.post-meta-details {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 20px;
+  padding: 12px 16px;
+  background-color: #f8fafc;
+  border-radius: 8px;
+  font-size: 13px;
+  color: #334155;
+  margin-bottom: 16px;
+}
+
+.guardian-post-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+}
+
+.btn-edit-post {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
+  background-color: #ffffff;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-edit-post:hover {
+  background-color: #f1f5f9;
+}
+
+.btn-delete-post {
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: 1px solid #fecaca;
+  background-color: #fef2f2;
+  color: #ef4444;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.btn-delete-post:hover {
+  background-color: #fee2e2;
+}
+
+@media (max-width: 768px) {
+  .guardian-posts-main {
+    margin-left: 0;
+    padding: 20px;
+  }
+  .guardian-posts-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 12px;
+  }
+}

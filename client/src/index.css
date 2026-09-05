@@ -1,0 +1,15 @@
+/* index.css - Basic styles applied to the whole app */
+
+/* Remove default browser spacing */
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+/* Set a clean default font for the entire page */
+body {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  line-height: 1.5;
+  color: #333333;
+}

@@ -1,0 +1,193 @@
+/* Register.css — Styles for the TutorLink registration page.
+   Reuses the same purple gradient theme as Login.css. */
+
+/* Full-page container with the same gradient as the login page */
+.register-page {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+}
+
+/* White card that holds the form */
+.register-card {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 40px 36px;
+  width: 100%;
+  max-width: 440px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+}
+
+/* Coloured badge at the top */
+.register-badge {
+  display: inline-block;
+  background-color: #eef2ff;
+  color: #4f46e5;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 16px;
+}
+
+/* Header area centred at the top */
+.register-header {
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+/* Gradient title text */
+.register-card h1 {
+  margin: 0 0 8px 0;
+  font-size: 32px;
+  font-weight: 700;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Subtitle text */
+.register-subtitle {
+  margin: 0;
+  font-size: 15px;
+  color: #64748b;
+}
+
+/* --- Role toggle --- */
+/* A row of two buttons (Guardian / Tutor) */
+.role-toggle {
+  display: flex;
+  gap: 10px;
+  margin-bottom: 22px;
+}
+
+/* Each role button */
+.role-button {
+  flex: 1;
+  padding: 12px;
+  font-size: 15px;
+  font-weight: 600;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  background-color: #f8fafc;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+/* Hover effect on non-active buttons */
+.role-button:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+/* Active (selected) state — purple gradient border and text */
+.role-button.active {
+  border-color: #667eea;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #ffffff;
+}
+
+/* --- Form fields (reuse the same styles as Login.css) --- */
+.register-card .form-group {
+  margin-bottom: 16px;
+}
+
+.register-card .form-group label {
+  display: block;
+  margin-bottom: 6px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+.register-card .form-group input {
+  width: 100%;
+  padding: 12px 14px;
+  font-size: 16px;
+  border: 2px solid #e2e8f0;
+  border-radius: 10px;
+  box-sizing: border-box;
+  background-color: #f8fafc;
+  transition: border-color 0.2s, background-color 0.2s;
+}
+
+.register-card .form-group input:focus {
+  outline: none;
+  border-color: #667eea;
+  background-color: #ffffff;
+}
+
+/* --- Error and success messages --- */
+.error-message {
+  background-color: #fef2f2;
+  color: #dc2626;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  border: 1px solid #fecaca;
+}
+
+.success-message {
+  background-color: #f0fdf4;
+  color: #16a34a;
+  padding: 10px 14px;
+  border-radius: 8px;
+  font-size: 14px;
+  margin-bottom: 14px;
+  border: 1px solid #bbf7d0;
+}
+
+/* --- Submit button --- */
+.register-button {
+  width: 100%;
+  padding: 14px;
+  margin-top: 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.register-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+}
+
+/* --- Link to sign in --- */
+.login-link-row {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 14px;
+  color: #64748b;
+}
+
+/* Reuse the same text-link style */
+.register-card .text-link {
+  color: #667eea;
+  font-size: 14px;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-card .text-link:hover {
+  color: #764ba2;
+  text-decoration: underline;
+}
+
+/* Footer note */
+.register-footer {
+  margin-top: 20px;
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+}

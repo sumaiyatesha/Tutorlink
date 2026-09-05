@@ -1,0 +1,61 @@
+/* BrowseJobs.css — Browse Tuition Jobs page layout */
+
+.browse-jobs-page {
+  display: flex;
+  min-height: 100vh;
+  background-color: #f8fafc;
+}
+
+.browse-jobs-main {
+  flex: 1;
+  padding: 32px 40px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.browse-jobs-main.with-sidebar {
+  margin-left: 260px; /* Offset for sidebar */
+}
+
+.browse-jobs-main.full-width {
+  margin-left: 0;
+  max-width: 1140px;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.browse-jobs-header h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+}
+
+.browse-jobs-header p {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0;
+}
+
+.jobs-grid-container {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 20px;
+}
+
+.no-jobs-state {
+  background-color: #ffffff;
+  border-radius: 16px;
+  padding: 48px 24px;
+  text-align: center;
+  border: 1px solid #e2e8f0;
+  color: #64748b;
+  grid-column: span 2;
+}
+
+@media (max-width: 900px) {
+  .jobs-grid-container {
+    grid-template-columns: 1fr;
+  }
+}

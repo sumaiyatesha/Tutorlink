@@ -1,0 +1,395 @@
+/* Dashboard.css — Styles for TutorLink role-based dashboard pages.
+   Uses the same purple color palette (#667eea, #764ba2, #f8fafc) as Login and Landing. */
+
+.dashboard-page-wrapper {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  color: #1e293b;
+}
+
+/* --- Top Navigation Bar --- */
+.dashboard-nav {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  position: sticky;
+  top: 0;
+  z-index: 100;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+}
+
+.dashboard-nav-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.dashboard-logo {
+  font-size: 24px;
+  font-weight: 800;
+  text-decoration: none;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+.dashboard-nav-user {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+}
+
+.user-details {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Role badge pills */
+.user-role-badge {
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: 16px;
+  text-transform: capitalize;
+}
+
+.role-guardian {
+  background-color: #eef2ff;
+  color: #4f46e5;
+}
+
+.role-tutor {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.role-admin {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.dashboard-logout-btn {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #cbd5e1;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.dashboard-logout-btn:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+}
+
+/* --- Main Dashboard Container --- */
+.dashboard-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 36px 20px 60px 20px;
+}
+
+/* Welcome Banner */
+.dashboard-welcome {
+  margin-bottom: 32px;
+}
+
+.welcome-tag {
+  display: inline-block;
+  background-color: #eef2ff;
+  color: #4f46e5;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 4px 12px;
+  border-radius: 16px;
+  margin-bottom: 10px;
+}
+
+.tutor-tag {
+  background-color: #f0fdf4;
+  color: #16a34a;
+}
+
+.admin-tag {
+  background-color: #fef2f2;
+  color: #dc2626;
+}
+
+.dashboard-welcome h1 {
+  font-size: 32px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+}
+
+.dashboard-welcome p {
+  font-size: 16px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Grid layout for dashboard cards */
+.dashboard-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  margin-bottom: 36px;
+}
+
+/* --- Dashboard Cards --- */
+.dash-card {
+  background-color: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dash-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(102, 126, 234, 0.12);
+  border-color: #cbd5e1;
+}
+
+.dash-card-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 16px;
+}
+
+.dash-card-icon {
+  font-size: 24px;
+}
+
+.dash-card-header h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0;
+}
+
+.dash-card-body {
+  flex: 1;
+  margin-bottom: 20px;
+}
+
+.empty-text {
+  font-size: 15px;
+  font-weight: 600;
+  color: #475569;
+  margin: 0 0 8px 0;
+}
+
+.placeholder-subtext {
+  font-size: 13px;
+  color: #94a3b8;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.dash-card-footer {
+  padding-top: 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+/* Action Buttons inside cards */
+.dash-action-btn {
+  width: 100%;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ffffff;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.dash-action-btn:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+}
+
+.dash-action-btn.secondary {
+  background: #f1f5f9;
+  color: #4f46e5;
+  border: 1px solid #e2e8f0;
+}
+
+.dash-action-btn.secondary:hover {
+  background: #e2e8f0;
+}
+
+.footer-status {
+  font-size: 13px;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* --- Profile Progress Bar --- */
+.profile-progress-box {
+  margin-bottom: 12px;
+}
+
+.progress-label {
+  font-size: 14px;
+  color: #334155;
+}
+
+.progress-bar-bg {
+  width: 100%;
+  height: 8px;
+  background-color: #e2e8f0;
+  border-radius: 4px;
+  overflow: hidden;
+  margin-top: 6px;
+}
+
+.progress-bar-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  border-radius: 4px;
+}
+
+/* --- Metric Cards (Admin) --- */
+.metric-card {
+  text-align: center;
+  padding: 28px 20px;
+}
+
+.metric-header {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.metric-icon {
+  font-size: 20px;
+}
+
+.metric-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #475569;
+}
+
+.metric-value {
+  font-size: 42px;
+  font-weight: 800;
+  color: #667eea;
+  margin-bottom: 6px;
+}
+
+.metric-value.badge-warning {
+  color: #eab308;
+}
+
+.metric-value.badge-success {
+  color: #22c55e;
+}
+
+.metric-subtext {
+  font-size: 13px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* --- Django Admin Console Banner --- */
+.admin-console-box {
+  background-color: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  padding: 28px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
+}
+
+.admin-console-info {
+  display: flex;
+  align-items: flex-start;
+  gap: 16px;
+  max-width: 650px;
+}
+
+.console-icon {
+  font-size: 32px;
+}
+
+.admin-console-info h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 6px 0;
+}
+
+.admin-console-info p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.5;
+  margin: 0;
+}
+
+.admin-link-btn {
+  display: inline-block;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #ffffff;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px 20px;
+  border-radius: 8px;
+  white-space: nowrap;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.admin-link-btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
+}
+
+/* --- Responsive Adjustments --- */
+@media (max-width: 900px) {
+  .dashboard-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .admin-console-box {
+    flex-direction: column;
+    text-align: center;
+    gap: 20px;
+  }
+
+  .admin-console-info {
+    flex-direction: column;
+    align-items: center;
+  }
+}
+
+/* Dashboard footer copyright note */
+.dashboard-footer-note {
+  margin-top: 40px;
+  text-align: center;
+  font-size: 13px;
+  color: #94a3b8;
+}

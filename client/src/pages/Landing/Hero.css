@@ -1,0 +1,214 @@
+/* Hero.css — Styles for the TutorLink Hero Section */
+
+.hero-section {
+  padding: 60px 0 80px 0;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  overflow: hidden;
+}
+
+.hero-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+  display: flex;
+  align-items: center;
+  gap: 50px;
+}
+
+/* Left Column: Text content + Search bar */
+.hero-left {
+  flex: 1.1;
+}
+
+/* Pill badge at top of Hero */
+.hero-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background-color: #eef2ff;
+  color: #4f46e5;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 6px 14px;
+  border-radius: 20px;
+  margin-bottom: 20px;
+  border: 1px solid #c7d2fe;
+}
+
+/* Hero Main Title */
+.hero-title {
+  font-size: 44px;
+  font-weight: 800;
+  line-height: 1.2;
+  color: #0f172a;
+  margin-bottom: 16px;
+}
+
+.gradient-text {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Hero Subtext */
+.hero-subtext {
+  font-size: 17px;
+  color: #64748b;
+  line-height: 1.6;
+  margin-bottom: 32px;
+  max-width: 540px;
+}
+
+/* Hero Search Form */
+.hero-search-form {
+  display: flex;
+  gap: 10px;
+  background-color: #ffffff;
+  padding: 8px;
+  border-radius: 14px;
+  border: 2px solid #e2e8f0;
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.1);
+  max-width: 520px;
+  transition: border-color 0.2s;
+}
+
+.hero-search-form:focus-within {
+  border-color: #667eea;
+}
+
+.hero-search-input {
+  flex: 1;
+  border: none;
+  outline: none;
+  padding: 10px 14px;
+  font-size: 15px;
+  color: #1e293b;
+  background: transparent;
+}
+
+.hero-search-input::placeholder {
+  color: #94a3b8;
+}
+
+.hero-search-button {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #ffffff;
+  border: none;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px 24px;
+  border-radius: 10px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.hero-search-button:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+}
+
+/* Right Column: Illustration Graphic */
+.hero-right {
+  flex: 0.9;
+  display: flex;
+  justify-content: center;
+}
+
+.hero-illustration-wrapper {
+  position: relative;
+  width: 100%;
+  max-width: 400px;
+  height: 380px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* SVG Illustration Canvas Background */
+.hero-svg-bg {
+  width: 100%;
+  height: 100%;
+  filter: drop-shadow(0 15px 30px rgba(102, 126, 234, 0.2));
+}
+
+/* Floating feature pill chips */
+.hero-chip {
+  position: absolute;
+  background: #ffffff;
+  padding: 10px 16px;
+  border-radius: 14px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  border: 1px solid #e2e8f0;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #1e293b;
+  animation: float-chip 4s ease-in-out infinite alternate;
+}
+
+.chip-1 {
+  top: 30px;
+  left: -20px;
+}
+
+.chip-2 {
+  bottom: 40px;
+  right: -15px;
+  animation-delay: 2s;
+}
+
+.chip-icon {
+  font-size: 18px;
+}
+
+.chip-sub {
+  font-size: 11px;
+  font-weight: 500;
+  color: #64748b;
+  display: block;
+}
+
+@keyframes float-chip {
+  0% { transform: translateY(0px); }
+  100% { transform: translateY(-8px); }
+}
+
+/* Mobile responsive layout */
+@media (max-width: 900px) {
+  .hero-container {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .hero-subtext {
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .hero-search-form {
+    margin: 0 auto;
+  }
+
+  .chip-1 {
+    left: 0;
+  }
+  .chip-2 {
+    right: 0;
+  }
+}
+
+@media (max-width: 600px) {
+  .hero-title {
+    font-size: 32px;
+  }
+  .hero-search-form {
+    flex-direction: column;
+  }
+  .hero-search-button {
+    width: 100%;
+  }
+}

@@ -1,0 +1,136 @@
+/* HowItWorks.css — Step-by-step process section with purple theme */
+
+.how-it-works-section {
+  padding: 80px 0;
+  background-color: #ffffff;
+}
+
+.how-it-works-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 0 20px;
+}
+
+.how-it-works-header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.how-it-works-header h2 {
+  font-size: 34px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 10px 0;
+}
+
+.how-it-works-header p {
+  font-size: 16px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Tab selector buttons */
+.how-tabs-wrapper {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 50px;
+}
+
+.how-tab-btn {
+  padding: 12px 28px;
+  font-size: 15px;
+  font-weight: 700;
+  border-radius: 30px;
+  border: 2px solid #e2e8f0;
+  background-color: #f8fafc;
+  color: #64748b;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.how-tab-btn:hover {
+  border-color: #667eea;
+  color: #667eea;
+}
+
+.how-tab-btn.active {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.35);
+}
+
+/* Step Flow Grid */
+.steps-grid {
+  display: grid;
+  gap: 24px;
+  position: relative;
+}
+
+.steps-grid-4 {
+  grid-template-columns: repeat(4, 1fr);
+}
+
+.steps-grid-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+
+/* Individual Step Card */
+.step-card {
+  background-color: #ffffff;
+  border: 2px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 32px 24px;
+  text-align: center;
+  position: relative;
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.step-card:hover {
+  transform: translateY(-4px);
+  border-color: #667eea;
+  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.12);
+}
+
+/* Numbered Circle Badge */
+.step-number {
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #ffffff;
+  font-size: 20px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 20px auto;
+  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.3);
+}
+
+.step-card h3 {
+  font-size: 18px;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 10px;
+}
+
+.step-card p {
+  font-size: 14px;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+@media (max-width: 900px) {
+  .steps-grid-4, .steps-grid-3 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 550px) {
+  .steps-grid-4, .steps-grid-3 {
+    grid-template-columns: 1fr;
+  }
+}

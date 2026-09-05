@@ -1,0 +1,12 @@
+{
+  "venvPath": "server",
+  "venv": "venv",
+  "executionEnvironments": [
+    {
+      "root": "server",
+      "extraPaths": [
+        "server/venv/Lib/site-packages"
+      ]
+    }
+  ]
+}

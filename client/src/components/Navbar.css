@@ -1,0 +1,243 @@
+/* Navbar.css — Top Navigation Bar styles matching TutorLink purple theme */
+
+/* Main navbar container sticky at top */
+.site-navbar {
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  z-index: 1000;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.05);
+}
+
+/* Inner content alignment container */
+.site-navbar-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 14px 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+/* Brand logo with gradient text */
+.site-logo {
+  font-size: 24px;
+  font-weight: 800;
+  text-decoration: none;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* Links row in middle */
+.site-nav-links {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+}
+
+.site-nav-link {
+  color: #475569;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: color 0.2s ease;
+}
+
+.site-nav-link:hover {
+  color: #667eea;
+}
+
+/* Special button link for Register / CTA */
+.site-nav-cta {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #ffffff;
+  padding: 8px 18px;
+  border-radius: 8px;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.site-nav-cta:hover {
+  transform: translateY(-1px);
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35);
+}
+
+/* Right-side user controls wrapper */
+.site-nav-user-area {
+  display: flex;
+  align-items: center;
+  gap: 18px;
+  position: relative;
+}
+
+/* Notification Bell container */
+.nav-notification-bell {
+  position: relative;
+  cursor: pointer;
+  padding: 6px;
+  border-radius: 50%;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.nav-notification-bell:hover {
+  background-color: #f1f5f9;
+}
+
+.bell-icon {
+  font-size: 20px;
+}
+
+/* Unread count badge on bell */
+.unread-badge {
+  position: absolute;
+  top: 0;
+  right: 0;
+  background-color: #ef4444;
+  color: #ffffff;
+  font-size: 11px;
+  font-weight: 700;
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border: 2px solid #ffffff;
+}
+
+/* Profile Trigger area (Avatar + Username) */
+.profile-trigger {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 20px;
+  border: 1px solid #e2e8f0;
+  background-color: #f8fafc;
+  transition: background-color 0.2s;
+}
+
+.profile-trigger:hover {
+  background-color: #f1f5f9;
+}
+
+/* Circular Avatar with initials */
+.avatar-circle {
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #ffffff;
+  font-weight: 700;
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Username text label */
+.profile-username {
+  font-size: 14px;
+  font-weight: 600;
+  color: #334155;
+}
+
+/* Small dropdown arrow indicator */
+.dropdown-arrow {
+  font-size: 10px;
+  color: #64748b;
+}
+
+/* Profile Dropdown Menu popup */
+.profile-dropdown-menu {
+  position: absolute;
+  top: 110%;
+  right: 0;
+  width: 180px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 10px;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+  padding: 8px 0;
+  z-index: 200;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header inside dropdown showing role tag */
+.dropdown-header-info {
+  padding: 8px 16px;
+  border-bottom: 1px solid #f1f5f9;
+  margin-bottom: 4px;
+}
+
+.dropdown-role-label {
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  color: #667eea;
+  letter-spacing: 0.5px;
+}
+
+/* Links inside dropdown */
+.dropdown-item-link {
+  padding: 10px 16px;
+  font-size: 14px;
+  color: #334155;
+  text-decoration: none;
+  transition: background-color 0.2s, color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-item-link:hover {
+  background-color: #f8fafc;
+  color: #667eea;
+}
+
+/* Logout button inside dropdown */
+.dropdown-item-button {
+  width: 100%;
+  text-align: left;
+  background: none;
+  border: none;
+  padding: 10px 16px;
+  font-size: 14px;
+  font-weight: 600;
+  color: #ef4444;
+  cursor: pointer;
+  transition: background-color 0.2s;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  border-top: 1px solid #f1f5f9;
+  margin-top: 4px;
+}
+
+.dropdown-item-button:hover {
+  background-color: #fef2f2;
+}
+
+/* Responsive navigation adjustments */
+@media (max-width: 768px) {
+  .site-nav-links {
+    gap: 12px;
+  }
+
+  .site-nav-link {
+    font-size: 13px;
+  }
+}

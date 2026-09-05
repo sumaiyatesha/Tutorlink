@@ -1,0 +1,11 @@
+/* LandingPage.css — Styles for main TutorLink Landing Page container */
+
+.landing-page-container {
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+  color: #1e293b;
+  background-color: #ffffff;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  padding-top: 70px; /* Offset for fixed top navbar */
+}

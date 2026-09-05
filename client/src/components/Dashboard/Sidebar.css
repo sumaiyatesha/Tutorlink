@@ -1,0 +1,168 @@
+/* Sidebar.css — Fixed Left Sidebar for TutorLink Dashboards */
+
+.dash-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  bottom: 0;
+  width: 260px;
+  background-color: #ffffff;
+  border-right: 1px solid #e2e8f0;
+  display: flex;
+  flex-direction: column;
+  z-index: 100;
+  box-shadow: 2px 0 16px rgba(0, 0, 0, 0.04);
+}
+
+/* Sidebar Top Logo Header */
+.dash-sidebar-header {
+  padding: 20px 24px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dash-sidebar-logo {
+  font-size: 22px;
+  font-weight: 800;
+  text-decoration: none;
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+}
+
+/* User Profile Badge Box */
+.dash-sidebar-user {
+  padding: 20px 24px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  background-color: #f8fafc;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.dash-avatar-circle {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #ffffff;
+  font-size: 18px;
+  font-weight: 700;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 10px rgba(102, 126, 234, 0.3);
+}
+
+.dash-user-info {
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+}
+
+.dash-user-name {
+  font-size: 15px;
+  font-weight: 700;
+  color: #0f172a;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.dash-user-id {
+  font-size: 12px;
+  font-weight: 600;
+  color: #667eea;
+  background: #eef2ff;
+  padding: 2px 8px;
+  border-radius: 10px;
+  width: fit-content;
+  margin-top: 2px;
+}
+
+/* Navigation Links List */
+.dash-sidebar-nav {
+  flex: 1;
+  padding: 16px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  overflow-y: auto;
+}
+
+.dash-nav-item {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  color: #475569;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 600;
+  transition: all 0.2s ease;
+  position: relative;
+}
+
+.dash-nav-item:hover {
+  background-color: #f1f5f9;
+  color: #667eea;
+}
+
+.dash-nav-item.active {
+  background: linear-gradient(90deg, #667eea, #764ba2);
+  color: #ffffff;
+  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35);
+}
+
+.dash-nav-icon {
+  font-size: 18px;
+}
+
+.dash-badge-stub {
+  font-size: 10px;
+  font-weight: 700;
+  background: #f1f5f9;
+  color: #64748b;
+  padding: 2px 6px;
+  border-radius: 6px;
+  margin-left: auto;
+  text-transform: uppercase;
+}
+
+.dash-nav-item.active .dash-badge-stub {
+  background: rgba(255, 255, 255, 0.2);
+  color: #ffffff;
+}
+
+/* Bottom Logout Area */
+.dash-sidebar-footer {
+  padding: 16px 12px;
+  border-top: 1px solid #f1f5f9;
+}
+
+.btn-sidebar-logout {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 12px 16px;
+  border-radius: 10px;
+  border: none;
+  background-color: transparent;
+  color: #ef4444;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-sidebar-logout:hover {
+  background-color: #fef2f2;
+}
+
+@media (max-width: 900px) {
+  .dash-sidebar {
+    width: 220px;
+  }
+}
