@@ -35,7 +35,6 @@
   border-radius: 16px;
   padding: 32px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
 }
 
 .post-error-banner {
@@ -43,7 +42,7 @@
   color: #ef4444;
   border: 1px solid #fecaca;
   padding: 12px 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   font-weight: 600;
   font-size: 14px;
   margin-bottom: 20px;
@@ -80,8 +79,8 @@
 .form-group input,
 .form-group select {
   padding: 12px 16px;
-  border-radius: 10px;
-  border: 2px solid #e2e8f0;
+  border-radius: 8px;
+  border: 1px solid #cbd5e1;
   font-size: 14px;
   color: #0f172a;
   outline: none;
@@ -91,7 +90,7 @@
 
 .form-group input:focus,
 .form-group select:focus {
-  border-color: #667eea;
+  border-color: #4f46e5;
 }
 
 .form-action-row {
@@ -105,7 +104,7 @@
 
 .btn-cancel {
   padding: 12px 24px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: 1px solid #cbd5e1;
   background-color: #ffffff;
   color: #475569;
@@ -121,20 +120,22 @@
 
 .btn-submit-post {
   padding: 12px 28px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #4f46e5;
   color: #ffffff;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
+  transition: background-color 0.2s ease;
 }
 
 .btn-submit-post:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.4);
+  background-color: #4338ca;
+}
+
+.btn-submit-post:active {
+  background-color: #3730a3;
 }
 
 @media (max-width: 768px) {

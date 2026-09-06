@@ -1,4 +1,4 @@
-/* Badge.css — Pill badge component styles matching TutorLink purple theme */
+/* Badge.css — Clean pill badges */
 
 /* Base badge pill styling */
 .badge-pill {
@@ -6,7 +6,7 @@
   align-items: center;
   gap: 4px;
   padding: 4px 10px;
-  border-radius: 16px;
+  border-radius: 14px;
   font-size: 12px;
   font-weight: 600;
   line-height: 1;
@@ -15,15 +15,16 @@
 
 /* Variant 1: Primary purple badge */
 .badge-primary {
-  background-color: #eef2ff;
+  background-color: #f5f3ff;
   color: #4f46e5;
+  border: 1px solid #c7d2fe;
 }
 
 /* Variant 2: Verified green status badge */
 .badge-verified,
 .badge-success {
   background-color: #f0fdf4;
-  color: #16a34a;
+  color: #059669;
   border: 1px solid #bbf7d0;
 }
 
@@ -38,9 +39,9 @@
 /* Variant 4: Pending / Warning yellow badge */
 .badge-pending,
 .badge-warning {
-  background-color: #fefce8;
-  color: #ca8a04;
-  border: 1px solid #fef08a;
+  background-color: #fffbeb;
+  color: #d97706;
+  border: 1px solid #fde68a;
 }
 
 /* Variant 5: Danger / Rejected red badge */
@@ -52,7 +53,7 @@
 
 /* Variant 6: Neutral grey badge */
 .badge-neutral {
-  background-color: #f1f5f9;
+  background-color: #f8fafc;
   color: #64748b;
   border: 1px solid #e2e8f0;
 }

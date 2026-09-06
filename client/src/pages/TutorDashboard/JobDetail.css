@@ -6,6 +6,10 @@
   background-color: #f8fafc;
 }
 
+.job-detail-page.with-navbar-layout {
+  flex-direction: column;
+}
+
 .job-detail-main {
   flex: 1;
   padding: 32px 40px;
@@ -34,10 +38,9 @@
 /* Left Card: Student Info */
 .student-info-card {
   background-color: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 32px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -72,7 +75,7 @@
   background-color: #f8fafc;
   padding: 16px;
   border-radius: 12px;
-  border: 1px solid #f1f5f9;
+  border: 1px solid #e2e8f0;
   display: flex;
   align-items: flex-start;
   gap: 12px;
@@ -81,6 +84,7 @@
 .detail-item-icon {
   font-size: 22px;
   background-color: #eef2ff;
+  color: #4f46e5;
   width: 40px;
   height: 40px;
   border-radius: 10px;
@@ -98,7 +102,6 @@
   font-size: 11px;
   font-weight: 700;
   color: #94a3b8;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
@@ -112,10 +115,9 @@
 /* Right Card: Action Panel */
 .action-panel-card {
   background-color: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 28px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   gap: 20px;
@@ -130,10 +132,10 @@
 }
 
 .action-salary-banner {
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background-color: #4f46e5;
   color: #ffffff;
   padding: 20px;
-  border-radius: 14px;
+  border-radius: 12px;
   text-align: center;
 }
 
@@ -144,39 +146,42 @@
 }
 
 .btn-apply-now {
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background-color: #4f46e5;
   color: #ffffff;
   font-size: 16px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 14px;
-  border-radius: 12px;
+  border-radius: 10px;
   border: none;
-  cursor: pointer;
-  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.35);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
-  width: 100%;
-}
-
-.btn-apply-now:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.5);
-}
-
-.btn-bookmark {
-  background-color: #ffffff;
-  color: #4f46e5;
-  border: 2px solid #667eea;
-  font-size: 14px;
-  font-weight: 700;
-  padding: 12px;
-  border-radius: 12px;
   cursor: pointer;
   transition: background-color 0.2s ease;
   width: 100%;
 }
 
+.btn-apply-now:hover {
+  background-color: #4338ca;
+}
+
+.btn-apply-now:active {
+  background-color: #3730a3;
+}
+
+.btn-bookmark {
+  background-color: #ffffff;
+  color: #4f46e5;
+  border: 1px solid #cbd5e1;
+  font-size: 14px;
+  font-weight: 600;
+  padding: 12px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+  width: 100%;
+}
+
 .btn-bookmark:hover {
-  background-color: #eef2ff;
+  background-color: #f8fafc;
+  border-color: #94a3b8;
 }
 
 .btn-get-direction {

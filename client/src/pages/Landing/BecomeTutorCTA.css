@@ -1,7 +1,7 @@
 /* BecomeTutorCTA.css — Banner promoting tutor registration */
 
 .become-tutor-banner {
-  padding: 60px 0;
+  padding: 48px 0;
   background-color: #ffffff;
 }
 
@@ -12,70 +12,54 @@
 }
 
 .become-tutor-card {
-  background: linear-gradient(135deg, #4f46e5 0%, #764ba2 100%);
-  border-radius: 20px;
-  padding: 44px 48px;
+  background-color: #4f46e5;
+  border-radius: 14px;
+  padding: 36px 40px;
   color: #ffffff;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  gap: 30px;
-  box-shadow: 0 16px 36px rgba(79, 70, 229, 0.25);
-  position: relative;
-  overflow: hidden;
-}
-
-.become-tutor-card::before {
-  content: '';
-  position: absolute;
-  top: -50%;
-  right: -10%;
-  width: 300px;
-  height: 300px;
-  border-radius: 50%;
-  background: rgba(255, 255, 255, 0.08);
-  pointer-events: none;
+  gap: 24px;
 }
 
 .become-tutor-content h2 {
-  font-size: 30px;
+  font-size: 26px;
   font-weight: 800;
-  margin: 0 0 10px 0;
+  margin: 0 0 8px 0;
   color: #ffffff;
+  letter-spacing: -0.4px;
 }
 
 .become-tutor-content p {
-  font-size: 16px;
+  font-size: 15px;
   margin: 0;
-  opacity: 0.9;
-  max-width: 600px;
-  line-height: 1.5;
+  opacity: 0.92;
+  max-width: 580px;
+  line-height: 1.55;
 }
 
 .btn-become-tutor {
   display: inline-block;
   background-color: #ffffff;
   color: #4f46e5;
-  font-size: 16px;
+  font-size: 14.5px;
   font-weight: 700;
-  padding: 14px 32px;
-  border-radius: 12px;
+  padding: 12px 26px;
+  border-radius: 8px;
   text-decoration: none;
   white-space: nowrap;
-  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  border: 1px solid transparent;
+  transition: background-color 0.15s ease;
 }
 
 .btn-become-tutor:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.25);
-  background-color: #f8fafc;
+  background-color: #f5f3ff;
 }
 
 @media (max-width: 800px) {
   .become-tutor-card {
     flex-direction: column;
     text-align: center;
-    padding: 36px 28px;
+    padding: 32px 24px;
   }
 }

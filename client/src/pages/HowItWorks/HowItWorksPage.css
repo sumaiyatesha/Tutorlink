@@ -1,0 +1,301 @@
+/* HowItWorksPage.css — Modern styling for How It Works page with purple design tokens */
+
+.how-it-works-page {
+  min-height: 100vh;
+  background-color: #f8fafc;
+  display: flex;
+  flex-direction: column;
+}
+
+.how-page-container {
+  max-width: 1140px;
+  margin: 0 auto;
+  padding: 48px 20px 80px 20px;
+  flex: 1;
+}
+
+/* --- Hero Section --- */
+.how-hero-section {
+  text-align: center;
+  margin-bottom: 56px;
+}
+
+.how-hero-section h1 {
+  font-size: 38px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 14px 0 10px 0;
+  letter-spacing: -0.5px;
+}
+
+.how-hero-section p {
+  font-size: 16.5px;
+  color: #64748b;
+  max-width: 680px;
+  margin: 0 auto;
+  line-height: 1.6;
+}
+
+/* --- Role Workflow Sections --- */
+.role-workflow-section {
+  margin-bottom: 56px;
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 36px 32px;
+}
+
+.role-section-header {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 32px;
+  padding-bottom: 20px;
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.role-icon-badge {
+  font-size: 36px;
+  width: 60px;
+  height: 60px;
+  background: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+}
+
+.role-section-header h2 {
+  font-size: 24px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 4px 0;
+}
+
+.role-section-header p {
+  font-size: 14px;
+  color: #64748b;
+  margin: 0;
+}
+
+/* --- Step Cards Grid --- */
+.workflow-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 20px;
+}
+
+.workflow-card {
+  background-color: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 24px 20px;
+  position: relative;
+  transition: border-color 0.2s ease;
+  display: flex;
+  flex-direction: column;
+}
+
+.workflow-card:hover {
+  border-color: #cbd5e1;
+}
+
+.workflow-card.highlighted {
+  background-color: #f5f3ff;
+  border-color: #c4b5fd;
+}
+
+.step-badge-num {
+  width: 34px;
+  height: 34px;
+  border-radius: 50%;
+  background-color: #4f46e5;
+  color: #ffffff;
+  font-weight: 800;
+  font-size: 15px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.workflow-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #0f172a;
+  margin: 0 0 10px 0;
+}
+
+.workflow-card p {
+  font-size: 13.5px;
+  color: #64748b;
+  line-height: 1.55;
+  margin: 0;
+}
+
+/* --- AI Overview Section --- */
+.ai-features-overview-section {
+  background-color: #1e1b4b;
+  color: #ffffff;
+  border-radius: 16px;
+  padding: 44px 36px;
+  margin-bottom: 56px;
+}
+
+.ai-overview-header {
+  text-align: center;
+  max-width: 640px;
+  margin: 0 auto 36px auto;
+}
+
+.ai-tag-pill {
+  display: inline-block;
+  background-color: rgba(255, 255, 255, 0.15);
+  color: #c7d2fe;
+  font-size: 12.5px;
+  font-weight: 700;
+  padding: 5px 14px;
+  border-radius: 20px;
+  margin-bottom: 12px;
+  letter-spacing: 0.5px;
+}
+
+.ai-overview-header h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #ffffff;
+  margin: 0 0 8px 0;
+}
+
+.ai-overview-header p {
+  font-size: 14.5px;
+  color: #e0e7ff;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.ai-cards-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.ai-feature-card {
+  background-color: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 24px;
+  transition: background-color 0.2s ease;
+}
+
+.ai-feature-card:hover {
+  background-color: rgba(255, 255, 255, 0.12);
+}
+
+.ai-feature-icon {
+  font-size: 28px;
+  margin-bottom: 14px;
+}
+
+.ai-feature-card h3 {
+  font-size: 17px;
+  font-weight: 700;
+  color: #ffffff;
+  margin: 0 0 10px 0;
+}
+
+.ai-feature-card p {
+  font-size: 13.5px;
+  color: #c7d2fe;
+  line-height: 1.6;
+  margin: 0;
+  opacity: 0.92;
+}
+
+/* --- CTA Banner --- */
+.how-cta-banner {
+  background-color: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 44px 32px;
+  text-align: center;
+}
+
+.how-cta-banner h2 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin: 0 0 8px 0;
+}
+
+.how-cta-banner p {
+  font-size: 15px;
+  color: #64748b;
+  margin: 0 0 24px 0;
+}
+
+.how-cta-actions {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+}
+
+.btn-how-primary {
+  background-color: #4f46e5;
+  color: #ffffff;
+  padding: 12px 28px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease;
+}
+
+.btn-how-primary:hover {
+  background-color: #4338ca;
+}
+
+.btn-how-primary:active {
+  background-color: #3730a3;
+}
+
+.btn-how-secondary {
+  background-color: #ffffff;
+  color: #4f46e5;
+  border: 1px solid #cbd5e1;
+  padding: 12px 24px;
+  border-radius: 10px;
+  font-size: 15px;
+  font-weight: 600;
+  text-decoration: none;
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-how-secondary:hover {
+  background-color: #f8fafc;
+  border-color: #94a3b8;
+}
+
+/* Responsive */
+@media (max-width: 900px) {
+  .workflow-cards-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+
+  .ai-cards-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 600px) {
+  .workflow-cards-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .how-cta-actions {
+    flex-direction: column;
+  }
+}

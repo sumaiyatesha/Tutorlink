@@ -162,7 +162,7 @@ function BrowseJobs() {
   const isTutorLoggedIn = user && user.role === 'tutor'
 
   return (
-    <div className="browse-jobs-page">
+    <div className={`browse-jobs-page ${isTutorLoggedIn ? 'with-sidebar-layout' : 'with-navbar-layout'}`}>
       {/* Show Sidebar if logged-in tutor, else top Navbar */}
       {isTutorLoggedIn ? <Sidebar role="tutor" /> : <Navbar />}
 
@@ -170,7 +170,6 @@ function BrowseJobs() {
         className={`browse-jobs-main ${
           isTutorLoggedIn ? 'with-sidebar' : 'full-width'
         }`}
-        style={!isTutorLoggedIn ? { paddingTop: '90px' } : {}}
       >
         {/* Page Header */}
         <div className="browse-jobs-header">

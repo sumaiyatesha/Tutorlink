@@ -1,21 +1,18 @@
-/* JobCard.css — Tuition Job Card component matching TutorLink purple theme */
+/* JobCard.css — Tuition Job Card component */
 
 .job-card {
   background-color: #ffffff;
-  border-radius: 16px;
-  padding: 24px;
+  border-radius: 12px;
+  padding: 22px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   gap: 16px;
-  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.15s ease;
 }
 
 .job-card:hover {
-  transform: translateY(-3px);
-  border-color: #667eea;
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.12);
+  border-color: #cbd5e1;
 }
 
 .job-card-header {
@@ -26,8 +23,8 @@
 }
 
 .job-title-group h3 {
-  font-size: 18px;
-  font-weight: 800;
+  font-size: 17px;
+  font-weight: 700;
   color: #0f172a;
   margin: 0 0 4px 0;
 }
@@ -41,10 +38,11 @@
 }
 
 .job-id-tag {
-  background-color: #eef2ff;
+  background-color: #f5f3ff;
   color: #4f46e5;
-  font-weight: 700;
-  font-size: 12px;
+  border: 1px solid #c7d2fe;
+  font-weight: 600;
+  font-size: 11.5px;
   padding: 2px 8px;
   border-radius: 6px;
 }
@@ -60,9 +58,9 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 12px;
   background-color: #f8fafc;
-  padding: 14px 16px;
-  border-radius: 12px;
-  border: 1px solid #f1f5f9;
+  padding: 12px 14px;
+  border-radius: 10px;
+  border: 1px solid #e2e8f0;
 }
 
 .job-info-item {
@@ -71,17 +69,15 @@
 }
 
 .job-info-label {
-  font-size: 11px;
-  font-weight: 600;
-  color: #94a3b8;
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  font-size: 11.5px;
+  font-weight: 500;
+  color: #64748b;
 }
 
 .job-info-value {
   font-size: 13px;
-  font-weight: 700;
-  color: #334155;
+  font-weight: 600;
+  color: #1e293b;
   margin-top: 2px;
 }
 
@@ -95,28 +91,27 @@
 }
 
 .job-salary-highlight {
-  font-size: 18px;
-  font-weight: 800;
-  color: #10b981;
+  font-size: 17px;
+  font-weight: 700;
+  color: #059669;
 }
 
 .btn-view-job-details {
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background-color: #4f46e5;
   color: #ffffff;
   text-decoration: none;
   font-size: 13px;
-  font-weight: 700;
-  padding: 8px 18px;
+  font-weight: 600;
+  padding: 8px 16px;
   border-radius: 8px;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.15s ease;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
 .btn-view-job-details:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+  background-color: #4338ca;
 }
 
 @media (max-width: 600px) {

@@ -46,16 +46,14 @@
 
 .application-card {
   background-color: #ffffff;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 24px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s ease;
 }
 
 .application-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border-color: #cbd5e1;
 }
 
 .application-card-header {
@@ -89,7 +87,7 @@
 
 .app-cover-note-box {
   background-color: #f8fafc;
-  border-left: 3px solid #667eea;
+  border-left: 3px solid #4f46e5;
   padding: 12px 16px;
   border-radius: 6px;
   margin-bottom: 16px;
@@ -99,7 +97,6 @@
   font-size: 12px;
   font-weight: 700;
   color: #64748b;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
   display: block;
   margin-bottom: 4px;
@@ -125,19 +122,19 @@
 }
 
 .app-salary-info strong {
-  color: #667eea;
+  color: #4f46e5;
 }
 
 .btn-view-job-link {
-  color: #667eea;
-  font-weight: 700;
+  color: #4f46e5;
+  font-weight: 600;
   font-size: 14px;
   text-decoration: none;
   transition: color 0.2s;
 }
 
 .btn-view-job-link:hover {
-  color: #764ba2;
+  color: #4338ca;
   text-decoration: underline;
 }
 

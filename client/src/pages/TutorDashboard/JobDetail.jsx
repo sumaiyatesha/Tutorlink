@@ -138,7 +138,7 @@ function JobDetail() {
   const isTutorLoggedIn = user && user.role === 'tutor'
 
   return (
-    <div className="job-detail-page">
+    <div className={`job-detail-page ${isTutorLoggedIn ? 'with-sidebar-layout' : 'with-navbar-layout'}`}>
       {isTutorLoggedIn ? <Sidebar role="tutor" /> : <Navbar />}
 
       <main className={`job-detail-main ${isTutorLoggedIn ? 'with-sidebar' : 'full-width'}`}>

@@ -1,7 +1,7 @@
 /* Testimonials.css — User reviews and feedback section */
 
 .testimonials-section {
-  padding: 80px 0;
+  padding: 60px 0;
   background-color: #f8fafc;
 }
 
@@ -13,18 +13,19 @@
 
 .testimonials-header {
   text-align: center;
-  margin-bottom: 48px;
+  margin-bottom: 36px;
 }
 
 .testimonials-header h2 {
-  font-size: 32px;
+  font-size: 28px;
   font-weight: 800;
   color: #0f172a;
-  margin: 10px 0;
+  margin: 8px 0;
+  letter-spacing: -0.4px;
 }
 
 .testimonials-header p {
-  font-size: 16px;
+  font-size: 15px;
   color: #64748b;
   margin: 0;
 }
@@ -32,41 +33,36 @@
 .testimonials-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
+  gap: 20px;
 }
 
 .testimonial-card {
   background-color: #ffffff;
-  border-radius: 16px;
-  padding: 32px 26px;
+  border-radius: 12px;
+  padding: 24px 22px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: border-color 0.15s ease;
 }
 
 .testimonial-card:hover {
-  transform: translateY(-4px);
-  box-shadow: 0 12px 30px rgba(102, 126, 234, 0.12);
-  border-color: #667eea;
+  border-color: #cbd5e1;
 }
 
 .quote-icon {
-  font-size: 36px;
+  font-size: 28px;
   line-height: 1;
-  color: #667eea;
-  margin-bottom: 12px;
-  opacity: 0.6;
+  color: #c7d2fe;
+  margin-bottom: 10px;
 }
 
 .testimonial-text {
-  font-size: 15px;
+  font-size: 14px;
   color: #334155;
   line-height: 1.6;
-  margin-bottom: 24px;
-  font-style: italic;
+  margin-bottom: 20px;
 }
 
 .testimonial-author {
@@ -74,39 +70,39 @@
   align-items: center;
   gap: 12px;
   border-top: 1px solid #f1f5f9;
-  padding-top: 16px;
+  padding-top: 14px;
 }
 
 .author-avatar {
-  width: 42px;
-  height: 42px;
+  width: 38px;
+  height: 38px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background-color: #4f46e5;
   color: #ffffff;
   font-weight: 700;
-  font-size: 16px;
+  font-size: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .author-name {
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 700;
   color: #0f172a;
   margin: 0;
 }
 
 .author-role {
-  font-size: 13px;
-  color: #667eea;
+  font-size: 12.5px;
+  color: #4f46e5;
   font-weight: 600;
   margin: 2px 0 0 0;
 }
 
 .rating-stars {
   margin-left: auto;
-  font-size: 14px;
+  font-size: 13px;
   color: #f59e0b;
 }
 

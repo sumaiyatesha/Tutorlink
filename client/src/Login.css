@@ -1,71 +1,70 @@
-/* Login.css - Styles for the TutorLink login page */
+/* Login.css — Styles for the TutorLink login page */
 
-/* Full-page container with a colourful gradient background */
+/* Full-page container with a clean, flat neutral background */
 .login-page {
   min-height: 100vh;
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 20px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 50%, #f093fb 100%);
+  padding: 24px;
+  background-color: #f8fafc;
 }
 
 /* White card that holds the form */
 .login-card {
   background-color: #ffffff;
-  border-radius: 16px;
-  padding: 40px 36px;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  padding: 36px 32px;
   width: 100%;
-  max-width: 420px;
-  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.2);
+  max-width: 400px;
 }
 
 /* Coloured badge above the title */
 .login-badge {
   display: inline-block;
-  background-color: #eef2ff;
+  background-color: #f5f3ff;
   color: #4f46e5;
-  font-size: 13px;
+  border: 1px solid #c7d2fe;
+  font-size: 12px;
   font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 20px;
-  margin-bottom: 16px;
+  padding: 4px 12px;
+  border-radius: 16px;
+  margin-bottom: 14px;
 }
 
 /* Header area centred at the top of the card */
 .login-header {
   text-align: center;
-  margin-bottom: 28px;
+  margin-bottom: 24px;
 }
 
-/* Main title with a purple-to-pink gradient on the text */
+/* Main title with solid dark text */
 .login-card h1 {
-  margin: 0 0 8px 0;
-  font-size: 32px;
-  font-weight: 700;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  margin: 0 0 6px 0;
+  font-size: 26px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.4px;
 }
 
 /* Subtitle below the heading */
 .login-subtitle {
   margin: 0;
-  font-size: 15px;
+  font-size: 14px;
   color: #64748b;
 }
 
 /* Each label + input pair */
 .form-group {
-  margin-bottom: 18px;
+  margin-bottom: 16px;
 }
 
 /* Label above each input */
 .form-group label {
   display: block;
   margin-bottom: 6px;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 600;
   color: #334155;
 }
@@ -73,20 +72,19 @@
 /* Text inputs */
 .form-group input {
   width: 100%;
-  padding: 12px 14px;
-  font-size: 16px;
-  border: 2px solid #e2e8f0;
-  border-radius: 10px;
+  padding: 10px 14px;
+  font-size: 14.5px;
+  border: 1px solid #cbd5e1;
+  border-radius: 8px;
   box-sizing: border-box;
-  background-color: #f8fafc;
-  transition: border-color 0.2s, background-color 0.2s;
+  background-color: #ffffff;
+  color: #0f172a;
+  transition: border-color 0.15s ease;
 }
 
-/* Purple highlight when the user clicks into an input */
 .form-group input:focus {
   outline: none;
-  border-color: #667eea;
-  background-color: #ffffff;
+  border-color: #4f46e5;
 }
 
 /* Row for the "Forgot password?" link */
@@ -97,44 +95,42 @@
 
 /* Clickable text links (Forgot password, Register) */
 .text-link {
-  color: #667eea;
-  font-size: 14px;
+  color: #4f46e5;
+  font-size: 13.5px;
   font-weight: 600;
   text-decoration: none;
 }
 
 .text-link:hover {
-  color: #764ba2;
   text-decoration: underline;
+  color: #4338ca;
 }
 
 /* "Don't have an account? Register" row */
 .register-row {
-  margin-top: 20px;
+  margin-top: 18px;
   text-align: center;
-  font-size: 14px;
+  font-size: 13.5px;
   color: #64748b;
 }
 
-/* Submit button with a gradient background */
+/* Submit button with flat purple background */
 .login-button {
   width: 100%;
-  padding: 14px;
-  margin-top: 8px;
-  font-size: 16px;
+  padding: 12px;
+  margin-top: 6px;
+  font-size: 15px;
   font-weight: 600;
   color: #ffffff;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  border: none;
-  border-radius: 10px;
+  background-color: #4f46e5;
+  border: 1px solid transparent;
+  border-radius: 8px;
   cursor: pointer;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: background-color 0.15s ease;
 }
 
-/* Lift the button slightly on hover */
 .login-button:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(102, 126, 234, 0.4);
+  background-color: #4338ca;
 }
 
 /* Error message shown when login fails */
@@ -143,15 +139,16 @@
   color: #dc2626;
   padding: 10px 14px;
   border-radius: 8px;
-  font-size: 14px;
+  font-size: 13.5px;
   margin-bottom: 14px;
   border: 1px solid #fecaca;
+  font-weight: 500;
 }
 
 /* Small note at the bottom of the card */
 .login-footer {
-  margin-top: 20px;
+  margin-top: 18px;
   text-align: center;
-  font-size: 13px;
+  font-size: 12.5px;
   color: #94a3b8;
 }

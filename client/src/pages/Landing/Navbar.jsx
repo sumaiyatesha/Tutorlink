@@ -27,9 +27,9 @@ function Navbar() {
           <Link to="/posts" className="landing-nav-link">
             Browse Tuition Posts
           </Link>
-          <a href="#how-it-works" className="landing-nav-link">
+          <Link to="/how-it-works" className="landing-nav-link">
             How It Works
-          </a>
+          </Link>
         </nav>
 
         {/* Right: Login and Register CTA Buttons */}

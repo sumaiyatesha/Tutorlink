@@ -1,27 +1,24 @@
-/* Card.css — Generic card component styles matching TutorLink purple theme */
+/* Card.css — Generic card component styles */
 
-/* Main card wrapper */
+/* Main card wrapper — border-first, no muddy drop-shadow */
 .card-wrapper {
   background-color: #ffffff;
-  border-radius: 14px;
+  border-radius: 12px;
   border: 1px solid #e2e8f0;
   padding: 24px;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.04);
-  transition: transform 0.2s ease, box-shadow 0.2s ease, border-color 0.2s ease;
+  transition: border-color 0.15s ease;
   display: flex;
   flex-direction: column;
 }
 
-/* Hover effect for interactive or highlight cards */
+/* Hover effect for interactive or highlight cards — subtle border shift only */
 .card-wrapper.clickable {
   cursor: pointer;
 }
 
 .card-wrapper.clickable:hover,
 .card-wrapper.hoverable:hover {
-  transform: translateY(-3px);
-  box-shadow: 0 10px 24px rgba(102, 126, 234, 0.15);
-  border-color: #667eea;
+  border-color: #cbd5e1;
 }
 
 /* Card header container */
@@ -34,7 +31,7 @@
 
 /* Optional icon inside header */
 .card-header-icon {
-  font-size: 24px;
+  font-size: 22px;
   line-height: 1;
 }
 
@@ -46,7 +43,7 @@
 /* Title text */
 .card-title {
   margin: 0 0 4px 0;
-  font-size: 18px;
+  font-size: 17px;
   font-weight: 700;
   color: #0f172a;
 }
@@ -63,7 +60,7 @@
   flex: 1;
   color: #334155;
   font-size: 14px;
-  line-height: 1.6;
+  line-height: 1.55;
 }
 
 /* Footer row at bottom of card */

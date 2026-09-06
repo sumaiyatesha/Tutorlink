@@ -24,10 +24,9 @@
 
 .profile-card {
   background-color: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 36px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 18px rgba(0, 0, 0, 0.04);
   display: flex;
   flex-direction: column;
   gap: 24px;
@@ -45,14 +44,13 @@
   width: 72px;
   height: 72px;
   border-radius: 50%;
-  background: linear-gradient(135deg, #667eea, #764ba2);
+  background-color: #4f46e5;
   color: #ffffff;
   font-size: 28px;
   font-weight: 800;
   display: flex;
   align-items: center;
   justify-content: center;
-  box-shadow: 0 6px 16px rgba(102, 126, 234, 0.35);
 }
 
 .profile-header-text h1 {
@@ -70,9 +68,9 @@
 
 /* Location Card / Geolocation Box */
 .location-box {
-  background: linear-gradient(135deg, #eef2ff 0%, #f5f3ff 100%);
-  border: 1px solid #c7d2fe;
-  border-radius: 14px;
+  background-color: #f5f3ff;
+  border: 1px solid #ddd6fe;
+  border-radius: 12px;
   padding: 20px;
   display: flex;
   justify-content: space-between;
@@ -94,22 +92,24 @@
 }
 
 .btn-detect-location {
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background-color: #4f46e5;
   color: #ffffff;
   border: none;
   font-size: 14px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 10px 20px;
-  border-radius: 10px;
+  border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  transition: background-color 0.2s ease;
 }
 
 .btn-detect-location:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.45);
+  background-color: #4338ca;
+}
+
+.btn-detect-location:active {
+  background-color: #3730a3;
 }
 
 .form-grid-2col {
@@ -119,13 +119,22 @@
 }
 
 .btn-save-profile {
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background-color: #4f46e5;
   color: #ffffff;
   font-size: 15px;
-  font-weight: 700;
+  font-weight: 600;
   padding: 12px 28px;
-  border-radius: 10px;
+  border-radius: 8px;
   border: none;
   cursor: pointer;
   width: fit-content;
+  transition: background-color 0.2s ease;
+}
+
+.btn-save-profile:hover {
+  background-color: #4338ca;
+}
+
+.btn-save-profile:active {
+  background-color: #3730a3;
 }

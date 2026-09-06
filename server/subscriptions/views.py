@@ -58,25 +58,31 @@ class MySubscriptionView(APIView):
             }, status=status.HTTP_200_OK)
 
 
+import random
+
 class SubscribeView(APIView):
     """
     POST /api/subscriptions/subscribe/ (IsAuthenticated)
     Creates or updates the user's subscription to status='active'.
     
-    *** DEMO / MOCK PAYMENT ENDPOINT ***
+    *** DEMO / SIMULATED CHECKOUT ENDPOINT ***
     Note for Viva Defense:
-    This endpoint simulates subscription activation. No real payment gateway
-    (such as bKash, Nagad, or Stripe) is invoked, and no real currency is transferred.
-    In production, this would handle webhook callbacks or payment tokens from a gateway.
+    This endpoint simulates subscription activation and payment confirmation.
+    No real payment gateway (bKash, Nagad, or Bank API) is invoked, and no real currency is transferred.
+    A unique transaction_id is generated following the 'TXN' + timestamp + random digits format.
     """
     permission_classes = [permissions.IsAuthenticated]
 
     def post(self, request):
         payment_method = request.data.get('payment_method', 'bkash')
-        transaction_id = request.data.get('transaction_id', 'MOCK-TXN-12345')
+        if payment_method == 'bank_card':
+            payment_method = 'card'
 
         if payment_method not in ['bkash', 'nagad', 'card']:
-            return Response({'error': 'Invalid payment method. Choices: bkash, nagad, card.'}, status=status.HTTP_400_BAD_REQUEST)
+            return Response(
+                {'error': 'Invalid payment method. Choices: bkash, nagad, card.'},
+                status=status.HTTP_400_BAD_REQUEST
+            )
 
         # Get matching plan for user role (guardian or tutor)
         user_role = getattr(request.user, 'role', 'guardian')
@@ -86,9 +92,22 @@ class SubscribeView(APIView):
             # Fallback to guardian plan for admin / unassigned roles during testing
             plan = SubscriptionPlan.objects.filter(role='guardian').first()
             if not plan:
-                return Response({'error': f'No plan configured for role: {user_role}.'}, status=status.HTTP_400_BAD_REQUEST)
+                return Response(
+                    {'error': f'No plan configured for role: {user_role}.'},
+                    status=status.HTTP_400_BAD_REQUEST
+                )
 
-        # Create or update subscription record
+        # Generate realistic-looking fake transaction ID: "TXN" + YYYYMMDDHHMMSS + 4 random digits
+        # Format: e.g. TXN202609051045238491
+        now = timezone.now()
+        timestamp_str = now.strftime('%Y%m%d%H%M%S')
+        random_digits = f"{random.randint(1000, 9999)}"
+        generated_txn_id = f"TXN{timestamp_str}{random_digits}"
+
+        # If a custom transaction_id was supplied in request, use it, else use generated
+        transaction_id = request.data.get('transaction_id') or generated_txn_id
+
+        # Only create or set Subscription as 'active' upon this final confirmation step
         sub, created = Subscription.objects.get_or_create(
             user=request.user,
             defaults={
@@ -104,12 +123,17 @@ class SubscribeView(APIView):
             sub.payment_method = payment_method
             sub.transaction_id = transaction_id
             sub.status = 'active'
-            sub.started_at = timezone.now()
+            sub.started_at = now
             sub.save()
 
         serializer = SubscriptionSerializer(sub)
         data = serializer.data
         data['is_subscribed'] = True
+        data['transaction_id'] = sub.transaction_id
+        data['amount'] = float(plan.price)
+        data['method'] = sub.payment_method
+        data['timestamp'] = sub.started_at.isoformat()
+        data['message'] = 'Simulated payment processed successfully. Subscription is now active.'
         return Response(data, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
 
 

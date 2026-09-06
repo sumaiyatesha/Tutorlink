@@ -3,14 +3,14 @@
 .landing-footer {
   background-color: #0f172a;
   color: #94a3b8;
-  padding: 60px 0 28px 0;
+  padding: 56px 0 28px 0;
   border-top: 1px solid #1e293b;
 }
 
 .landing-footer-container {
   max-width: 1140px;
   margin: 0 auto;
-  padding: 0 20px 40px 20px;
+  padding: 0 20px 36px 20px;
   display: grid;
   grid-template-columns: 2fr 1fr 1fr;
   gap: 40px;
@@ -19,14 +19,11 @@
 
 /* Brand Column */
 .footer-col-brand h3 {
-  font-size: 24px;
+  font-size: 22px;
   font-weight: 800;
   color: #ffffff;
-  margin: 0 0 12px 0;
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
+  margin: 0 0 10px 0;
+  letter-spacing: -0.3px;
 }
 
 .footer-col-brand p {
@@ -39,10 +36,10 @@
 
 /* Column Headings */
 .footer-col-title {
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 700;
   color: #ffffff;
-  margin: 0 0 16px 0;
+  margin: 0 0 14px 0;
 }
 
 /* Navigation Links List */
@@ -58,18 +55,18 @@
 .footer-links-list a {
   color: #cbd5e1;
   text-decoration: none;
-  font-size: 14px;
+  font-size: 13.5px;
   font-weight: 500;
-  transition: color 0.2s ease;
+  transition: color 0.15s ease;
 }
 
 .footer-links-list a:hover {
-  color: #667eea;
+  color: #c7d2fe;
 }
 
 /* Contact Info Items */
 .footer-contact-item {
-  font-size: 14px;
+  font-size: 13.5px;
   color: #cbd5e1;
   display: flex;
   align-items: center;

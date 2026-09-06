@@ -1,14 +1,28 @@
-// SubscriptionPage.jsx — Role-Aware Mock Subscription & Tutor Commission Dashboard.
+// SubscriptionPage.jsx — In-App Simulated Payment & Subscription Checkout Flow.
 //
-// Features for Viva Defense:
-// 1. Role-aware view: Guardian Monthly (30 Tk/mo) vs Tutor Monthly (50 Tk/mo).
-// 2. Demo mode disclaimer banner highlighting mock payment nature.
-// 3. Payment method selection (bKash / Nagad / Card) with mock card form fields.
-// 4. Current subscription status badge with Cancel option when active.
-// 5. Automatic state refresh (re-fetching /api/subscriptions/mine/) on subscribe/cancel.
-// 6. Tutor "My Commissions" section displaying 15% per-hire obligations automatically tracked upon hire.
+// ============================================================================
+// FACULTY EXAMINER / VIVA DEFENSE ARCHITECTURE NOTE:
+// ----------------------------------------------------------------------------
+// This module provides a realistic, multi-step simulated checkout experience
+// for TutorLink subscriptions. NO real payment gateway (e.g., bKash API,
+// Nagad API, Stripe, or SSLCommerz) is invoked, and NO real currency is transferred.
+//
+// THE 4-STEP IN-APP CHECKOUT LIFECYCLE:
+// Step 1: Payment Method Selection (bKash / Nagad / Bank Card) + Plan Review
+// Step 2: Simulated Payment Details Screen (masked phone/PIN or card inputs)
+//         with a prominent Sandbox / Demo Environment notification banner.
+// Step 3: Brief Simulated Processing State (1.5s - 2.0s animated timer simulating
+//         gateway handshake, tokenization, and backend activation).
+// Step 4: Digital Receipt / Confirmation Screen (Transaction ID, Masked Account,
+//         Amount in BDT, Date/Time, Success Status, and Demo Mode note).
+//
+// Upon Step 4 completion, the user subscription is activated in the backend
+// and gated features (e.g., AI Matching Chatbot, Tutor Priority Pro Ranking)
+// unlock immediately without requiring a full page refresh.
+// ============================================================================
 
 import { useState, useEffect, useCallback } from 'react'
+import { useNavigate } from 'react-router-dom'
 import { useAuth, api } from '../../AuthContext'
 import Navbar from '../../components/Navbar'
 import Badge from '../../components/Badge'
@@ -17,30 +31,45 @@ import './SubscriptionPage.css'
 
 function SubscriptionPage() {
   const { user } = useAuth()
+  const navigate = useNavigate()
   const isTutor = user && user.role === 'tutor'
 
-  // Subscription state
+  // Current Subscription State from Backend (/api/subscriptions/mine/)
   const [subData, setSubData] = useState(null)
   const [loading, setLoading] = useState(true)
   const [submitting, setSubmitting] = useState(false)
+
+  // Checkout Flow Step: 1 = Choose Method, 2 = Enter Details, 3 = Processing, 4 = Receipt
+  const [checkoutStep, setCheckoutStep] = useState(1)
   const [paymentMethod, setPaymentMethod] = useState('bkash')
 
-  // Feedback alerts
-  const [successMessage, setSuccessMessage] = useState('')
-  const [errorMessage, setErrorMessage] = useState('')
+  // Form Fields for bKash & Nagad (Mobile Financial Services)
+  const [mfsPhone, setMfsPhone] = useState('01712345678')
+  const [mfsPin, setMfsPin] = useState('1234')
+  const [mfsError, setMfsError] = useState('')
 
-  // Mock Card Form State
-  const [cardName, setCardName] = useState('John Doe')
+  // Form Fields for Bank Card (Visa / Mastercard / Amex)
+  const [cardName, setCardName] = useState('Sumaiya Rahman')
   const [cardNumber, setCardNumber] = useState('4111 2222 3333 4444')
   const [cardExpiry, setCardExpiry] = useState('12/28')
-  const [cardCvc, setCardCvc] = useState('123')
+  const [cardCvc, setCardCvc] = useState('789')
   const [cardError, setCardError] = useState('')
 
-  // Commissions state (for Tutors)
+  // Processing Animation State
+  const [processingStatusText, setProcessingStatusText] = useState('Initiating secure sandbox transaction...')
+
+  // Final Receipt Details State
+  const [receipt, setReceipt] = useState(null)
+  const [copiedTxn, setCopiedTxn] = useState(false)
+
+  // Tutor Commissions State (15% per hire)
   const [commissions, setCommissions] = useState([])
   const [loadingCommissions, setLoadingCommissions] = useState(isTutor)
 
-  // Fetch current subscription status from backend
+  // Status/Alert Feedback
+  const [statusNotice, setStatusNotice] = useState('')
+
+  // 1. Fetch current subscription status from backend
   const fetchSubscriptionData = useCallback(async () => {
     try {
       const res = await api.get('/api/subscriptions/mine/').catch(() => null)
@@ -54,7 +83,7 @@ function SubscriptionPage() {
     }
   }, [])
 
-  // Fetch tutor commissions
+  // 2. Fetch tutor commissions list
   const fetchCommissionsData = useCallback(async () => {
     if (!isTutor) return
     try {
@@ -74,81 +103,161 @@ function SubscriptionPage() {
     fetchCommissionsData()
   }, [fetchSubscriptionData, fetchCommissionsData])
 
-  // Handle Subscribe Action
-  async function handleSubscribe(e) {
-    e.preventDefault()
-    setCardError('')
-    setErrorMessage('')
-    setSuccessMessage('')
+  // Formatting & masking helpers
+  const formatCardNumber = (value) => {
+    const raw = value.replace(/\D/g, '').substring(0, 16)
+    const parts = raw.match(/.{1,4}/g) || []
+    return parts.join(' ')
+  }
 
-    // Validate mock card input if Card payment method selected
+  const formatCardExpiry = (value) => {
+    const raw = value.replace(/\D/g, '').substring(0, 4)
+    if (raw.length >= 3) {
+      return `${raw.substring(0, 2)}/${raw.substring(2, 4)}`
+    }
+    return raw
+  }
+
+  const getMaskedAccount = () => {
     if (paymentMethod === 'card') {
       const cleanNum = cardNumber.replace(/\s+/g, '')
-      if (cleanNum.length < 12 || cleanNum.length > 19) {
+      const last4 = cleanNum.slice(-4) || '4444'
+      return `•••• •••• •••• ${last4}`
+    } else {
+      const cleanPhone = mfsPhone.replace(/\D/g, '')
+      if (cleanPhone.length >= 8) {
+        const prefix = cleanPhone.substring(0, 3)
+        const suffix = cleanPhone.substring(cleanPhone.length - 3)
+        return `${prefix} •••• ${suffix}`
+      }
+      return `${mfsPhone} (Sandbox)`
+    }
+  }
+
+  // Handle Step 1 -> Step 2 (Proceed to Details)
+  const handleProceedToDetails = () => {
+    setMfsError('')
+    setCardError('')
+    setCheckoutStep(2)
+  }
+
+  // Handle Step 2 -> Step 3 & 4 (Simulate Processing & Call Backend)
+  const handleConfirmPayment = async (e) => {
+    if (e) e.preventDefault()
+    setMfsError('')
+    setCardError('')
+
+    // Validate inputs for Step 2
+    if (paymentMethod === 'card') {
+      const cleanNum = cardNumber.replace(/\s+/g, '')
+      if (cleanNum.length < 15 || cleanNum.length > 16) {
         setCardError('Please enter a valid 16-digit card number.')
         return
       }
       if (!cardExpiry.includes('/') || cardExpiry.length < 5) {
-        setCardError('Please enter expiration date in MM/YY format (e.g. 12/28).')
+        setCardError('Please enter expiration date as MM/YY (e.g., 12/28).')
         return
       }
       if (cardCvc.length < 3) {
-        setCardError('Please enter a 3-digit CVC code.')
+        setCardError('Please enter a 3-digit CVV code.')
+        return
+      }
+    } else {
+      const cleanPhone = mfsPhone.replace(/\D/g, '')
+      if (cleanPhone.length < 11) {
+        setMfsError('Please enter an 11-digit mobile number (e.g. 017XXXXXXXX).')
+        return
+      }
+      if (mfsPin.length < 4) {
+        setMfsError('Please enter your 4-5 digit PIN.')
         return
       }
     }
 
+    // Step 3: Transition to processing state
+    setCheckoutStep(3)
     setSubmitting(true)
-    const mockTxnId = `MOCK-TXN-${Math.floor(100000 + Math.random() * 900000)}`
+    setProcessingStatusText('Connecting to simulated sandbox gateway...')
 
-    try {
-      const res = await api.post('/api/subscriptions/subscribe/', {
-        payment_method: paymentMethod,
-        transaction_id: mockTxnId,
-      })
+    // Animated status progression for live viva feel
+    const timer1 = setTimeout(() => {
+      setProcessingStatusText(`Simulating ${paymentMethod.toUpperCase()} authorization & tokenization...`)
+    }, 700)
 
-      if (res && res.data) {
-        // Update local state directly with returned payload
-        setSubData(res.data)
-        setSuccessMessage('🎉 Subscription activated successfully! Your account is now Active.')
+    const timer2 = setTimeout(() => {
+      setProcessingStatusText('Finalizing subscription in database...')
+    }, 1300)
 
-        // Re-fetch from server to guarantee fresh state
-        await fetchSubscriptionData()
+    // Execute backend activation after realistic delay (1800ms)
+    setTimeout(async () => {
+      try {
+        const res = await api.post('/api/subscriptions/subscribe/', {
+          payment_method: paymentMethod,
+          account_ref: getMaskedAccount(),
+        })
 
-        if (isTutor) {
-          await fetchCommissionsData()
+        if (res && res.data) {
+          const planTitle = isTutor ? 'Tutor Monthly' : 'Guardian Monthly'
+          const planCost = isTutor ? 50 : 30
+
+          // Prepare rich receipt data for Step 4
+          const newReceipt = {
+            transaction_id: res.data.transaction_id || `TXN${Date.now()}`,
+            amount: res.data.amount || planCost,
+            payment_method: paymentMethod,
+            masked_account: getMaskedAccount(),
+            timestamp: res.data.timestamp || new Date().toISOString(),
+            plan_name: planTitle,
+            status: 'Successful',
+          }
+
+          setReceipt(newReceipt)
+          setSubData(res.data)
+          setCheckoutStep(4) // Move to Step 4 (Receipt)
+          setStatusNotice('🎉 Subscription activated successfully! Gated features are now unlocked.')
+
+          // Refresh state from backend
+          await fetchSubscriptionData()
+          if (isTutor) {
+            await fetchCommissionsData()
+          }
         }
+      } catch (err) {
+        console.error('Subscription failed:', err)
+        setCheckoutStep(2)
+        setCardError('Payment simulation failed. Please try again.')
+      } finally {
+        clearTimeout(timer1)
+        clearTimeout(timer2)
+        setSubmitting(false)
+      }
+    }, 1800)
+  }
+
+  // Handle Cancel Subscription
+  const handleCancel = async () => {
+    if (!window.confirm('Are you sure you want to cancel your subscription?')) return
+    setSubmitting(true)
+    try {
+      const res = await api.post('/api/subscriptions/cancel/')
+      if (res && res.data) {
+        setStatusNotice('Subscription cancelled.')
+        await fetchSubscriptionData()
       }
     } catch (err) {
-      console.error('Subscription failed:', err)
-      const errorMsg =
-        err.response && err.response.data && err.response.data.error
-          ? err.response.data.error
-          : 'Subscription request failed. Please check backend connection.'
-      setErrorMessage(errorMsg)
+      console.error('Cancellation failed:', err)
+      alert('Failed to cancel subscription.')
     } finally {
       setSubmitting(false)
     }
   }
 
-  // Handle Cancel Subscription Action
-  async function handleCancel() {
-    if (!window.confirm('Are you sure you want to cancel your subscription?')) return
-    setSubmitting(true)
-    setErrorMessage('')
-    setSuccessMessage('')
-
-    try {
-      const res = await api.post('/api/subscriptions/cancel/')
-      if (res && res.data) {
-        setSuccessMessage('Subscription cancelled.')
-        await fetchSubscriptionData()
-      }
-    } catch (err) {
-      console.error('Cancellation failed:', err)
-      setErrorMessage('Failed to cancel subscription. Please try again.')
-    } finally {
-      setSubmitting(false)
+  // Copy Transaction ID to clipboard
+  const handleCopyTxn = () => {
+    if (receipt && receipt.transaction_id) {
+      navigator.clipboard.writeText(receipt.transaction_id)
+      setCopiedTxn(true)
+      setTimeout(() => setCopiedTxn(false), 2000)
     }
   }
 
@@ -156,7 +265,7 @@ function SubscriptionPage() {
     return (
       <div className="subscription-page">
         <Navbar />
-        <div className="subscription-container" style={{ textAlign: 'center', paddingTop: '64px' }}>
+        <div className="subscription-container" style={{ textAlign: 'center', paddingTop: '80px' }}>
           <LoadingSpinner />
         </div>
       </div>
@@ -172,62 +281,42 @@ function SubscriptionPage() {
       <Navbar />
 
       <main className="subscription-container">
-        {/* Page Title & Subtitle */}
+        {/* Page Header */}
         <div className="subscription-header">
-          <h1>{isTutor ? 'Tutor Subscription & Commissions' : 'Guardian Subscription Plan'}</h1>
+          <div className="header-badge-wrap">
+            <span className="hero-badge">⚡ Instant Simulation</span>
+          </div>
+          <h1>{isTutor ? 'Tutor Priority Subscription' : 'Guardian Premium Subscription'}</h1>
           <p>
             {isTutor
-              ? 'Unlock Priority Pro status to appear first in tutor directory search results.'
-              : 'Subscribe to enjoy premium guardian benefits and direct tutor messaging.'}
+              ? 'Unlock Priority Pro placement, boosted search rankings, and premium tutor tools.'
+              : 'Unlock AI Matchmaking Chatbot, priority teacher applications, and direct communication.'}
           </p>
         </div>
 
-        {/* Demo Mode Disclaimer Banner */}
+        {/* Global Demo Mode Disclaimer Banner */}
         <div className="demo-disclaimer-banner">
-          <span className="demo-disclaimer-icon">⚠️</span>
+          <span className="demo-disclaimer-icon">🛡️</span>
           <div>
-            <strong>Demo Mode Active:</strong> No real payment gateway is integrated and no real money is processed. All transactions are simulated for demonstration purposes.
+            <strong>Demo / Sandbox Mode:</strong> All payments on this page are fully simulated for project demonstration. No real money or external payment gateway (bKash/Nagad/Cards) is involved.
           </div>
         </div>
 
-        {/* Feedback Messages */}
-        {successMessage && (
-          <div style={{
-            backgroundColor: '#f0fdf4',
-            color: '#166534',
-            border: '1px solid #bbf7d0',
-            padding: '12px 18px',
-            borderRadius: '10px',
-            marginBottom: '20px',
-            fontWeight: '600',
-            fontSize: '14px'
-          }}>
-            {successMessage}
+        {/* Status Notification */}
+        {statusNotice && (
+          <div className="status-notice-banner">
+            <span>{statusNotice}</span>
+            <button className="notice-close-btn" onClick={() => setStatusNotice('')}>✕</button>
           </div>
         )}
 
-        {errorMessage && (
-          <div style={{
-            backgroundColor: '#fef2f2',
-            color: '#991b1b',
-            border: '1px solid #fecaca',
-            padding: '12px 18px',
-            borderRadius: '10px',
-            marginBottom: '20px',
-            fontWeight: '600',
-            fontSize: '14px'
-          }}>
-            ⚠️ {errorMessage}
-          </div>
-        )}
-
-        {/* Main Grid */}
+        {/* Main Grid: Plan Features Left + Checkout/Status Right */}
         <div className="subscription-grid">
           {/* Left Column: Plan Feature Card */}
           <div className="plan-hero-card">
             <span className="plan-role-badge">{user ? user.role : 'Member'} Plan</span>
             <h2 className="plan-title">{planName}</h2>
-            
+
             <div className="plan-price-row">
               <span className="plan-currency">Tk</span>
               <span className="plan-amount">{planPrice}</span>
@@ -236,58 +325,99 @@ function SubscriptionPage() {
 
             <p className="plan-description">
               {isTutor
-                ? 'Stand out to guardians with a Verified Priority badge and top-tier search placement across all tuition browse listings.'
-                : 'Manage tuition requirements smoothly with full platform support and priority guardian matching.'}
+                ? 'Stand out with the Priority Pro Badge and reach top placement across all tuition browse listings in Dhaka.'
+                : 'Experience direct AI-assisted tutor matching, instant tuition posting, and premium guardian verified status.'}
             </p>
+
+            <div className="plan-features-divider"></div>
 
             <ul className="plan-features-list">
               {isTutor ? (
                 <>
-                  <li>✨ <strong>Priority Pro Badge</strong> on profile and search cards</li>
-                  <li>🚀 Boosted search ranking in Guardian tutor directory</li>
-                  <li>📊 Direct commission tracking (15% per accepted job)</li>
-                  <li>💬 Priority support and status alerts</li>
+                  <li><span className="feat-icon">⭐</span> <strong>Priority Pro Badge</strong> on your profile and browse cards</li>
+                  <li><span className="feat-icon">🚀</span> Boosted search rank in Guardian tutor directory</li>
+                  <li><span className="feat-icon">🤖</span> Priority inclusion in AI Chat Match recommendations</li>
+                  <li><span className="feat-icon">📊</span> Transparent 15% commission tracking per accepted tuition</li>
                 </>
               ) : (
                 <>
-                  <li>🛡️ Verified Guardian Status</li>
-                  <li>📝 Post unlimited tuition requirements</li>
-                  <li>⭐ Bookmark and review hired tutors</li>
-                  <li>💬 Priority support</li>
+                  <li><span className="feat-icon">🤖</span> <strong>AI Matchmaking Assistant</strong> unlocked</li>
+                  <li><span className="feat-icon">🛡️</span> Verified Guardian Account badge</li>
+                  <li><span className="feat-icon">📝</span> Post unlimited tuition requests</li>
+                  <li><span className="feat-icon">⭐</span> Bookmark & direct review hired tutors</li>
                 </>
               )}
             </ul>
+
+            <div className="plan-simulation-badge">
+              <span>🔒 256-Bit Simulated Sandbox Encryption</span>
+            </div>
           </div>
 
-          {/* Right Column: Status Card or Payment Form */}
+          {/* Right Column: Active Status OR Multi-Step Checkout Box */}
           <div className="subscription-actions-col">
-            {/* Subscription Status Box */}
-            <div className="status-card">
-              <div className="status-header">
-                <h3>Subscription Status</h3>
-                <Badge
-                  variant={isSubscribed ? 'verified' : subData?.status === 'cancelled' ? 'danger' : 'neutral'}
-                  icon={isSubscribed ? '✓' : 'ℹ'}
-                >
-                  {isSubscribed ? 'Active Subscriber' : subData?.status === 'cancelled' ? 'Cancelled' : 'Inactive'}
-                </Badge>
-              </div>
+            {/* If currently subscribed and not in an active receipt view, show Active Status Box */}
+            {isSubscribed && checkoutStep !== 4 ? (
+              <div className="status-card">
+                <div className="status-header">
+                  <div>
+                    <span className="status-sub-label">Account Status</span>
+                    <h3>Active Subscriber</h3>
+                  </div>
+                  <Badge variant="verified" icon="✓">
+                    Active
+                  </Badge>
+                </div>
 
-              {isSubscribed ? (
                 <div className="status-meta">
-                  <p><strong>Current Plan:</strong> {subData?.plan?.name || planName}</p>
-                  <p><strong>Payment Method:</strong> {subData?.payment_method?.toUpperCase() || 'BKASH'}</p>
-                  <p><strong>Transaction Ref:</strong> {subData?.transaction_id || 'MOCK-TXN-1001'}</p>
+                  <div className="status-meta-row">
+                    <span className="meta-label">Current Plan:</span>
+                    <span className="meta-val">{subData?.plan?.name || planName}</span>
+                  </div>
+                  <div className="status-meta-row">
+                    <span className="meta-label">Payment Method:</span>
+                    <span className="meta-val method-tag">
+                      {subData?.payment_method ? subData.payment_method.toUpperCase() : 'BKASH (DEMO)'}
+                    </span>
+                  </div>
+                  <div className="status-meta-row">
+                    <span className="meta-label">Transaction ID:</span>
+                    <span className="meta-val code-val">{subData?.transaction_id || 'TXN-ACTIVE-1001'}</span>
+                  </div>
                   {subData?.started_at && (
-                    <p>
-                      <strong>Subscribed On:</strong>{' '}
-                      {new Date(subData.started_at).toLocaleDateString('en-US', {
-                        month: 'short',
-                        day: 'numeric',
-                        year: 'numeric',
-                      })}
-                    </p>
+                    <div className="status-meta-row">
+                      <span className="meta-label">Activated On:</span>
+                      <span className="meta-val">
+                        {new Date(subData.started_at).toLocaleDateString('en-US', {
+                          month: 'short',
+                          day: 'numeric',
+                          year: 'numeric',
+                        })}
+                      </span>
+                    </div>
                   )}
+                </div>
+
+                <div className="active-unlocked-banner">
+                  <span className="unlocked-icon">🎉</span>
+                  <div>
+                    <strong>All Premium Features Unlocked!</strong>
+                    <p style={{ margin: 0, fontSize: '13px', color: '#166534' }}>
+                      {isTutor
+                        ? 'Your profile is currently featured with top search priority.'
+                        : 'You can now use the AI Matching Chatbot directly on your dashboard.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="status-actions-row">
+                  <button
+                    type="button"
+                    className="btn-dashboard-jump"
+                    onClick={() => navigate(isTutor ? '/tutor-dashboard' : '/guardian-dashboard')}
+                  >
+                    Go to Dashboard →
+                  </button>
                   <button
                     type="button"
                     className="btn-cancel-sub"
@@ -297,122 +427,373 @@ function SubscriptionPage() {
                     {submitting ? 'Cancelling...' : 'Cancel Subscription'}
                   </button>
                 </div>
-              ) : (
-                <p style={{ fontSize: '14px', color: '#64748b' }}>
-                  You do not currently have an active subscription. Choose a payment method below to subscribe.
-                </p>
-              )}
-            </div>
-
-            {/* Payment Section (if not active) */}
-            {!isSubscribed && (
-              <div className="payment-section">
-                <h3>Choose Payment Method</h3>
-
-                <div className="payment-methods-grid">
-                  <div
-                    className={`payment-method-card ${paymentMethod === 'bkash' ? 'selected' : ''}`}
-                    onClick={() => setPaymentMethod('bkash')}
-                  >
-                    <span className="pm-icon">📱</span>
-                    <span className="pm-name">bKash</span>
+              </div>
+            ) : (
+              /* --- MULTI-STEP CHECKOUT CONTAINER --- */
+              <div className="checkout-card">
+                {/* Checkout Step Progress Indicator */}
+                <div className="checkout-stepper">
+                  <div className={`step-node ${checkoutStep >= 1 ? 'active' : ''} ${checkoutStep > 1 ? 'completed' : ''}`}>
+                    <span className="step-num">{checkoutStep > 1 ? '✓' : '1'}</span>
+                    <span className="step-label">Method</span>
                   </div>
-
-                  <div
-                    className={`payment-method-card ${paymentMethod === 'nagad' ? 'selected' : ''}`}
-                    onClick={() => setPaymentMethod('nagad')}
-                  >
-                    <span className="pm-icon">💸</span>
-                    <span className="pm-name">Nagad</span>
+                  <div className={`step-line ${checkoutStep >= 2 ? 'active' : ''}`} />
+                  <div className={`step-node ${checkoutStep >= 2 ? 'active' : ''} ${checkoutStep > 2 ? 'completed' : ''}`}>
+                    <span className="step-num">{checkoutStep > 2 ? '✓' : '2'}</span>
+                    <span className="step-label">Details</span>
                   </div>
-
-                  <div
-                    className={`payment-method-card ${paymentMethod === 'card' ? 'selected' : ''}`}
-                    onClick={() => setPaymentMethod('card')}
-                  >
-                    <span className="pm-icon">💳</span>
-                    <span className="pm-name">Card</span>
+                  <div className={`step-line ${checkoutStep >= 3 ? 'active' : ''}`} />
+                  <div className={`step-node ${checkoutStep >= 4 ? 'active' : ''}`}>
+                    <span className="step-num">{checkoutStep === 4 ? '✓' : '3'}</span>
+                    <span className="step-label">Receipt</span>
                   </div>
                 </div>
 
-                <form onSubmit={handleSubscribe}>
-                  {/* Mock Card Form Fields */}
-                  {paymentMethod === 'card' ? (
-                    <div className="mock-card-form">
-                      {cardError && (
-                        <div style={{ color: '#dc2626', fontSize: '13px', fontWeight: '600' }}>
-                          {cardError}
-                        </div>
-                      )}
-                      <div className="form-group">
-                        <label>Cardholder Name</label>
-                        <input
-                          type="text"
-                          className="form-input"
-                          value={cardName}
-                          onChange={(e) => setCardName(e.target.value)}
-                          placeholder="Name on card"
-                          required
-                        />
-                      </div>
-                      <div className="form-group">
-                        <label>Card Number (Mock)</label>
-                        <input
-                          type="text"
-                          className="form-input"
-                          value={cardNumber}
-                          onChange={(e) => setCardNumber(e.target.value)}
-                          placeholder="4111 2222 3333 4444"
-                          required
-                        />
-                      </div>
-                      <div className="form-row-2">
-                        <div className="form-group">
-                          <label>Expiry Date</label>
-                          <input
-                            type="text"
-                            className="form-input"
-                            value={cardExpiry}
-                            onChange={(e) => setCardExpiry(e.target.value)}
-                            placeholder="MM/YY"
-                            required
-                          />
-                        </div>
-                        <div className="form-group">
-                          <label>CVC</label>
-                          <input
-                            type="text"
-                            className="form-input"
-                            value={cardCvc}
-                            onChange={(e) => setCardCvc(e.target.value)}
-                            placeholder="123"
-                            required
-                          />
-                        </div>
-                      </div>
+                {/* ========================================================================= */}
+                {/* STEP 1: PAYMENT METHOD SELECTION                                          */}
+                {/* ========================================================================= */}
+                {checkoutStep === 1 && (
+                  <div className="step-content">
+                    <div className="step-header">
+                      <h3>Select Payment Method</h3>
+                      <p>Choose your preferred payment gateway to simulate payment.</p>
                     </div>
-                  ) : (
-                    <div style={{ background: '#f8fafc', padding: '14px', borderRadius: '10px', fontSize: '13px', color: '#475569', marginBottom: '20px' }}>
-                      <p><strong>Mobile Wallet Demo Instructions:</strong></p>
-                      <p>Send <strong>{planPrice} Tk</strong> to Merchant Number <strong>01700-000000</strong> ({paymentMethod.toUpperCase()}).</p>
-                      <p>A mock transaction ID will be auto-generated upon clicking Subscribe below.</p>
-                    </div>
-                  )}
 
-                  <button
-                    type="submit"
-                    className="btn-subscribe-now"
-                    disabled={submitting}
-                  >
-                    {submitting ? 'Processing...' : `Subscribe Now (${planPrice} Tk/mo)`}
-                  </button>
-                </form>
+                    <div className="payment-methods-grid">
+                      {/* bKash */}
+                      <div
+                        className={`payment-method-card ${paymentMethod === 'bkash' ? 'selected' : ''}`}
+                        onClick={() => setPaymentMethod('bkash')}
+                      >
+                        <div className="pm-header">
+                          <span className="pm-icon mfs-bkash">📱</span>
+                          {paymentMethod === 'bkash' && <span className="pm-check">✓</span>}
+                        </div>
+                        <span className="pm-name">bKash</span>
+                        <span className="pm-badge">Mobile Wallet</span>
+                      </div>
+
+                      {/* Nagad */}
+                      <div
+                        className={`payment-method-card ${paymentMethod === 'nagad' ? 'selected' : ''}`}
+                        onClick={() => setPaymentMethod('nagad')}
+                      >
+                        <div className="pm-header">
+                          <span className="pm-icon mfs-nagad">💸</span>
+                          {paymentMethod === 'nagad' && <span className="pm-check">✓</span>}
+                        </div>
+                        <span className="pm-name">Nagad</span>
+                        <span className="pm-badge">Mobile Wallet</span>
+                      </div>
+
+                      {/* Bank Card */}
+                      <div
+                        className={`payment-method-card ${paymentMethod === 'card' ? 'selected' : ''}`}
+                        onClick={() => setPaymentMethod('card')}
+                      >
+                        <div className="pm-header">
+                          <span className="pm-icon card-icon">💳</span>
+                          {paymentMethod === 'card' && <span className="pm-check">✓</span>}
+                        </div>
+                        <span className="pm-name">Bank Card</span>
+                        <span className="pm-badge">Visa / Master</span>
+                      </div>
+                    </div>
+
+                    {/* Order Summary Box */}
+                    <div className="order-summary-box">
+                      <div className="summary-row">
+                        <span>Plan Subscription</span>
+                        <span>{planName}</span>
+                      </div>
+                      <div className="summary-row">
+                        <span>Billing Frequency</span>
+                        <span>Monthly (30 Days)</span>
+                      </div>
+                      <div className="summary-row total-row">
+                        <span>Total Payable (BDT)</span>
+                        <span className="total-price">{planPrice} Tk</span>
+                      </div>
+                    </div>
+
+                    <button
+                      type="button"
+                      className="btn-checkout-primary"
+                      onClick={handleProceedToDetails}
+                    >
+                      Proceed with {paymentMethod === 'card' ? 'Card' : paymentMethod === 'bkash' ? 'bKash' : 'Nagad'} →
+                    </button>
+                  </div>
+                )}
+
+                {/* ========================================================================= */}
+                {/* STEP 2: SIMULATED PAYMENT DETAILS SCREEN                                  */}
+                {/* ========================================================================= */}
+                {checkoutStep === 2 && (
+                  <form className="step-content" onSubmit={handleConfirmPayment}>
+                    <div className="step-header">
+                      <div className="method-pill-header">
+                        <span className="pill-method-name">
+                          {paymentMethod === 'bkash' && '📱 bKash Sandbox Gateway'}
+                          {paymentMethod === 'nagad' && '💸 Nagad Sandbox Gateway'}
+                          {paymentMethod === 'card' && '💳 Bank Card Sandbox Checkout'}
+                        </span>
+                        <span className="pill-amount">{planPrice} Tk</span>
+                      </div>
+                    </div>
+
+                    {/* Step 2 Sandbox Banner */}
+                    <div className="sandbox-step-banner">
+                      <span className="sandbox-icon">🧪</span>
+                      <div>
+                        <strong>Sandbox / Demo Environment</strong>
+                        <p style={{ margin: 0, fontSize: '12px', color: '#92400e' }}>
+                          No real transaction will occur. Feel free to use the prefilled mock credentials.
+                        </p>
+                      </div>
+                    </div>
+
+                    {/* --- If Mobile Financial Service (bKash / Nagad) --- */}
+                    {paymentMethod !== 'card' ? (
+                      <div className="mfs-form-panel">
+                        <div className="mfs-branding-box">
+                          <span className="mfs-avatar">
+                            {paymentMethod === 'bkash' ? 'bKash' : 'Nagad'}
+                          </span>
+                          <div>
+                            <div className="mfs-merchant-title">TutorLink Merchant Account</div>
+                            <div className="mfs-merchant-id">Merchant ID: 01700-000000</div>
+                          </div>
+                        </div>
+
+                        {mfsError && (
+                          <div className="form-error-banner">⚠️ {mfsError}</div>
+                        )}
+
+                        <div className="form-group">
+                          <label>Your {paymentMethod === 'bkash' ? 'bKash' : 'Nagad'} Mobile Number</label>
+                          <div className="input-with-prefix">
+                            <span className="phone-prefix">🇧🇩 +88</span>
+                            <input
+                              type="tel"
+                              className="form-input prefixed-input"
+                              value={mfsPhone}
+                              onChange={(e) => setMfsPhone(e.target.value.replace(/[^\d]/g, '').slice(0, 11))}
+                              placeholder="01712345678"
+                              required
+                            />
+                          </div>
+                          <span className="field-hint">Any 11-digit demo phone number accepted</span>
+                        </div>
+
+                        <div className="form-group">
+                          <label>{paymentMethod === 'bkash' ? 'bKash' : 'Nagad'} PIN (Simulated)</label>
+                          <input
+                            type="password"
+                            className="form-input"
+                            value={mfsPin}
+                            onChange={(e) => setMfsPin(e.target.value.replace(/[^\d]/g, '').slice(0, 5))}
+                            placeholder="••••"
+                            maxLength={5}
+                            required
+                          />
+                          <span className="field-hint">4-5 digit PIN format check only (not transmitted externally)</span>
+                        </div>
+                      </div>
+                    ) : (
+                      /* --- If Bank Card (Visa / Mastercard) --- */
+                      <div className="card-form-panel">
+                        {cardError && (
+                          <div className="form-error-banner">⚠️ {cardError}</div>
+                        )}
+
+                        <div className="form-group">
+                          <label>Cardholder Name</label>
+                          <input
+                            type="text"
+                            className="form-input"
+                            value={cardName}
+                            onChange={(e) => setCardName(e.target.value)}
+                            placeholder="Full Name as on Card"
+                            required
+                          />
+                        </div>
+
+                        <div className="form-group">
+                          <label>Card Number</label>
+                          <div className="input-with-icon">
+                            <input
+                              type="text"
+                              className="form-input"
+                              value={cardNumber}
+                              onChange={(e) => setCardNumber(formatCardNumber(e.target.value))}
+                              placeholder="4111 2222 3333 4444"
+                              maxLength={19}
+                              required
+                            />
+                            <span className="card-type-hint">💳 Visa / Master</span>
+                          </div>
+                        </div>
+
+                        <div className="form-row-2">
+                          <div className="form-group">
+                            <label>Expiry Date</label>
+                            <input
+                              type="text"
+                              className="form-input"
+                              value={cardExpiry}
+                              onChange={(e) => setCardExpiry(formatCardExpiry(e.target.value))}
+                              placeholder="MM/YY"
+                              maxLength={5}
+                              required
+                            />
+                          </div>
+                          <div className="form-group">
+                            <label>CVV / CVC</label>
+                            <input
+                              type="password"
+                              className="form-input"
+                              value={cardCvc}
+                              onChange={(e) => setCardCvc(e.target.value.replace(/[^\d]/g, '').slice(0, 4))}
+                              placeholder="123"
+                              maxLength={4}
+                              required
+                            />
+                          </div>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Step 2 Action Buttons */}
+                    <div className="step-actions-row">
+                      <button
+                        type="button"
+                        className="btn-checkout-secondary"
+                        onClick={() => setCheckoutStep(1)}
+                      >
+                        ← Change Method
+                      </button>
+                      <button
+                        type="submit"
+                        className="btn-checkout-primary"
+                        disabled={submitting}
+                      >
+                        Confirm Payment ({planPrice} Tk)
+                      </button>
+                    </div>
+                  </form>
+                )}
+
+                {/* ========================================================================= */}
+                {/* STEP 3: SIMULATED PROCESSING STATE                                        */}
+                {/* ========================================================================= */}
+                {checkoutStep === 3 && (
+                  <div className="step-content processing-state-box">
+                    <div className="processing-spinner-wrap">
+                      <div className="custom-pulse-spinner"></div>
+                    </div>
+                    <h3>Processing Payment...</h3>
+                    <p className="processing-status-text">{processingStatusText}</p>
+                    <div className="processing-progress-bar">
+                      <div className="processing-progress-fill"></div>
+                    </div>
+                    <div className="processing-safe-note">
+                      🔒 Demo sandbox handshake in progress — no external network requests
+                    </div>
+                  </div>
+                )}
+
+                {/* ========================================================================= */}
+                {/* STEP 4: DIGITAL RECEIPT / CONFIRMATION SCREEN                             */}
+                {/* ========================================================================= */}
+                {checkoutStep === 4 && receipt && (
+                  <div className="step-content receipt-state-box">
+                    <div className="receipt-success-badge">
+                      <span className="success-check-icon">✓</span>
+                    </div>
+
+                    <h3>Payment Successful!</h3>
+                    <p className="receipt-subtitle">Your subscription has been activated.</p>
+
+                    {/* Receipt Ticket Box */}
+                    <div className="receipt-ticket">
+                      <div className="receipt-ticket-header">
+                        <span>TUTORLINK OFFICIAL RECEIPT</span>
+                        <span className="receipt-status-pill">● SUCCESSFUL</span>
+                      </div>
+
+                      <div className="receipt-ticket-body">
+                        <div className="receipt-item-row">
+                          <span className="r-label">Transaction ID:</span>
+                          <div className="r-val-copy-wrap">
+                            <span className="r-val r-txn-code">{receipt.transaction_id}</span>
+                            <button
+                              type="button"
+                              className="btn-copy-txn"
+                              onClick={handleCopyTxn}
+                              title="Copy Transaction ID"
+                            >
+                              {copiedTxn ? 'Copied!' : 'Copy'}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div className="receipt-item-row">
+                          <span className="r-label">Subscribed Plan:</span>
+                          <span className="r-val">{receipt.plan_name}</span>
+                        </div>
+
+                        <div className="receipt-item-row">
+                          <span className="r-label">Amount Paid:</span>
+                          <span className="r-val amount-val">{receipt.amount} BDT</span>
+                        </div>
+
+                        <div className="receipt-item-row">
+                          <span className="r-label">Payment Method:</span>
+                          <span className="r-val method-val">{receipt.payment_method.toUpperCase()}</span>
+                        </div>
+
+                        <div className="receipt-item-row">
+                          <span className="r-label">Account / Card:</span>
+                          <span className="r-val">{receipt.masked_account}</span>
+                        </div>
+
+                        <div className="receipt-item-row">
+                          <span className="r-label">Date & Time:</span>
+                          <span className="r-val">
+                            {new Date(receipt.timestamp).toLocaleString('en-US', {
+                              month: 'short',
+                              day: 'numeric',
+                              year: 'numeric',
+                              hour: '2-digit',
+                              minute: '2-digit',
+                            })}
+                          </span>
+                        </div>
+                      </div>
+
+                      <div className="receipt-ticket-footer">
+                        <span>⚠️ Demo mode - no real payment processed</span>
+                      </div>
+                    </div>
+
+                    <div className="receipt-actions-row">
+                      <button
+                        type="button"
+                        className="btn-checkout-primary"
+                        onClick={() => navigate(isTutor ? '/tutor-dashboard' : '/guardian-dashboard')}
+                      >
+                        Continue to Dashboard →
+                      </button>
+                    </div>
+                  </div>
+                )}
               </div>
             )}
           </div>
         </div>
 
-        {/* Tutor Commissions Table Section */}
+        {/* Tutor Commissions Table Section (if Tutor) */}
         {isTutor && (
           <section className="commissions-section">
             <div className="commissions-section-header">

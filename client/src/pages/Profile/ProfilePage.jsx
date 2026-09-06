@@ -435,7 +435,7 @@ function ProfilePage() {
                         <div style={{
                           marginTop: '12px',
                           padding: '14px',
-                          background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)',
+                          background: '#f5f3ff',
                           borderRadius: '10px',
                           border: '1px solid #ddd6fe'
                         }}>

@@ -1,9 +1,4 @@
 // Hero.jsx — Hero Section for TutorLink Landing Page.
-//
-// Features:
-// 1. Core value headline & subtext (Guardians find tutors, Tutors find jobs, AI matching).
-// 2. Simple search bar navigating to /tutors?query=...
-// 3. Custom purple theme SVG illustration graphic on the right with floating badges.
 
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
@@ -34,12 +29,11 @@ function Hero() {
           </div>
 
           <h1 className="hero-title">
-            Connect with Verified Tutors & <br />
-            <span className="gradient-text">Unlock Academic Success</span>
+            Connect with verified tutors and find quality tuition in Bangladesh
           </h1>
 
           <p className="hero-subtext">
-            TutorLink helps guardians find trusted, background-checked tutors, while passionate educators discover tuition jobs — boosted by smart AI matching.
+            TutorLink helps guardians find background-checked, qualified tutors and empowers passionate educators to discover tuition opportunities — supported by smart AI matching.
           </p>
 
           {/* Search Form */}
@@ -57,74 +51,62 @@ function Hero() {
           </form>
         </div>
 
-        {/* Right Column: Custom SVG Graphic Illustration */}
+        {/* Right Column: Clean SVG Graphic Illustration */}
         <div className="hero-right">
           <div className="hero-illustration-wrapper">
             
-            {/* Clean original SVG Graphic matching TutorLink Purple Palette */}
+            {/* Clean SVG Graphic matching TutorLink Purple Palette */}
             <svg
               className="hero-svg-bg"
               viewBox="0 0 400 400"
               fill="none"
               xmlns="http://www.w3.org/2000/svg"
             >
-              {/* Outer soft glow circle */}
-              <circle cx="200" cy="200" r="170" fill="url(#hero-grad-outer)" opacity="0.15" />
+              {/* Outer soft circle */}
+              <circle cx="200" cy="200" r="160" fill="#f5f3ff" />
               
               {/* Main rounded container card */}
-              <rect x="50" y="60" width="300" height="280" rx="24" fill="url(#hero-card-grad)" />
+              <rect x="60" y="70" width="280" height="260" rx="16" fill="#4f46e5" />
               
               {/* Decorative top header bar */}
-              <rect x="70" y="85" width="160" height="16" rx="8" fill="#ffffff" opacity="0.3" />
-              <circle cx="320" cy="93" r="8" fill="#ffffff" opacity="0.4" />
+              <rect x="80" y="95" width="140" height="12" rx="6" fill="#ffffff" opacity="0.4" />
+              <circle cx="310" cy="101" r="6" fill="#ffffff" opacity="0.6" />
               
               {/* Graduation Cap graphic vector */}
               <path
-                d="M200 130L290 170L200 210L110 170L200 130Z"
+                d="M200 135L280 170L200 205L120 170L200 135Z"
                 fill="#ffffff"
               />
               <path
-                d="M140 195V230C140 245 167 255 200 255C233 255 260 245 260 230V195"
+                d="M145 195V225C145 238 168 248 200 248C232 248 255 238 255 225V195"
                 stroke="#ffffff"
-                strokeWidth="8"
+                strokeWidth="7"
                 strokeLinecap="round"
               />
               <path
-                d="M275 180V240"
-                stroke="#f093fb"
-                strokeWidth="6"
+                d="M268 180V235"
+                stroke="#c7d2fe"
+                strokeWidth="5"
                 strokeLinecap="round"
               />
-              <circle cx="275" cy="245" r="7" fill="#f093fb" />
-
-              {/* Gradient definitions */}
-              <defs>
-                <linearGradient id="hero-grad-outer" x1="0" y1="0" x2="400" y2="400" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#667eea" />
-                  <stop offset="1" stopColor="#764ba2" />
-                </linearGradient>
-                <linearGradient id="hero-card-grad" x1="50" y1="60" x2="350" y2="340" gradientUnits="userSpaceOnUse">
-                  <stop stopColor="#667eea" />
-                  <stop offset="1" stopColor="#764ba2" />
-                </linearGradient>
-              </defs>
+              <circle cx="268" cy="240" r="6" fill="#c7d2fe" />
             </svg>
 
-            {/* Floating feature chip 1 */}
+            {/* Feature chip 1 */}
             <div className="hero-chip chip-1">
               <span className="chip-icon">🛡️</span>
               <div>
-                <span>100% Verified</span>
-                <span className="chip-sub">Tutor Qualification</span>
+                <span>Verified Credentials</span>
+                <span className="chip-sub">Background Checked</span>
               </div>
             </div>
 
-            {/* Floating feature chip 2 */}
+            {/* Feature chip 2 */}
             <div className="hero-chip chip-2">
               <span className="chip-icon">⚡</span>
               <div>
-                <span>AI Smart Match</span>
-                <span className="chip-sub">Fast & Accurate</span>
+                <span>Smart AI Matching</span>
+                <span className="chip-sub">Schedule & Budget</span>
               </div>
             </div>
 

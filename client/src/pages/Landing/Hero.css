@@ -1,8 +1,9 @@
 /* Hero.css — Styles for the TutorLink Hero Section */
 
 .hero-section {
-  padding: 60px 0 80px 0;
-  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+  padding: 56px 0 68px 0;
+  background-color: #ffffff;
+  border-bottom: 1px solid #e2e8f0;
   overflow: hidden;
 }
 
@@ -12,7 +13,7 @@
   padding: 0 20px;
   display: flex;
   align-items: center;
-  gap: 50px;
+  gap: 48px;
 }
 
 /* Left Column: Text content + Search bar */
@@ -25,56 +26,49 @@
   display: inline-flex;
   align-items: center;
   gap: 6px;
-  background-color: #eef2ff;
+  background-color: #f5f3ff;
   color: #4f46e5;
-  font-size: 13px;
+  font-size: 12.5px;
   font-weight: 600;
-  padding: 6px 14px;
-  border-radius: 20px;
-  margin-bottom: 20px;
+  padding: 5px 12px;
+  border-radius: 16px;
+  margin-bottom: 16px;
   border: 1px solid #c7d2fe;
 }
 
 /* Hero Main Title */
 .hero-title {
-  font-size: 44px;
+  font-size: 38px;
   font-weight: 800;
-  line-height: 1.2;
+  line-height: 1.25;
   color: #0f172a;
+  letter-spacing: -0.5px;
   margin-bottom: 16px;
-}
-
-.gradient-text {
-  background: linear-gradient(90deg, #667eea, #764ba2);
-  -webkit-background-clip: text;
-  -webkit-text-fill-color: transparent;
-  background-clip: text;
 }
 
 /* Hero Subtext */
 .hero-subtext {
-  font-size: 17px;
+  font-size: 16px;
   color: #64748b;
   line-height: 1.6;
-  margin-bottom: 32px;
-  max-width: 540px;
+  margin-bottom: 28px;
+  max-width: 520px;
 }
 
 /* Hero Search Form */
 .hero-search-form {
   display: flex;
-  gap: 10px;
+  gap: 8px;
   background-color: #ffffff;
-  padding: 8px;
-  border-radius: 14px;
-  border: 2px solid #e2e8f0;
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.1);
-  max-width: 520px;
-  transition: border-color 0.2s;
+  padding: 6px;
+  border-radius: 10px;
+  border: 1px solid #cbd5e1;
+  max-width: 500px;
+  transition: border-color 0.15s ease;
 }
 
 .hero-search-form:focus-within {
-  border-color: #667eea;
+  border-color: #4f46e5;
 }
 
 .hero-search-input {
@@ -82,8 +76,8 @@
   border: none;
   outline: none;
   padding: 10px 14px;
-  font-size: 15px;
-  color: #1e293b;
+  font-size: 14.5px;
+  color: #0f172a;
   background: transparent;
 }
 
@@ -92,21 +86,20 @@
 }
 
 .hero-search-button {
-  background: linear-gradient(90deg, #667eea, #764ba2);
+  background-color: #4f46e5;
   color: #ffffff;
   border: none;
-  font-size: 15px;
+  font-size: 14px;
   font-weight: 600;
-  padding: 12px 24px;
-  border-radius: 10px;
+  padding: 10px 20px;
+  border-radius: 8px;
   cursor: pointer;
   white-space: nowrap;
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: background-color 0.15s ease;
 }
 
 .hero-search-button:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 4px 14px rgba(102, 126, 234, 0.4);
+  background-color: #4338ca;
 }
 
 /* Right Column: Illustration Graphic */
@@ -119,8 +112,8 @@
 .hero-illustration-wrapper {
   position: relative;
   width: 100%;
-  max-width: 400px;
-  height: 380px;
+  max-width: 380px;
+  height: 360px;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -130,39 +123,35 @@
 .hero-svg-bg {
   width: 100%;
   height: 100%;
-  filter: drop-shadow(0 15px 30px rgba(102, 126, 234, 0.2));
 }
 
-/* Floating feature pill chips */
+/* Feature pill chips */
 .hero-chip {
   position: absolute;
   background: #ffffff;
-  padding: 10px 16px;
-  border-radius: 14px;
-  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+  padding: 8px 14px;
+  border-radius: 10px;
   border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
-  gap: 10px;
-  font-size: 13px;
+  gap: 8px;
+  font-size: 12.5px;
   font-weight: 700;
-  color: #1e293b;
-  animation: float-chip 4s ease-in-out infinite alternate;
+  color: #0f172a;
 }
 
 .chip-1 {
-  top: 30px;
-  left: -20px;
+  top: 24px;
+  left: -12px;
 }
 
 .chip-2 {
-  bottom: 40px;
-  right: -15px;
-  animation-delay: 2s;
+  bottom: 28px;
+  right: -8px;
 }
 
 .chip-icon {
-  font-size: 18px;
+  font-size: 16px;
 }
 
 .chip-sub {
@@ -170,11 +159,6 @@
   font-weight: 500;
   color: #64748b;
   display: block;
-}
-
-@keyframes float-chip {
-  0% { transform: translateY(0px); }
-  100% { transform: translateY(-8px); }
 }
 
 /* Mobile responsive layout */
@@ -203,7 +187,7 @@
 
 @media (max-width: 600px) {
   .hero-title {
-    font-size: 32px;
+    font-size: 30px;
   }
   .hero-search-form {
     flex-direction: column;

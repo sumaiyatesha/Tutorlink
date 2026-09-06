@@ -148,7 +148,7 @@ function GuardianPosts() {
                   <button
                     type="button"
                     style={{
-                      background: 'linear-gradient(135deg, #4f46e5 0%, #7c3aed 100%)',
+                      background: '#4f46e5',
                       color: '#ffffff',
                       border: 'none',
                       padding: '8px 14px',
@@ -214,7 +214,7 @@ function GuardianPosts() {
                 display: 'flex',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                background: 'linear-gradient(135deg, #f5f3ff 0%, #ede9fe 100%)',
+                background: '#f8fafc',
               }}>
                 <div>
                   <h3 style={{ margin: 0, color: '#1e1b4b', fontSize: '18px', display: 'flex', alignItems: 'center', gap: '8px' }}>

@@ -100,6 +100,9 @@ function Navbar() {
         <Link to="/posts" className="site-nav-link">
           Browse Posts
         </Link>
+        <Link to="/how-it-works" className="site-nav-link">
+          How It Works
+        </Link>
         <Link to="/login" className="site-nav-link">
           Login
         </Link>

@@ -55,7 +55,7 @@ class Subscription(models.Model):
         related_name='subscriptions'
     )
     payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, default='bkash')
-    transaction_id = models.CharField(max_length=100, blank=True, default='')
+    transaction_id = models.CharField(max_length=100, unique=True, null=True, blank=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='active')
     started_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)

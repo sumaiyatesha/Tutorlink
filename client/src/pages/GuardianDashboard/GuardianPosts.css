@@ -34,26 +34,24 @@
 
 .btn-create-post-header {
   padding: 12px 20px;
-  border-radius: 10px;
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border-radius: 8px;
+  background-color: #4f46e5;
   color: #ffffff;
-  font-weight: 700;
+  font-weight: 600;
   font-size: 14px;
   text-decoration: none;
-  box-shadow: 0 4px 12px rgba(102, 126, 234, 0.3);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: background-color 0.2s ease;
 }
 
 .btn-create-post-header:hover {
-  transform: translateY(-1px);
-  box-shadow: 0 6px 18px rgba(102, 126, 234, 0.4);
+  background-color: #4338ca;
 }
 
 .posts-error-banner {
   background-color: #fef2f2;
   color: #ef4444;
   padding: 12px 16px;
-  border-radius: 10px;
+  border-radius: 8px;
   margin-bottom: 20px;
   font-weight: 600;
 }
@@ -66,16 +64,14 @@
 
 .guardian-post-card {
   background-color: #ffffff;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 24px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition: border-color 0.2s ease;
 }
 
 .guardian-post-card:hover {
-  transform: translateY(-2px);
-  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border-color: #cbd5e1;
 }
 
 .guardian-post-card-top {
@@ -101,10 +97,10 @@
 .post-salary-tag {
   font-size: 20px;
   font-weight: 800;
-  color: #667eea;
-  background-color: #f0f3ff;
+  color: #4f46e5;
+  background-color: #eef2ff;
   padding: 8px 16px;
-  border-radius: 10px;
+  border-radius: 8px;
 }
 
 .post-meta-details {

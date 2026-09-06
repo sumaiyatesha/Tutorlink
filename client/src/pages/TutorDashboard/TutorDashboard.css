@@ -23,14 +23,13 @@
 }
 
 .tutor-greeting-card {
-  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  background-color: #4f46e5;
   color: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 32px 36px;
   display: flex;
   justify-content: space-between;
   align-items: center;
-  box-shadow: 0 10px 25px rgba(102, 126, 234, 0.25);
   position: relative;
   overflow: hidden;
 }
@@ -55,10 +54,9 @@
 
 .member-since-card {
   background-color: #ffffff;
-  border-radius: 20px;
+  border-radius: 16px;
   padding: 28px;
   border: 1px solid #e2e8f0;
-  box-shadow: 0 4px 16px rgba(0, 0, 0, 0.03);
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -68,14 +66,13 @@
   font-size: 12px;
   font-weight: 600;
   color: #64748b;
-  text-transform: uppercase;
   letter-spacing: 0.5px;
 }
 
 .member-since-card h3 {
   font-size: 20px;
   font-weight: 800;
-  color: #667eea;
+  color: #4f46e5;
   margin: 6px 0 0 0;
 }
 
@@ -95,13 +92,12 @@
 
 .status-mini-card {
   background-color: #ffffff;
-  border-radius: 14px;
+  border-radius: 12px;
   padding: 18px 24px;
   border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
   gap: 16px;
-  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.02);
 }
 
 .status-mini-icon {

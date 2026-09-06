@@ -28,10 +28,10 @@ function Footer() {
         <div className="footer-col-links">
           <h4 className="footer-col-title">Useful Links</h4>
           <ul className="footer-links-list">
-            <li><Link to="/about">About Us</Link></li>
-            <li><Link to="/privacy">Privacy Policy</Link></li>
-            <li><Link to="/terms">Terms of Use</Link></li>
-            <li><Link to="/faq">FAQ</Link></li>
+            <li><Link to="/tutors">Browse Tutors</Link></li>
+            <li><Link to="/posts">Browse Tuition Posts</Link></li>
+            <li><Link to="/how-it-works">How It Works</Link></li>
+            <li><Link to="/subscription">Subscription Plans</Link></li>
           </ul>
         </div>
 

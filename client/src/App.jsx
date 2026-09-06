@@ -24,6 +24,7 @@ import GuardianFavorites from './pages/GuardianDashboard/GuardianFavorites.jsx'
 import BrowseTutors from './pages/TutorBrowse/BrowseTutors.jsx'
 import TutorDetail from './pages/TutorBrowse/TutorDetail.jsx'
 import AdminAnalytics from './pages/Admin/AdminAnalytics.jsx'
+import HowItWorksPage from './pages/HowItWorks/HowItWorksPage.jsx'
 
 import MyApplications from './pages/TutorDashboard/MyApplications.jsx'
 import SubscriptionPage from './pages/Subscription/SubscriptionPage.jsx'
@@ -37,6 +38,7 @@ function App() {
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
+        <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/tutors" element={<BrowseTutors />} />
         <Route path="/tutors/:id" element={<TutorDetail />} />
 
