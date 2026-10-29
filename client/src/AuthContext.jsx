@@ -1,27 +1,18 @@
-// AuthContext.jsx — Manages authentication state across the whole app.
-//
-// React Context lets us share data (like the logged-in user) with any
-// component without passing it down through every level of props.
-//
-// This file creates:
-//   1. An AuthContext that holds the user data and auth functions
-//   2. An AuthProvider component that wraps the app and provides the context
-//   3. A useAuth() hook that any component can call to access the context
-//   4. An 'api' axios instance that automatically attaches the JWT token
+// client/src/AuthContext.jsx
+// Manages global user authentication state, JWT tokens, and API requests across React.
 
 import { createContext, useContext, useState, useEffect } from 'react'
 import axios from 'axios'
 
-// --- Axios instance ---
-// This is a pre-configured version of axios that always sends requests
-// to our Django backend at http://localhost:8000.
-// We also set up an "interceptor" that automatically adds the JWT token
-// to every request's Authorization header.
+// -------------------------------------------------------------
+// 1. Pre-Configured Axios Instance
+// -------------------------------------------------------------
+// Automatically attaches JWT Bearer token to all requests sent to Django backend.
 const api = axios.create({
   baseURL: 'http://localhost:8000',
 })
 
-// Request interceptor — reads access token from localStorage
+// Request Interceptor: Automatically injects JWT Bearer token from localStorage
 api.interceptors.request.use((config) => {
   const token = localStorage.getItem('access_token')
   if (token) {
@@ -30,11 +21,13 @@ api.interceptors.request.use((config) => {
   return config
 })
 
-// Response interceptor — automatically refreshes access token if expired (401)
+// Response Interceptor: If a request fails with 401 (token expired), auto-refreshes token
 api.interceptors.response.use(
   (response) => response,
   async (error) => {
     const originalRequest = error.config
+    
+    // Check if error is 401 Unauthorized and request hasn't been retried yet
     if (
       error.response &&
       error.response.status === 401 &&
@@ -43,14 +36,18 @@ api.interceptors.response.use(
     ) {
       originalRequest._retry = true
       try {
+        // Request a new access token using the refresh token
         const res = await axios.post('http://localhost:8000/api/auth/refresh/', {
           refresh: localStorage.getItem('refresh_token'),
         })
         const newAccessToken = res.data.access
         localStorage.setItem('access_token', newAccessToken)
+        
+        // Update header and retry the original failed request
         originalRequest.headers.Authorization = `Bearer ${newAccessToken}`
         return api(originalRequest)
       } catch (refreshErr) {
+        // If refresh fails, clear tokens so user logs in again
         localStorage.removeItem('access_token')
         localStorage.removeItem('refresh_token')
       }
@@ -59,75 +56,60 @@ api.interceptors.response.use(
   }
 )
 
-// --- Create the Context ---
-// createContext() creates a "container" that can hold shared data.
-// We pass null as the default value (it gets replaced by AuthProvider).
+// -------------------------------------------------------------
+// 2. Auth Context Creation
+// -------------------------------------------------------------
 const AuthContext = createContext(null)
 
-// --- AuthProvider component ---
-// This wraps the entire app (in main.jsx) so every component can
-// access the auth state.
+// -------------------------------------------------------------
+// 3. Auth Provider Component
+// -------------------------------------------------------------
 function AuthProvider({ children }) {
-  // 'user' holds the logged-in user's info (id, username, email, role).
-  // It starts as null (not logged in).
+  // 'user' stores user profile { id, username, email, role } or null if logged out
   const [user, setUser] = useState(null)
-
-  // 'loading' is true while we check if the user is already logged in.
-  // This prevents the app from briefly showing the login page on refresh.
+  
+  // 'loading' is true while checking existing login token on page refresh
   const [loading, setLoading] = useState(true)
 
-  // useEffect runs once when the app first loads.
-  // It checks if there's a saved token in localStorage and, if so,
-  // fetches the user's info from the backend.
+  // On initial page load: check if saved token exists and validate with backend
   useEffect(() => {
     const token = localStorage.getItem('access_token')
     if (token) {
-      // We have a saved token — try to fetch the user's info.
       api.get('/api/auth/me/')
         .then((response) => {
-          // Success: save the user data in state.
           setUser(response.data)
         })
         .catch((err) => {
-          // Only clear tokens if backend explicitly returns 401/403 (expired/invalid token).
-          // Do not clear tokens on temporary network errors.
           if (err.response && (err.response.status === 401 || err.response.status === 403)) {
             localStorage.removeItem('access_token')
             localStorage.removeItem('refresh_token')
           }
         })
         .finally(() => {
-          // Whether it worked or not, we're done loading.
           setLoading(false)
         })
     } else {
-      // No saved token — user is not logged in.
       setLoading(false)
     }
-  }, []) // Empty array = only run once, when the component first mounts.
+  }, [])
 
-  // login() is called after a successful login API call.
-  // It saves the tokens to localStorage and fetches the user info.
+  // Login handler: stores tokens and retrieves user profile
   async function login(accessToken, refreshToken) {
-    // Save tokens so they survive page refreshes.
     localStorage.setItem('access_token', accessToken)
     localStorage.setItem('refresh_token', refreshToken)
 
-    // Fetch the user's info (username, role, etc.) from /api/auth/me/.
     const response = await api.get('/api/auth/me/')
     setUser(response.data)
-    return response.data // Return user data so caller can read user.role
+    return response.data
   }
 
-  // logout() clears everything and sends the user back to the login page.
+  // Logout handler: clears stored tokens and resets user state
   function logout() {
     localStorage.removeItem('access_token')
     localStorage.removeItem('refresh_token')
     setUser(null)
   }
 
-  // The 'value' object contains everything we want to share.
-  // Any component that calls useAuth() will get access to these.
   return (
     <AuthContext.Provider value={{ user, loading, login, logout, api }}>
       {children}
@@ -135,11 +117,9 @@ function AuthProvider({ children }) {
   )
 }
 
-// --- useAuth hook ---
-// A shortcut so components can write useAuth() instead of useContext(AuthContext).
+// Custom hook to access authentication context in any component
 function useAuth() {
   return useContext(AuthContext)
 }
 
-// Export everything other files need.
 export { AuthProvider, useAuth, api }

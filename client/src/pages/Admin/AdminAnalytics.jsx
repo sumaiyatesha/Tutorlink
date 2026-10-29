@@ -11,7 +11,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   Legend,
   ResponsiveContainer,
 } from 'recharts'
@@ -124,7 +123,6 @@ function AdminAnalytics() {
                   <CartesianGrid strokeDasharray="3 3" vertical={false} />
                   <XAxis dataKey="week_label" />
                   <YAxis allowDecimals={false} />
-                  <Tooltip formatter={(value) => [`${value} Signups`, 'New Users']} />
                   <Bar dataKey="count" fill="#4f46e5" radius={[6, 6, 0, 0]} />
                 </BarChart>
               </ResponsiveContainer>
@@ -150,7 +148,6 @@ function AdminAnalytics() {
                       <Cell key={`cell-${index}`} fill={POST_STATUS_COLORS[index % POST_STATUS_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>
@@ -176,7 +173,6 @@ function AdminAnalytics() {
                       <Cell key={`cell-${index}`} fill={APP_STATUS_COLORS[index % APP_STATUS_COLORS.length]} />
                     ))}
                   </Pie>
-                  <Tooltip />
                   <Legend />
                 </PieChart>
               </ResponsiveContainer>

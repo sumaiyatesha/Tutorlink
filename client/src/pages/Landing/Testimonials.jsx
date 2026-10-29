@@ -9,6 +9,7 @@ import './Testimonials.css'
 
 function Testimonials() {
   // TODO: Placeholder content, replace with real testimonials API/data in future
+  // To change this: update user stories and quotes in testimonials array below
   const testimonials = [
     {
       id: 1,

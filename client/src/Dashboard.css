@@ -1,6 +1,33 @@
-/* Dashboard.css — Styles for TutorLink role-based dashboard pages.
-   Uses the same purple color palette (#667eea, #764ba2, #f8fafc) as Login and Landing. */
+/* ==========================================================================
+   Dashboard.css — TutorLink Shared Role-Based Dashboard Styles
+   ==========================================================================
+   Shared stylesheet used across user dashboards:
+     - GuardianDashboard.jsx  (Guardian actions, posted jobs, matching tutors)
+     - TutorDashboard.jsx     (Tutor progress, applications, profile status)
+     - DashboardNav.jsx       (Top sticky navigation bar & user role badges)
+     - AdminDashboard.jsx     (Shared layout wrapper, nav, and card grid)
 
+   Note: Admin-specific styles (metric cards, console banner, role-admin)
+   have moved to client/src/AdminDashboard.css.
+
+   Table of Contents:
+   --------------------------------------------------------------------------
+   1. GLOBAL PAGE WRAPPER
+   2. TOP NAVIGATION BAR (DashboardNav.jsx)
+   3. USER PROFILE & ROLE BADGES (.role-guardian, .role-tutor)
+   4. MAIN DASHBOARD LAYOUT & WELCOME BANNER
+   5. STANDARD DASHBOARD CARDS & 3-COLUMN GRID
+   6. CARD ACTION BUTTONS & FOOTERS
+   7. PROFILE COMPLETION PROGRESS BAR
+   8. RESPONSIVE BREAKPOINTS (Mobile & Tablet)
+   9. DASHBOARD FOOTER
+   ========================================================================== */
+
+
+/* ==========================================================================
+   1. GLOBAL PAGE WRAPPER
+   Base page container applied to all dashboard pages.
+   ========================================================================== */
 .dashboard-page-wrapper {
   min-height: 100vh;
   background-color: #f8fafc;
@@ -8,7 +35,11 @@
   color: #1e293b;
 }
 
-/* --- Top Navigation Bar --- */
+
+/* ==========================================================================
+   2. TOP NAVIGATION BAR
+   Sticky header bar component (DashboardNav.jsx) visible across all dashboards.
+   ========================================================================== */
 .dashboard-nav {
   background-color: #ffffff;
   border-bottom: 1px solid #e2e8f0;
@@ -49,7 +80,11 @@
   color: #334155;
 }
 
-/* Role badge pills */
+
+/* ==========================================================================
+   3. USER PROFILE & ROLE BADGES
+   Color-coded pill badges indicating role (Guardian, Tutor) in the nav.
+   ========================================================================== */
 .user-role-badge {
   font-size: 12px;
   font-weight: 700;
@@ -58,21 +93,19 @@
   text-transform: capitalize;
 }
 
+/* Purple pill for Guardians */
 .role-guardian {
   background-color: #eef2ff;
   color: #4f46e5;
 }
 
+/* Green pill for Tutors */
 .role-tutor {
   background-color: #f0fdf4;
   color: #16a34a;
 }
 
-.role-admin {
-  background-color: #fef2f2;
-  color: #dc2626;
-}
-
+/* Logout button in the header */
 .dashboard-logout-btn {
   background-color: #f1f5f9;
   color: #475569;
@@ -90,18 +123,23 @@
   color: #0f172a;
 }
 
-/* --- Main Dashboard Container --- */
+
+/* ==========================================================================
+   4. MAIN DASHBOARD LAYOUT & WELCOME BANNER
+   Top greeting header and content wrapper for the dashboard body.
+   ========================================================================== */
 .dashboard-container {
   max-width: 1140px;
   margin: 0 auto;
   padding: 36px 20px 60px 20px;
 }
 
-/* Welcome Banner */
+/* Welcome section wrapper */
 .dashboard-welcome {
   margin-bottom: 32px;
 }
 
+/* Role-specific tags above the greeting */
 .welcome-tag {
   display: inline-block;
   background-color: #eef2ff;
@@ -118,11 +156,6 @@
   color: #16a34a;
 }
 
-.admin-tag {
-  background-color: #fef2f2;
-  color: #dc2626;
-}
-
 .dashboard-welcome h1 {
   font-size: 32px;
   font-weight: 800;
@@ -136,7 +169,12 @@
   margin: 0;
 }
 
-/* Grid layout for dashboard cards */
+
+/* ==========================================================================
+   5. STANDARD DASHBOARD CARDS & 3-COLUMN GRID
+   Used for action panels in GuardianDashboard and TutorDashboard.
+   ========================================================================== */
+/* Multi-column grid container for cards */
 .dashboard-grid {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
@@ -144,7 +182,7 @@
   margin-bottom: 36px;
 }
 
-/* --- Dashboard Cards --- */
+/* Base card styling */
 .dash-card {
   background-color: #ffffff;
   border-radius: 12px;
@@ -202,7 +240,11 @@
   border-top: 1px solid #f1f5f9;
 }
 
-/* Action Buttons inside cards */
+
+/* ==========================================================================
+   6. CARD ACTION BUTTONS & FOOTERS
+   Interactive buttons inside dashboard cards.
+   ========================================================================== */
 .dash-action-btn {
   width: 100%;
   padding: 10px 16px;
@@ -240,7 +282,11 @@
   font-weight: 500;
 }
 
-/* --- Profile Progress Bar --- */
+
+/* ==========================================================================
+   7. PROFILE COMPLETION PROGRESS BAR
+   Used on Tutor and Guardian dashboards to show % profile filled out.
+   ========================================================================== */
 .profile-progress-box {
   margin-bottom: 12px;
 }
@@ -265,123 +311,22 @@
   border-radius: 4px;
 }
 
-/* --- Metric Cards (Admin) --- */
-.metric-card {
-  text-align: center;
-  padding: 28px 20px;
-}
 
-.metric-header {
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-  margin-bottom: 12px;
-}
-
-.metric-icon {
-  font-size: 20px;
-}
-
-.metric-title {
-  font-size: 14px;
-  font-weight: 700;
-  color: #475569;
-}
-
-.metric-value {
-  font-size: 42px;
-  font-weight: 800;
-  color: #4f46e5;
-  margin-bottom: 6px;
-}
-
-.metric-value.badge-warning {
-  color: #eab308;
-}
-
-.metric-value.badge-success {
-  color: #22c55e;
-}
-
-.metric-subtext {
-  font-size: 13px;
-  color: #64748b;
-  margin: 0;
-}
-
-/* --- Django Admin Console Banner --- */
-.admin-console-box {
-  background-color: #ffffff;
-  border-radius: 12px;
-  border: 1px solid #e2e8f0;
-  padding: 28px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.admin-console-info {
-  display: flex;
-  align-items: flex-start;
-  gap: 16px;
-  max-width: 650px;
-}
-
-.console-icon {
-  font-size: 32px;
-}
-
-.admin-console-info h3 {
-  font-size: 18px;
-  font-weight: 700;
-  color: #0f172a;
-  margin: 0 0 6px 0;
-}
-
-.admin-console-info p {
-  font-size: 14px;
-  color: #64748b;
-  line-height: 1.5;
-  margin: 0;
-}
-
-.admin-link-btn {
-  display: inline-block;
-  background-color: #4f46e5;
-  color: #ffffff;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 600;
-  padding: 12px 20px;
-  border-radius: 8px;
-  white-space: nowrap;
-  transition: background-color 0.2s ease;
-}
-
-.admin-link-btn:hover {
-  background-color: #4338ca;
-}
-
-/* --- Responsive Adjustments --- */
+/* ==========================================================================
+   8. RESPONSIVE BREAKPOINTS (Mobile & Tablet)
+   Adapts dashboard grid for smaller screens.
+   ========================================================================== */
 @media (max-width: 900px) {
+  /* Collapse 3-column card grid to a single column on tablet/mobile */
   .dashboard-grid {
     grid-template-columns: 1fr;
   }
-
-  .admin-console-box {
-    flex-direction: column;
-    text-align: center;
-    gap: 20px;
-  }
-
-  .admin-console-info {
-    flex-direction: column;
-    align-items: center;
-  }
 }
 
-/* Dashboard footer copyright note */
+
+/* ==========================================================================
+   9. DASHBOARD FOOTER
+   ========================================================================== */
 .dashboard-footer-note {
   margin-top: 40px;
   text-align: center;

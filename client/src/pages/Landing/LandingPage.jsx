@@ -12,7 +12,7 @@
 // 7. Testimonials — User reviews from guardians and tutors.
 // 8. Footer — Useful links, contact info, copyright.
 
-import Navbar from './Navbar'
+import Navbar from '../../components/Navbar'
 import Hero from './Hero'
 import StatsBar from './StatsBar'
 import BecomeTutorCTA from './BecomeTutorCTA'

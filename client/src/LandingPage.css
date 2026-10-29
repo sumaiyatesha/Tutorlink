@@ -11,7 +11,7 @@
 
 /* --- Top Utility Bar --- */
 .utility-bar {
-  background-color: #4f46e5;
+  background-color: #e54696;
   color: #e0e7ff;
   font-size: 13px;
   font-weight: 500;
@@ -499,7 +499,8 @@
 
 @media (max-width: 600px) {
   .nav-links {
-    display: none; /* Hide middle links on small screens */
+    display: none;
+    /* Hide middle links on small screens */
   }
 
   .hero-title {

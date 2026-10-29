@@ -1,7 +1,12 @@
-# ai/models.py — AI Interaction Logging Model for TutorLink.
-#
-# Logs every Gemini API call (Post Generator, Tutor Recommendation, CV Skill Extraction,
-# and upcoming AI Matching Chatbot) for auditing, analytics, and user context.
+"""
+TutorLink - AI Audit Models (server/ai/models.py)
+
+Tracks and audits every call made to Google's Gemini AI API:
+- Post Generator (generates tuition job titles & descriptions for guardians)
+- Tutor Recommendation (ranks best matching tutors for a tuition post)
+- CV Skill Extraction (extracts skills, universities, and experience from PDFs)
+- Chatbot Interaction (conversational matching assistant)
+"""
 
 from django.db import models
 from django.conf import settings
@@ -9,13 +14,12 @@ from django.conf import settings
 
 class AIInteraction(models.Model):
     """
-    Tracks and audits every AI interaction powered by Google Gemini API.
-    
-    Types:
-    - 'post_generator': Tuition post requirement text generation for guardians.
-    - 'tutor_recommendation': Contextual tutor ranking and match explanation for a tuition post.
-    - 'cv_skill_extraction': PDF CV parsing and skill extraction for tutors.
-    - 'chatbot': Conversational tutor matching assistant (Phase G).
+    Stores an audit log of each AI interaction:
+    - user: The user who made the request
+    - type: The category of AI feature used
+    - input_text: The prompt / input data sent to Gemini
+    - output_text: The generated AI response
+    - created_at: Timestamp of when the call was made
     """
     INTERACTION_TYPES = (
         ('post_generator', 'Post Generator'),

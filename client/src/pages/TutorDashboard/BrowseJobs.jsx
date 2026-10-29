@@ -5,6 +5,9 @@
 // 2. Results count and search input.
 // 3. Collapsible location filter with Bangladeshi district checkboxes.
 // 4. JobCard grid rendering available tuition posts.
+// 5. cardsOnly mode: reused by the Testing Page route to show just the job cards.
+//
+// To change this: pass cardsOnly / title / subtitle props from the route in App.jsx.
 
 import { useState, useEffect } from 'react'
 import { useLocation } from 'react-router-dom'
@@ -16,6 +19,7 @@ import JobCard from '../../components/Dashboard/JobCard'
 import './BrowseJobs.css'
 
 // Default mock jobs fallback if backend database has no posts created yet
+// To change this: update sample fallback postings in SAMPLE_TUITION_POSTS below
 const SAMPLE_TUITION_POSTS = [
   {
     id: 1,
@@ -71,7 +75,11 @@ const SAMPLE_TUITION_POSTS = [
   },
 ]
 
-function BrowseJobs() {
+function BrowseJobs({
+  cardsOnly = false,
+  title = 'Browse Tuition Jobs',
+  subtitle = 'Explore active tuition posts from guardians across Bangladesh and apply directly.',
+}) {
   const { user } = useAuth()
   const location = useLocation()
 
@@ -173,11 +181,13 @@ function BrowseJobs() {
       >
         {/* Page Header */}
         <div className="browse-jobs-header">
-          <h1>Browse Tuition Jobs</h1>
-          <p>Explore active tuition posts from guardians across Bangladesh and apply directly.</p>
+          <h1>{title}</h1>
+          <p>{subtitle}</p>
         </div>
 
         {/* Filter Panel (Search + District Checkboxes + Distance Sort) */}
+        {/* Hidden in cardsOnly mode so only the job cards render */}
+        {!cardsOnly && (
         <JobFilterPanel
           totalCount={displayedPosts.length}
           searchQuery={searchQuery}
@@ -187,6 +197,7 @@ function BrowseJobs() {
           sortByDistance={sortByDistance}
           onToggleSortDistance={() => setSortByDistance((prev) => !prev)}
         />
+        )}
 
         {/* Jobs Grid */}
         <div className="jobs-grid-container">

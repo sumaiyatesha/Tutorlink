@@ -6,7 +6,7 @@
   border-bottom: 1px solid #e2e8f0;
   overflow: hidden;
 }
-
+  
 .hero-container {
   max-width: 1140px;
   margin: 0 auto;
@@ -17,8 +17,22 @@
 }
 
 /* Left Column: Text content + Search bar */
+/* ============================================================
+   INACTIVE — LEFT/RIGHT SWAP OPTION:
+   To visually swap .hero-left and .hero-right without touching
+   Hero.jsx, uncomment these two lines below (and the matching
+   pair inside .hero-right further down this file):
+
+     order: 2;
+
+   Since .hero-container uses display:flex, a flex child's
+   `order` value controls its visual position — lower numbers
+   render further left, higher numbers render further right —
+   regardless of the order they appear in Hero.jsx.
+   ============================================================ */
 .hero-left {
   flex: 1.1;
+   order: 2; 
 }
 
 /* Pill badge at top of Hero */
@@ -27,7 +41,7 @@
   align-items: center;
   gap: 6px;
   background-color: #f5f3ff;
-  color: #4f46e5;
+  color: #0d0d0e;
   font-size: 12.5px;
   font-weight: 600;
   padding: 5px 12px;
@@ -103,10 +117,18 @@
 }
 
 /* Right Column: Illustration Graphic */
+/* ============================================================
+   INACTIVE — LEFT/RIGHT SWAP OPTION (pair with .hero-left above):
+   Uncomment the line below to move this column to the left side
+   instead of the right.
+
+     order: 1;
+   ============================================================ */
 .hero-right {
   flex: 0.9;
   display: flex;
   justify-content: center;
+   order: 1; 
 }
 
 .hero-illustration-wrapper {
@@ -124,6 +146,18 @@
   width: 100%;
   height: 100%;
 }
+
+/* <img> tag is active.
+   ============================================================ */
+
+.hero-photo {
+  width: 100%;
+  max-width: 380px;
+  height: auto;
+  border-radius: 16px;
+  object-fit: cover;
+}
+
 
 /* Feature pill chips */
 .hero-chip {

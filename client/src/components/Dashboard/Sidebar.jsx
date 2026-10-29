@@ -31,6 +31,7 @@ function Sidebar({ role = 'tutor' }) {
   }
 
   // Navigation config for Tutor role
+  // To change this: add or reorder items in tutorLinks or guardianLinks arrays below
   const tutorLinks = [
     { label: 'Dashboard', path: '/dashboard/tutor', icon: '📊' },
     { label: 'AI Match Assistant', path: '/ai-matching', icon: '🤖' },
@@ -38,6 +39,9 @@ function Sidebar({ role = 'tutor' }) {
     { label: 'My Profile', path: '/profile', icon: '👤' },
     { label: 'My Applications', path: '/tutor/applications', icon: '📝' },
     { label: 'Subscription Plan', path: '/subscription', icon: '⭐' },
+    //{ label: '', path: '/tutor/', icon: '' },
+    
+ // { label: '', path: '/tutor/', icon: '', disabled: false,  },
   ]
 
   // Navigation config for Guardian role
@@ -47,8 +51,8 @@ function Sidebar({ role = 'tutor' }) {
     { label: 'My Tuition Posts', path: '/guardian/posts', icon: '📋' },
     { label: 'Post a Tuition', path: '/guardian/post-tuition', icon: '➕' },
     { label: 'Applicants', path: '/guardian/applicants', icon: '👥' },
-    { label: 'Favorites', path: '/guardian/favorites', icon: '⭐' },
     { label: 'Subscription Plan', path: '/subscription', icon: '👑' },
+   // { label: '', path: '/gurdianpost/', icon: 'l' },
   ]
 
   const links = role === 'tutor' ? tutorLinks : guardianLinks
@@ -77,6 +81,18 @@ function Sidebar({ role = 'tutor' }) {
       <nav className="dash-sidebar-nav">
         {links.map((link) => {
           const isActive = location.pathname === link.path
+
+          // Disabled links render as plain rows so they cannot be navigated to
+          if (link.disabled) {
+            return (
+              <span key={link.path} className="dash-nav-item disabled" aria-disabled="true">
+                <span className="dash-nav-icon">{link.icon}</span>
+                <span>{link.label}</span>
+                {link.stub && <span className="dash-badge-stub">{link.stub}</span>}
+              </span>
+            )
+          }
+
           return (
             <Link
               key={link.path}

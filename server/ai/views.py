@@ -3,7 +3,7 @@
 # Contains 3 core AI features:
 # 1. AI Tuition Post Generator (POST /api/ai/generate-post/)
 # 2. AI Tutor Recommendation (POST /api/ai/recommend-tutors/<post_id>/)
-# 3. AI CV Skill Extraction (POST /api/ai/extract-cv-skills/)
+# 3. Conversational AI Matching Assistant (POST /api/ai/chat-match/)
 #
 # PROMPT ENGINEERING DOCUMENTATION FOR VIVA DEFENSE:
 # --------------------------------------------------
@@ -29,18 +29,48 @@ logger = logging.getLogger(__name__)
 # Initialize Gemini API configuration
 GEMINI_API_KEY = config('GEMINI_API_KEY', default=os.getenv('GEMINI_API_KEY', ''))
 
+def generate_smart_tuition_content(subject, category, course, location, days_per_week, salary, bullets, preferred_time=''):
+    """
+    Fast, high-quality contextual generator for Bangladeshi tuition posts.
+    Generates engaging titles and structured 3-4 sentence requirements instantly (<1ms).
+    Used as an immediate fallback if Google Gemini API experiences latency or rate-limits.
+    """
+    subj = subject.strip() if subject else 'Academic Subjects'
+    cat = category.strip() if category else 'Class 9-10 (SSC)'
+    curric = course.strip() if course else 'National Curriculum'
+    loc = location.strip() if location else 'Dhaka'
+    days = days_per_week if days_per_week else '3'
+    remun = f"{salary} BDT/month" if salary else "Negotiable"
+    timing = preferred_time.strip() if preferred_time else "convenient evening slots"
+
+    title = f"{cat} {subj} Tutor Needed in {loc}"
+
+    sentences = [
+        f"We are looking for a dedicated and qualified private tutor for a {cat} student following the {curric}.",
+        f"The primary focus will be on building strong conceptual clarity, homework support, and exam preparation in {subj}.",
+        f"Classes will be held {days} days per week during {timing} with an offered remuneration of {remun}.",
+    ]
+    if bullets and bullets.strip():
+        sentences.append(f"Guardian notes: {bullets.strip()}")
+    else:
+        sentences.append("The tutor should be punctual, patient, and committed to academic excellence.")
+
+    description = " ".join(sentences)
+    return title, description
+
+
 def get_gemini_model():
     """
     Initializes and returns a Google Gemini GenerativeModel instance.
-    Uses 'gemini-3.6-flash' (or fallback 'gemini-flash-latest') for fast latency and cost efficiency.
+    Uses REST transport to prevent Windows gRPC socket hangs and latency spikes.
     """
     import google.generativeai as genai
     if not GEMINI_API_KEY:
         raise ValueError("GEMINI_API_KEY is not configured in .env")
-    genai.configure(api_key=GEMINI_API_KEY)
+    genai.configure(api_key=GEMINI_API_KEY, transport='rest')
     
-    # Cascade model selection
-    for model_name in ['gemini-3.6-flash', 'gemini-3.7-flash', 'gemini-flash-latest']:
+    # Priority order for fast response models
+    for model_name in ['gemini-3.5-flash-lite', 'gemma-4-26b-a4b-it', 'gemini-3.6-flash', 'gemini-flash-latest']:
         try:
             return genai.GenerativeModel(model_name)
         except Exception:
@@ -65,6 +95,7 @@ class GeneratePostView(APIView):
     - Tone: Polite, clear, Bangladeshi academic context (e.g. SSC/HSC/English Medium).
     - Length: Exactly 3-4 concise sentences for readability.
     - Format: JSON object containing 'title' and 'description'.
+    - Fast Execution: 3.5s timeout prevents UI hang, falling back to smart generator immediately.
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -83,6 +114,7 @@ class GeneratePostView(APIView):
         location = request.data.get('location', '').strip()
         salary = request.data.get('salary', '')
         days_per_week = request.data.get('days_per_week', '')
+        preferred_time = request.data.get('preferred_time', '')
         bullets = request.data.get('bullets', '').strip()
 
         if not subject and not bullets:
@@ -102,6 +134,7 @@ Given these bullet points and parameters:
 - Location: {location or 'Dhaka'}
 - Days Per Week: {days_per_week or '3 Days/Week'}
 - Monthly Remuneration (BDT): {salary or 'Negotiable'}
+- Preferred Timing: {preferred_time or 'Evening'}
 - Additional Notes: {bullets or 'Looking for a punctual, experienced and caring tutor.'}
 
 INSTRUCTIONS:
@@ -120,7 +153,11 @@ INSTRUCTIONS:
 
         try:
             model = get_gemini_model()
-            response = model.generate_content(prompt)
+            # Fast timeout of 3.5 seconds so user is never stuck waiting
+            response = model.generate_content(
+                prompt,
+                request_options={'timeout': 3.5}
+            )
             raw_output = response.text.strip() if response and response.text else ""
 
             # Clean JSON formatting if wrapped in ```json
@@ -131,20 +168,26 @@ INSTRUCTIONS:
                     cleaned_json = cleaned_json[4:].strip()
 
             parsed = json.loads(cleaned_json)
-            generated_title = parsed.get("title", f"{subject} Tutor Needed in {location}")
-            generated_description = parsed.get("description", raw_output)
+            generated_title = parsed.get("title", "").strip()
+            generated_description = parsed.get("description", "").strip()
+
+            if not generated_title or not generated_description:
+                raise ValueError("Empty fields received from AI model")
 
         except Exception as e:
-            logger.warning(f"Gemini Post Generator exception: {e}")
-            # Graceful fallback template so user is never blocked
-            generated_title = f"{subject or 'Experienced'} Tutor Needed in {location or 'Dhaka'}"
-            generated_description = (
-                f"Looking for a dedicated and experienced tutor for {category or 'academic studies'} "
-                f"covering {subject or 'all core subjects'}. "
-                f"Classes will be held {days_per_week or '3'} days per week in {location or 'our home'}. "
-                f"Interested tutors with relevant subject mastery and background are encouraged to apply."
+            logger.info(f"Gemini Post Generator quick fallback: {e}")
+            # Instant, high-quality contextual fallback so user is never blocked or delayed
+            generated_title, generated_description = generate_smart_tuition_content(
+                subject=subject,
+                category=category,
+                course=course,
+                location=location,
+                days_per_week=days_per_week,
+                salary=salary,
+                bullets=bullets,
+                preferred_time=preferred_time
             )
-            raw_output = f"Fallback generated due to API notice: {str(e)}"
+            raw_output = f"Smart-generated template (fallback due to: {str(e)})"
 
         # Log AI Interaction for audit
         AIInteraction.objects.create(
@@ -247,7 +290,7 @@ INSTRUCTIONS:
         ranked_results = []
         try:
             model = get_gemini_model()
-            response = model.generate_content(prompt)
+            response = model.generate_content(prompt, request_options={'timeout': 5.0})
             raw_text = response.text.strip() if response and response.text else ""
 
             cleaned_json = raw_text
@@ -312,117 +355,7 @@ INSTRUCTIONS:
 
 
 # ============================================================================
-# 3. AI CV SKILL EXTRACTION
-# ============================================================================
-class ExtractCVSkillsView(APIView):
-    """
-    POST /api/ai/extract-cv-skills/
-    Permissions: IsAuthenticated (Tutor)
-
-    Reads the tutor's uploaded PDF CV document, extracts raw text using pypdf,
-    and asks Gemini to extract academic subjects and tutoring skills.
-    Does NOT auto-save to database; returns the suggested list for tutor confirmation.
-    """
-    permission_classes = [permissions.IsAuthenticated]
-
-    def post(self, request):
-        user = request.user
-        try:
-            tutor_profile = TutorProfile.objects.get(user=user)
-        except TutorProfile.DoesNotExist:
-            return Response(
-                {'error': 'Tutor profile not found. Please create a tutor profile first.'},
-                status=status.HTTP_404_NOT_FOUND
-            )
-
-        if not tutor_profile.cv:
-            return Response(
-                {'error': 'No CV document found. Please upload a PDF CV on your Profile page first.'},
-                status=status.HTTP_400_BAD_REQUEST
-            )
-
-        # Extract text from PDF using pypdf
-        cv_text = ""
-        try:
-            import pypdf
-            cv_path = tutor_profile.cv.path
-            if os.path.exists(cv_path):
-                reader = pypdf.PdfReader(cv_path)
-                for page in reader.pages[:5]:  # Process up to first 5 pages
-                    page_text = page.extract_text()
-                    if page_text:
-                        cv_text += page_text + "\n"
-        except Exception as e:
-            logger.warning(f"Error reading PDF with pypdf: {e}")
-
-        # If PDF extraction was empty or failed, use bio and existing text as fallback context
-        if not cv_text.strip():
-            cv_text = f"Tutor Username: {user.username}. Bio: {tutor_profile.bio}. Subjects: {tutor_profile.subjects}"
-
-        prompt = f"""You are an AI Academic Skill Extractor for TutorLink.
-Analyze the following text extracted from a tutor's CV/Resume and extract a clean list of academic teaching subjects and specialized skills (e.g. Physics, Higher Math, Calculus, ICT, Organic Chemistry, English Literature, Spoken English, Python, Java).
-
-CV TEXT CONTENT:
-{cv_text[:3000]}
-
-INSTRUCTIONS:
-1. Extract distinct, standardized subject names and tutoring competencies.
-2. Filter out non-academic jargon, soft skills, or irrelevant filler words.
-3. Return ONLY a valid JSON object in the following format (no markdown code blocks, no other text):
-{{
-  "skills": ["Subject 1", "Subject 2", "Subject 3"]
-}}
-"""
-
-        extracted_skills = []
-        try:
-            model = get_gemini_model()
-            response = model.generate_content(prompt)
-            raw_text = response.text.strip() if response and response.text else ""
-
-            cleaned_json = raw_text
-            if cleaned_json.startswith("```"):
-                cleaned_json = cleaned_json.strip("`")
-                if cleaned_json.startswith("json"):
-                    cleaned_json = cleaned_json[4:].strip()
-
-            parsed = json.loads(cleaned_json)
-            extracted_skills = parsed.get("skills", [])
-            if not isinstance(extracted_skills, list):
-                extracted_skills = []
-
-        except Exception as e:
-            logger.warning(f"Gemini CV Skill Extraction exception: {e}")
-            # Fallback basic keyword extraction
-            fallback_keywords = ["Physics", "Mathematics", "Higher Math", "Chemistry", "Biology", "English", "ICT", "General Science"]
-            extracted_skills = [kw for kw in fallback_keywords if kw.lower() in cv_text.lower()]
-            if not extracted_skills:
-                extracted_skills = ["Physics", "Mathematics", "English", "ICT"]
-
-        # Deduplicate and sort
-        unique_skills = []
-        for s in extracted_skills:
-            if isinstance(s, str) and s.strip() and s.strip() not in unique_skills:
-                unique_skills.append(s.strip())
-
-        # Log AI Interaction
-        AIInteraction.objects.create(
-            user=user,
-            type='cv_skill_extraction',
-            input_text=f"CV File: {tutor_profile.cv_name or 'tutor_cv.pdf'}, Text length: {len(cv_text)} chars",
-            output_text=json.dumps({"skills": unique_skills})
-        )
-
-        return Response({
-            'cv_name': tutor_profile.cv_name or 'Uploaded CV',
-            'skills': unique_skills,
-            'count': len(unique_skills),
-            'message': 'Skills extracted successfully. Please review and confirm before saving.'
-        }, status=status.HTTP_200_OK)
-
-
-# ============================================================================
-# 4. AI MATCHING ASSISTANT (CHATBOT WITH SUBSCRIPTION ACCESS GATING)
+# 3. AI MATCHING ASSISTANT (CHATBOT WITH SUBSCRIPTION ACCESS GATING)
 # ============================================================================
 class ChatMatchView(APIView):
     """
@@ -487,7 +420,7 @@ Return ONLY a valid JSON object in this exact schema (no code block wrappers, no
         extracted = {}
         try:
             model = get_gemini_model()
-            ext_response = model.generate_content(extract_prompt)
+            ext_response = model.generate_content(extract_prompt, request_options={'timeout': 5.0})
             raw_ext = ext_response.text.strip() if ext_response and ext_response.text else ""
 
             cleaned_ext = raw_ext
@@ -579,6 +512,7 @@ Return ONLY a valid JSON object in this exact schema (no code block wrappers, no
                 ),
                 reverse=True
             )
+            # To change this: adjust number of top matched tutors returned (currently 5)
             top_candidates = scored_candidates[:5]
 
             # Ask Gemini for match reasons
@@ -596,7 +530,7 @@ Return ONLY a valid JSON array:
 ]
 """
                 try:
-                    r_res = model.generate_content(reason_prompt)
+                    r_res = model.generate_content(reason_prompt, request_options={'timeout': 5.0})
                     raw_r = r_res.text.strip() if r_res and r_res.text else ""
                     if raw_r.startswith("```"):
                         raw_r = raw_r.strip("`")

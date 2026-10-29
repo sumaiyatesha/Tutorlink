@@ -1,16 +1,19 @@
 /* BrowseTutors.css */
 
+/* Full-page wrapper, sets the light gray background behind everything */
 .browse-tutors-page {
   min-height: 100vh;
   background-color: #f8fafc;
 }
 
+/* Centers content and caps max width so it doesn't stretch too wide on large screens */
 .browse-tutors-container {
   max-width: 1140px;
   margin: 0 auto;
   padding: 40px 20px;
 }
 
+/* Header block: title + subtitle + search bar, centered above the tutor grid */
 .browse-tutors-header {
   text-align: center;
   margin-bottom: 36px;
@@ -29,6 +32,7 @@
   margin-bottom: 24px;
 }
 
+/* Wraps the search input and constrains its width so it doesn't span the full page */
 .search-bar-box {
   max-width: 600px;
   margin: 0 auto;
@@ -44,16 +48,21 @@
   transition: border-color 0.2s ease;
 }
 
+/* Highlights the input border in purple when the user clicks/tabs into it */
 .tutor-search-input:focus {
   border-color: #4f46e5;
 }
 
+/* --- Tutor cards grid ---
+   Simple fixed 3-column layout: always exactly 3 equal-width columns.
+   To change the number of cards per row, just change the "3" below. */
 .tutors-grid {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(340px, 1fr));
+  grid-template-columns: repeat(4, 1fr);
   gap: 24px;
 }
 
+/* Individual tutor card container */
 .tutor-card {
   background-color: #ffffff;
   border-radius: 12px;
@@ -65,10 +74,12 @@
   transition: border-color 0.2s ease;
 }
 
+/* Subtle border darkening on hover, just for visual feedback */
 .tutor-card:hover {
   border-color: #cbd5e1;
 }
 
+/* Top row of the card: avatar circle + name/location */
 .tutor-card-header {
   display: flex;
   align-items: center;
@@ -77,6 +88,7 @@
   position: relative;
 }
 
+/* Circular avatar showing the tutor's first initial (or fallback emoji from the JSX) */
 .tutor-avatar {
   width: 50px;
   height: 50px;
@@ -102,6 +114,7 @@
   text-decoration: none;
 }
 
+/* Name turns purple on hover to signal it's a clickable link */
 .tutor-name-link:hover {
   color: #4f46e5;
 }
@@ -112,6 +125,8 @@
   margin-top: 2px;
 }
 
+/* Favorite (heart) button — currently unused in the JSX you showed me,
+   but styled here in case it's rendered elsewhere or added later */
 .btn-fav-heart {
   background: transparent;
   border: none;
@@ -121,10 +136,12 @@
   transition: transform 0.15s ease;
 }
 
+/* Heart icon grows slightly on hover for a "pop" effect */
 .btn-fav-heart:hover {
   transform: scale(1.2);
 }
 
+/* Middle section of the card: subjects, bio, rating row */
 .tutor-card-body {
   margin-bottom: 20px;
 }
@@ -136,6 +153,8 @@
   margin-bottom: 8px;
 }
 
+/* Bio text is clamped to 2 lines max, with overflow hidden,
+   so long bios don't break the card's height consistency */
 .tutor-bio {
   font-size: 13px;
   color: #64748b;
@@ -147,6 +166,7 @@
   overflow: hidden;
 }
 
+/* Row holding the rating badge + CV/Priority badges from the JSX */
 .tutor-rating-row {
   display: flex;
   align-items: center;
@@ -155,6 +175,7 @@
   margin-top: 10px;
 }
 
+/* Yellow "star rating" pill, shown only when the tutor has reviews */
 .rating-badge {
   font-size: 13px;
   font-weight: 700;
@@ -164,12 +185,14 @@
   border-radius: 8px;
 }
 
+/* Plain gray text shown instead of the rating badge for tutors with no reviews yet */
 .no-rating-label {
   font-size: 12px;
   color: #64748b;
   font-weight: 500;
 }
 
+/* Bottom strip of the card, separated by a thin top border, holds the "View Profile" link */
 .tutor-card-footer {
   border-top: 1px solid #f1f5f9;
   padding-top: 16px;
@@ -183,6 +206,7 @@
   text-decoration: none;
 }
 
+/* Underline appears on hover to reinforce it's a link */
 .btn-view-profile:hover {
   text-decoration: underline;
 }

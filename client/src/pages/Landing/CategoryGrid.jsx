@@ -8,13 +8,14 @@ import Badge from '../../components/Badge'
 import './CategoryGrid.css'
 
 function CategoryGrid() {
+  // To change this: add or modify subject categories shown on the landing page
   const categories = [
-    { id: 'math', name: 'Mathematics', icon: '📐', count: '140+ Posts' },
-    { id: 'english', name: 'English', icon: '📚', count: '95+ Posts' },
-    { id: 'physics', name: 'Physics', icon: '⚡', count: '80+ Posts' },
-    { id: 'programming', name: 'Programming', icon: '💻', count: '110+ Posts' },
-    { id: 'music', name: 'Music & Arts', icon: '🎵', count: '45+ Posts' },
-    { id: 'testprep', name: 'Test Prep', icon: '📝', count: '75+ Posts' },
+    { id: 'math', name: 'Mathematics', icon: '📐' },
+    { id: 'english', name: 'English', icon: '📚' },
+    { id: 'physics', name: 'Physics', icon: '⚡' },
+    { id: 'programming', name: 'Programming', icon: '💻' },
+    { id: 'music', name: 'Music & Arts', icon: '🎵' },
+    { id: 'testprep', name: 'Test Prep', icon: '📝'},
   ]
 
   return (

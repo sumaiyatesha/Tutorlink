@@ -30,6 +30,7 @@ function PostTuition({ isEdit = false }) {
   const [preferredTime, setPreferredTime] = useState('5:00 PM')
   const [duration, setDuration] = useState('1.5 Hours')
   const [method, setMethod] = useState('In-Person')
+  // To change this: adjust initial default tuition salary in BDT
   const [salary, setSalary] = useState(8000)
   const [students, setStudents] = useState('1 Student')
   const [preferredDays, setPreferredDays] = useState([])
@@ -42,7 +43,38 @@ function PostTuition({ isEdit = false }) {
   const [submitting, setSubmitting] = useState(false)
   const [error, setError] = useState('')
 
-  // Handle AI Post Generation
+  // Guardian Profile Completeness State
+  const [profile, setProfile] = useState(null)
+  const [profileLoading, setProfileLoading] = useState(true)
+
+  // Profile Verification Checklist
+  const hasPhone = Boolean(profile && profile.phone && profile.phone.trim())
+  const hasNid = Boolean(profile && profile.nid_no && profile.nid_no.trim())
+  const hasLocation = Boolean(profile && profile.location && profile.location.trim())
+  const isProfileComplete = hasPhone && hasNid && hasLocation
+
+  // Fetch Guardian Profile to enforce verification status
+  useEffect(() => {
+    async function checkGuardianProfile() {
+      try {
+        const res = await api.get('/api/guardian/profile/').catch(() => null)
+        if (res && res.data) {
+          setProfile(res.data)
+          // Default post location to profile location if not manually set
+          if (res.data.location && (!location || location === 'Dhaka')) {
+            setLocation(res.data.location)
+          }
+        }
+      } catch (err) {
+        console.error('Error fetching guardian profile:', err)
+      } finally {
+        setProfileLoading(false)
+      }
+    }
+    checkGuardianProfile()
+  }, [])
+
+  // Handle AI Post Generation with 6s timeout and fast feedback
   async function handleAiGenerate() {
     setGeneratingAi(true)
     setError('')
@@ -58,7 +90,7 @@ function PostTuition({ isEdit = false }) {
         salary,
         location: location || 'Dhaka',
         bullets: title || description || 'Looking for an experienced and caring tutor for regular home tuition.',
-      })
+      }, { timeout: 6000 })
 
       if (res && res.data) {
         if (res.data.title) setTitle(res.data.title)
@@ -119,6 +151,13 @@ function PostTuition({ isEdit = false }) {
   async function handleSubmit(e) {
     e.preventDefault()
     setError('')
+
+    // Enforce profile completion rule before allowing tuition posting
+    if (!isProfileComplete && !isEdit) {
+      setError('⚠️ Profile Incomplete: You must provide your Contact Number, NID Number, and Location in your Profile before posting a tuition.')
+      return
+    }
+
     setSubmitting(true)
 
     const payload = {
@@ -189,6 +228,95 @@ function PostTuition({ isEdit = false }) {
 
         <div className="post-tuition-card">
           {error && <div className="post-error-banner">{error}</div>}
+
+          {/* Profile Incomplete Warning Banner */}
+          {!isProfileComplete && !isEdit && !profileLoading && (
+            <div style={{
+              background: 'linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%)',
+              border: '1.5px solid #f59e0b',
+              borderRadius: '12px',
+              padding: '18px 22px',
+              marginBottom: '20px',
+              boxShadow: '0 4px 10px rgba(245, 158, 11, 0.08)'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'flex-start', justifyContent: 'space-between', flexWrap: 'wrap', gap: '16px' }}>
+                <div style={{ flex: 1, minWidth: '260px' }}>
+                  <h3 style={{ margin: '0 0 6px 0', color: '#92400e', fontSize: '16px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <span>🛡️</span> Guardian Profile Incomplete — Verification Required
+                  </h3>
+                  <p style={{ margin: '0 0 10px 0', fontSize: '13px', color: '#78350f', lineHeight: 1.5 }}>
+                    To ensure trust and student safety, guardians must provide their <strong>Contact Number</strong>, <strong>National ID (NID) Number</strong>, and <strong>Location</strong> before they can post a tuition requirement.
+                  </p>
+                  
+                  {/* Status Badges Checklist */}
+                  <div style={{ display: 'flex', flexWrap: 'wrap', gap: '10px', fontSize: '13px', fontWeight: 600 }}>
+                    <span style={{
+                      backgroundColor: hasPhone ? '#dcfce7' : '#fee2e2',
+                      color: hasPhone ? '#166534' : '#991b1b',
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      border: `1px solid ${hasPhone ? '#86efac' : '#fca5a5'}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      {hasPhone ? '✅' : '❌'} Contact No: {hasPhone ? profile.phone : 'Missing'}
+                    </span>
+
+                    <span style={{
+                      backgroundColor: hasNid ? '#dcfce7' : '#fee2e2',
+                      color: hasNid ? '#166534' : '#991b1b',
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      border: `1px solid ${hasNid ? '#86efac' : '#fca5a5'}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      {hasNid ? '✅' : '❌'} NID No: {hasNid ? profile.nid_no : 'Missing'}
+                    </span>
+
+                    <span style={{
+                      backgroundColor: hasLocation ? '#dcfce7' : '#fee2e2',
+                      color: hasLocation ? '#166534' : '#991b1b',
+                      padding: '4px 10px',
+                      borderRadius: '6px',
+                      border: `1px solid ${hasLocation ? '#86efac' : '#fca5a5'}`,
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '4px'
+                    }}>
+                      {hasLocation ? '✅' : '❌'} Location: {hasLocation ? profile.location : 'Missing'}
+                    </span>
+                  </div>
+                </div>
+
+                <button
+                  type="button"
+                  onClick={() => navigate('/profile')}
+                  style={{
+                    background: '#d97706',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '10px 18px',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    fontSize: '13px',
+                    cursor: 'pointer',
+                    boxShadow: '0 2px 6px rgba(217, 119, 6, 0.25)',
+                    transition: 'all 0.2s ease',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px',
+                    alignSelf: 'center'
+                  }}
+                >
+                  <span>✏️</span> Complete Profile
+                </button>
+              </div>
+            </div>
+          )}
+
           {aiSuccess && (
             <div style={{
               backgroundColor: '#ecfdf5',
@@ -434,9 +562,34 @@ function PostTuition({ isEdit = false }) {
               >
                 Cancel
               </button>
-              <button type="submit" className="btn-submit-post" disabled={submitting}>
-                {submitting ? 'Saving...' : isEdit ? 'Update Tuition Post' : 'Create Tuition Post'}
-              </button>
+
+              {!isProfileComplete && !isEdit ? (
+                <button
+                  type="button"
+                  onClick={() => navigate('/profile')}
+                  style={{
+                    backgroundColor: '#d97706',
+                    color: '#ffffff',
+                    border: 'none',
+                    padding: '12px 24px',
+                    borderRadius: '8px',
+                    fontWeight: 700,
+                    fontSize: '14px',
+                    cursor: 'pointer',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px',
+                    boxShadow: '0 4px 6px -1px rgba(217, 119, 6, 0.2)'
+                  }}
+                  title="Please provide Contact No, NID No, and Location in your Profile first"
+                >
+                  🔒 Complete Profile to Post Tuition
+                </button>
+              ) : (
+                <button type="submit" className="btn-submit-post" disabled={submitting}>
+                  {submitting ? 'Saving...' : isEdit ? 'Update Tuition Post' : 'Create Tuition Post'}
+                </button>
+              )}
             </div>
           </form>
         </div>

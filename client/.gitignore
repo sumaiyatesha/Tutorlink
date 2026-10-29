@@ -1,3 +1,32 @@
+# Environment files & Secrets
+.env
+.env.local
+.env.*.local
+.env.production
+.env.*
+*.env
+*.env.*
+!.env.example
+!.env.template
+
+# Keys & Certificates
+*.pem
+*.key
+*.cert
+*.crt
+service-account*.json
+serviceAccount*.json
+credentials.json
+*credentials*.json
+
+# Dependencies & Build Output
+node_modules
+dist
+dist-ssr
+.next
+.vercel
+*.local
+
 # Logs
 logs
 *.log
@@ -7,16 +36,12 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
-*.local
-
-# Editor directories and files
+# OS & Editor files
+.DS_Store
+Thumbs.db
+.idea
 .vscode/*
 !.vscode/extensions.json
-.idea
-.DS_Store
 *.suo
 *.ntvs*
 *.njsproj

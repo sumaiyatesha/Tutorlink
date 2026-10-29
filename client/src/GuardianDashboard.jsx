@@ -3,7 +3,7 @@
 // Shows:
 // 1. Top Navigation Bar (DashboardNav)
 // 2. Welcome Banner for the Guardian
-// 3. Overview cards: My Tuition Posts, My Favorites, Notifications
+// 3. Overview cards: My Tuition Posts, Notifications
 
 import { useAuth } from './AuthContext'
 import DashboardNav from './DashboardNav'
@@ -47,22 +47,6 @@ function GuardianDashboard() {
             </div>
           </div>
 
-          {/* Card 2: My Favorites */}
-          <div className="dash-card">
-            <div className="dash-card-header">
-              <span className="dash-card-icon">⭐</span>
-              <h3>My Favorites</h3>
-            </div>
-            <div className="dash-card-body">
-              <p className="empty-text">No favorite tutors saved yet</p>
-              <p className="placeholder-subtext">
-                Bookmark tutors while browsing to compare profiles and contact them easily.
-              </p>
-            </div>
-            <div className="dash-card-footer">
-              <button className="dash-action-btn secondary">Browse Tutors</button>
-            </div>
-          </div>
 
           {/* Card 3: Notifications */}
           <div className="dash-card">

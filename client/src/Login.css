@@ -87,13 +87,7 @@
   border-color: #4f46e5;
 }
 
-/* Row for the "Forgot password?" link */
-.forgot-password-row {
-  text-align: right;
-  margin-bottom: 8px;
-}
-
-/* Clickable text links (Forgot password, Register) */
+/* Clickable text links (Register) */
 .text-link {
   color: #4f46e5;
   font-size: 13.5px;

@@ -21,9 +21,10 @@ function GuardianDashboard() {
 
   const [posts, setPosts] = useState([])
   const [applicants, setApplicants] = useState([])
+  const [profile, setProfile] = useState(null)
   const [loading, setLoading] = useState(true)
 
-  // Fetch guardian's tuition posts and applicants
+  // Fetch guardian's tuition posts, applicants, and profile completeness
   useEffect(() => {
     async function fetchGuardianData() {
       try {
@@ -32,6 +33,9 @@ function GuardianDashboard() {
 
         const appsRes = await api.get('/api/applications/').catch(() => ({ data: [] }))
         setApplicants(Array.isArray(appsRes.data) ? appsRes.data : [])
+
+        const profRes = await api.get('/api/guardian/profile/').catch(() => null)
+        if (profRes && profRes.data) setProfile(profRes.data)
       } catch (err) {
         console.error('Error fetching guardian data:', err)
       } finally {
@@ -47,22 +51,31 @@ function GuardianDashboard() {
     ? new Date(user.date_joined).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })
     : 'August 2026'
 
+  // Calculate actual Guardian Profile Completeness (Contact No, NID No, Location)
+  let completeCount = 0
+  if (profile) {
+    if (profile.phone && profile.phone.trim()) completeCount++
+    if (profile.nid_no && profile.nid_no.trim()) completeCount++
+    if (profile.location && profile.location.trim()) completeCount++
+  }
+  const guardianCompletenessPercent = profile ? Math.round((completeCount / 3) * 100) : 0
+  const isProfileComplete = guardianCompletenessPercent === 100
+
   // Guardian Metrics
-  const activePostsCount = posts.length > 0 ? posts.length : 2
-  const totalApplicantsCount = applicants.length > 0 ? applicants.length : 5
-  const guardianCompletenessPercent = 85
+  const activePostsCount = posts.length
+  const totalApplicantsCount = applicants.length
 
   // Recharts Data Arrays
   // 1. Applications received per post (Bar Chart)
   const barChartData = posts.length > 0
     ? posts.map((p, idx) => ({
-        name: `Post #${p.id || idx + 1}`,
-        count: applicants.filter((a) => a.post === p.id).length || 2,
-      }))
+      name: `Post #${p.id || idx + 1}`,
+      count: applicants.filter((a) => a.post === p.id).length || 2,
+    }))
     : [
-        { name: 'Physics Post', count: 3 },
-        { name: 'Math Post', count: 2 },
-      ]
+      { name: 'Physics Post', count: 3 },
+      { name: 'Math Post', count: 2 },
+    ]
 
   // 2. Accepted vs Pending applicants (Donut Chart)
   const acceptedApplicants = applicants.filter((a) => a.status === 'accepted').length || 2
@@ -81,7 +94,7 @@ function GuardianDashboard() {
 
       {/* Main Dashboard Content */}
       <main className="guardian-dashboard-main">
-        
+
         {/* Welcome Grid */}
         <div className="guardian-welcome-grid">
           <div className="guardian-greeting-card">
@@ -98,6 +111,48 @@ function GuardianDashboard() {
             <h3>{memberSinceStr}</h3>
           </div>
         </div>
+
+        {/* Profile Incomplete Warning Alert Banner */}
+        {!isProfileComplete && !loading && (
+          <div style={{
+            background: '#fffbeb',
+            border: '1.5px solid #f59e0b',
+            borderRadius: '12px',
+            padding: '16px 20px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '12px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '22px' }}>⚠️</span>
+              <div>
+                <strong style={{ color: '#92400e', fontSize: '14px' }}>
+                  Complete your profile to unlock posting tuitions ({guardianCompletenessPercent}% complete)
+                </strong>
+                <p style={{ margin: '2px 0 0 0', fontSize: '13px', color: '#78350f' }}>
+                  Please provide your Contact Number, NID Number, and Location before creating a tuition post.
+                </p>
+              </div>
+            </div>
+            <a
+              href="/profile"
+              style={{
+                backgroundColor: '#d97706',
+                color: '#ffffff',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '13px',
+                textDecoration: 'none'
+              }}
+            >
+              Complete Profile Now →
+            </a>
+          </div>
+        )}
 
         {/* Top 3 Stat Cards */}
         <div className="guardian-stats-row">
@@ -127,8 +182,8 @@ function GuardianDashboard() {
             title="Profile Status"
             value={`${guardianCompletenessPercent}%`}
             progress={guardianCompletenessPercent}
-            subtitle="Guardian verification status"
-            actionText="View Profile"
+            subtitle={isProfileComplete ? "Contact, NID & Location verified" : "Contact, NID & Location required"}
+            actionText={isProfileComplete ? "View Profile" : "Complete Profile"}
             actionHref="/profile"
           />
         </div>
@@ -139,14 +194,12 @@ function GuardianDashboard() {
           <ApplicationsBarChart
             data={barChartData}
             title="Applications Received Per Tuition Post"
-            vivaNote="Viva Note: Shows real count of tutor applications submitted per tuition post created by guardian"
           />
 
           {/* Donut Chart */}
           <ApplicationsPieChart
             data={pieChartData}
             title="Accepted vs Pending Applicants"
-            vivaNote="Viva Note: Displays ratio of accepted tutors vs pending applications under guardian posts"
           />
         </div>
 

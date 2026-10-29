@@ -1,0 +1,12 @@
+/* letstest.css — styles scoped to the letstest page only */
+
+.letstest-page {
+  padding: 40px;
+}
+
+.letstest-page h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}

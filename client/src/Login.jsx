@@ -60,13 +60,6 @@ function Login() {
     }
   }
 
-  // Runs when the user clicks "Forgot password?"
-  // Later, this will open a password reset page or send a reset email.
-  function handleForgotPassword(event) {
-    event.preventDefault()
-    console.log('Forgot password clicked')
-  }
-
   return (
     <div className="login-page">
       <div className="login-card">
@@ -103,13 +96,6 @@ function Login() {
               placeholder="Enter your password"
               required
             />
-          </div>
-
-          {/* Forgot password link — aligned to the right */}
-          <div className="forgot-password-row">
-            <a href="#" className="text-link" onClick={handleForgotPassword}>
-              Forgot password?
-            </a>
           </div>
 
           {/* Error message — only shown when 'error' is not empty */}

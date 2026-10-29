@@ -89,6 +89,25 @@
   gap: 10px;
 }
 
+.btn-demo {
+  background-color: #6366f1;
+  color: #ffffff;
+  border: none;
+  font-size: 13px;
+  font-weight: 700;
+  padding: 8px 16px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  transition: background-color 0.2s ease;
+}
+
+.btn-demo:hover {
+  background-color: #4f46e5;
+}
+
 .btn-accept {
   background-color: #10b981;
   color: #ffffff;
@@ -98,6 +117,11 @@
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-accept:hover {
+  background-color: #059669;
 }
 
 .btn-reject {
@@ -109,4 +133,39 @@
   padding: 8px 16px;
   border-radius: 8px;
   cursor: pointer;
+  transition: background-color 0.2s ease;
 }
+
+.btn-reject:hover {
+  background-color: #dc2626;
+}
+
+.btn-view-cv {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  background-color: #f1f5f9;
+  border: 1px solid #cbd5e1;
+  border-radius: 6px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #1e293b;
+  text-decoration: none;
+  transition: all 0.2s ease;
+}
+
+.btn-view-cv:hover {
+  background-color: #e2e8f0;
+  color: #0f172a;
+  border-color: #94a3b8;
+}
+
+.no-cv-badge {
+  display: inline-block;
+  font-size: 12px;
+  color: #94a3b8;
+  font-style: italic;
+}
+
+

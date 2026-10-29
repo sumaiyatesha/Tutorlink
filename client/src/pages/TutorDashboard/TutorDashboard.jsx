@@ -16,7 +16,6 @@ import { useAuth, api } from '../../AuthContext'
 import Sidebar from '../../components/Dashboard/Sidebar'
 import DashboardStatCard from '../../components/Dashboard/DashboardStatCard'
 import { ApplicationsBarChart, ApplicationsPieChart } from '../../components/Dashboard/DashboardChart'
-import ChatMatchWidget from '../../components/Dashboard/ChatMatchWidget'
 import './TutorDashboard.css'
 
 function TutorDashboard() {
@@ -68,29 +67,43 @@ function TutorDashboard() {
     : 'August 2026'
 
   // Calculate Profile Completeness %:
-  // Expected fields: bio, subjects, cv, teaching_preferences, location, phone
-  const expectedFields = ['bio', 'subjects', 'cv', 'teaching_preferences', 'location', 'phone']
-  const filledCount = profileData
-    ? expectedFields.filter((f) => Boolean(profileData[f])).length
-    : 4 // Default baseline (username, email, role, password)
-  const completenessPercent = Math.round((filledCount / expectedFields.length) * 100)
+  // Required fields: phone, nid_no, location, cv, and student_id (if student) or certificate (if not student)
+  let tutorCompleteCount = 0
+  const totalRequired = 5
+  if (profileData) {
+    if (profileData.phone && profileData.phone.trim()) tutorCompleteCount++
+    if (profileData.nid_no && profileData.nid_no.trim()) tutorCompleteCount++
+    if (profileData.location && profileData.location.trim()) tutorCompleteCount++
+    if (profileData.cv || profileData.cv_name) tutorCompleteCount++
+    const isStudent = profileData.is_currently_student !== undefined ? profileData.is_currently_student : true
+    if (isStudent) {
+      if (profileData.student_id && profileData.student_id.trim()) tutorCompleteCount++
+    } else {
+      if (profileData.certificate || profileData.certificate_name) tutorCompleteCount++
+    }
+  }
+  const completenessPercent = profileData ? Math.round((tutorCompleteCount / totalRequired) * 100) : 0
+  const isProfileComplete = completenessPercent === 100
 
   // Real Counts from Application model
   const pendingCount = applications.filter((a) => a.status === 'pending').length
+  const demoCount = applications.filter((a) => a.status === 'demo_requested').length
   const acceptedCount = applications.filter((a) => a.status === 'accepted').length
   const rejectedCount = applications.filter((a) => a.status === 'rejected').length
 
   // Recharts Data Arrays
   const barChartData = [
     { name: 'Applied (Pending)', count: pendingCount },
+    { name: 'Demo Offered', count: demoCount },
     { name: 'Accepted', count: acceptedCount },
     { name: 'Rejected', count: rejectedCount },
   ]
 
   const pieChartData = [
     { name: 'Accepted', value: acceptedCount },
-    { name: 'Rejected', value: rejectedCount },
+    { name: 'Demo Offered', value: demoCount },
     { name: 'Pending', value: pendingCount },
+    { name: 'Rejected', value: rejectedCount },
   ]
 
   const firstName = user ? user.first_name || user.username : 'Tutor'
@@ -102,7 +115,7 @@ function TutorDashboard() {
 
       {/* Main Dashboard Workspace */}
       <main className="tutor-dashboard-main">
-        
+
         {/* Header Greeting Row */}
         <div className="tutor-welcome-grid">
           <div className="tutor-greeting-card">
@@ -120,6 +133,91 @@ function TutorDashboard() {
           </div>
         </div>
 
+        {/* Profile Verification Alert Banner */}
+        {!isProfileComplete && !loading && (
+          <div style={{
+            background: '#fffbeb',
+            border: '1.5px solid #f59e0b',
+            borderRadius: '12px',
+            padding: '16px 20px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '12px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+              <span style={{ fontSize: '22px' }}>⚠️</span>
+              <div>
+                <strong style={{ color: '#92400e', fontSize: '14px' }}>
+                  Complete your profile to unlock applying for tuition jobs ({completenessPercent}% complete)
+                </strong>
+                <p style={{ margin: '2px 0 0 0', fontSize: '13px', color: '#78350f' }}>
+                  Please provide your Contact Number, NID Number, Location, CV Document, and Student ID / Certificate.
+                </p>
+              </div>
+            </div>
+            <a
+              href="/profile"
+              style={{
+                backgroundColor: '#d97706',
+                color: '#ffffff',
+                padding: '8px 16px',
+                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '13px',
+                textDecoration: 'none'
+              }}
+            >
+              Complete Profile Now →
+            </a>
+          </div>
+        )}
+
+        {/* Demo Offers Alert Banner */}
+        {demoCount > 0 && (
+          <div style={{
+            background: '#f7f0f5ff',
+            border: '1.5px solid #f65cb6ff',
+            borderRadius: '12px',
+            padding: '16px 20px',
+            marginBottom: '20px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            flexWrap: 'wrap',
+            gap: '12px'
+          }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+              <span style={{ fontSize: '26px' }}>🎓</span>
+              <div>
+                <strong style={{ color: '#5b21b6', fontSize: '15px' }}>
+                  You have {demoCount} Demo Class Offer{demoCount > 1 ? 's' : ''}!
+                </strong>
+                <p style={{ margin: '2px 0 0 0', fontSize: '13px', color: '#6d28d9' }}>
+                  Guardians have invited you for demo classes. Review and coordinate with them to get hired!
+                </p>
+              </div>
+            </div>
+            <a
+              href="/tutor/applications"
+              style={{
+                backgroundColor: '#7c3aed',
+                color: '#ffffff',
+                padding: '8px 18px',
+                borderRadius: '8px',
+                fontWeight: 700,
+                fontSize: '13px',
+                textDecoration: 'none',
+                display: 'inline-block'
+              }}
+            >
+              View Demo Offers →
+            </a>
+          </div>
+        )}
+
         {/* 3 Top Stat Cards */}
         <div className="tutor-stats-row">
           {/* Card 1: Profile Completeness */}
@@ -128,8 +226,8 @@ function TutorDashboard() {
             title="Profile Completeness"
             value={`${completenessPercent}%`}
             progress={completenessPercent}
-            subtitle={`${filledCount} of ${expectedFields.length} profile sections completed`}
-            actionText="Complete Profile"
+            subtitle={isProfileComplete ? "Contact, NID & Academic credentials verified" : `${tutorCompleteCount} of ${totalRequired} verification fields completed`}
+            actionText={isProfileComplete ? "View Profile" : "Complete Profile"}
             actionHref="/profile"
           />
 
@@ -169,6 +267,14 @@ function TutorDashboard() {
           </div>
 
           <div className="status-mini-card">
+            <div className="status-mini-icon status-demo">🎓</div>
+            <div className="status-mini-info">
+              <h4>{demoCount}</h4>
+              <p>Demo Class Offers</p>
+            </div>
+          </div>
+
+          <div className="status-mini-card">
             <div className="status-mini-icon status-accepted">✅</div>
             <div className="status-mini-info">
               <h4>{acceptedCount}</h4>
@@ -191,20 +297,13 @@ function TutorDashboard() {
           <ApplicationsBarChart
             data={barChartData}
             title="Application Status Breakdown"
-            vivaNote="Viva Note: Graph renders real counts from Application model (status=pending, accepted, rejected)"
           />
 
           {/* Donut / Pie Chart */}
           <ApplicationsPieChart
             data={pieChartData}
             title="Accepted vs Rejected Ratio"
-            vivaNote="Viva Note: Graph displays ratio breakdown of tutor job application responses"
           />
-        </div>
-
-        {/* AI Matching Assistant Section */}
-        <div style={{ marginTop: '30px' }}>
-          <ChatMatchWidget />
         </div>
 
       </main>

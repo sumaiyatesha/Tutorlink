@@ -8,6 +8,7 @@
 import { useState } from 'react'
 import './JobFilterPanel.css'
 
+// To change this: add or remove districts from the quick filter options list below
 const BANGLADESH_DISTRICTS = [
   'Dhaka',
   'Chittagong',

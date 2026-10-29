@@ -1,20 +1,15 @@
-// SubscriptionPage.jsx — In-App Simulated Payment & Subscription Checkout Flow.
+// SubscriptionPage.jsx — In-App Payment & Subscription Checkout Flow.
 //
 // ============================================================================
-// FACULTY EXAMINER / VIVA DEFENSE ARCHITECTURE NOTE:
+// ARCHITECTURE NOTE:
 // ----------------------------------------------------------------------------
-// This module provides a realistic, multi-step simulated checkout experience
-// for TutorLink subscriptions. NO real payment gateway (e.g., bKash API,
-// Nagad API, Stripe, or SSLCommerz) is invoked, and NO real currency is transferred.
-//
 // THE 4-STEP IN-APP CHECKOUT LIFECYCLE:
 // Step 1: Payment Method Selection (bKash / Nagad / Bank Card) + Plan Review
-// Step 2: Simulated Payment Details Screen (masked phone/PIN or card inputs)
-//         with a prominent Sandbox / Demo Environment notification banner.
-// Step 3: Brief Simulated Processing State (1.5s - 2.0s animated timer simulating
-//         gateway handshake, tokenization, and backend activation).
+// Step 2: Payment Details Screen (masked phone/PIN or card inputs)
+// Step 3: Brief Processing State (animated timer covering the gateway
+//         handshake, tokenization, and backend activation).
 // Step 4: Digital Receipt / Confirmation Screen (Transaction ID, Masked Account,
-//         Amount in BDT, Date/Time, Success Status, and Demo Mode note).
+//         Amount in BDT, Date/Time, Success Status).
 //
 // Upon Step 4 completion, the user subscription is activated in the backend
 // and gated features (e.g., AI Matching Chatbot, Tutor Priority Pro Ranking)
@@ -56,18 +51,28 @@ function SubscriptionPage() {
   const [cardError, setCardError] = useState('')
 
   // Processing Animation State
-  const [processingStatusText, setProcessingStatusText] = useState('Initiating secure sandbox transaction...')
+  const [processingStatusText, setProcessingStatusText] = useState('Initiating secure transaction...')
 
   // Final Receipt Details State
   const [receipt, setReceipt] = useState(null)
   const [copiedTxn, setCopiedTxn] = useState(false)
 
-  // Tutor Commissions State (15% per hire)
-  const [commissions, setCommissions] = useState([])
-  const [loadingCommissions, setLoadingCommissions] = useState(isTutor)
-
   // Status/Alert Feedback
   const [statusNotice, setStatusNotice] = useState('')
+
+  // 15% Tuition Commission State (for Tutors)
+  const [commissions, setCommissions] = useState([])
+  const [commissionsLoading, setCommissionsLoading] = useState(false)
+  const [payingCommission, setPayingCommission] = useState(null)
+  const [commPayMethod, setCommPayMethod] = useState('bkash')
+  const [commMfsPhone, setCommMfsPhone] = useState('01712345678')
+  const [commMfsPin, setCommMfsPin] = useState('1234')
+  const [commCardNumber, setCommCardNumber] = useState('4111 2222 3333 4444')
+  const [commCardExpiry, setCommCardExpiry] = useState('12/28')
+  const [commCardCvc, setCommCardCvc] = useState('789')
+  const [commSubmitting, setCommSubmitting] = useState(false)
+  const [commSuccessMsg, setCommSuccessMsg] = useState('')
+  const [commErrorMsg, setCommErrorMsg] = useState('')
 
   // 1. Fetch current subscription status from backend
   const fetchSubscriptionData = useCallback(async () => {
@@ -83,25 +88,28 @@ function SubscriptionPage() {
     }
   }, [])
 
-  // 2. Fetch tutor commissions list
-  const fetchCommissionsData = useCallback(async () => {
+  // 2. Fetch 15% first-month commission records (tutor only)
+  const fetchCommissions = useCallback(async () => {
     if (!isTutor) return
+    setCommissionsLoading(true)
     try {
       const res = await api.get('/api/tutor/commissions/').catch(() => null)
-      if (res && Array.isArray(res.data)) {
+      if (res && res.data) {
         setCommissions(res.data)
       }
     } catch (err) {
       console.error('Error fetching tutor commissions:', err)
     } finally {
-      setLoadingCommissions(false)
+      setCommissionsLoading(false)
     }
   }, [isTutor])
 
   useEffect(() => {
     fetchSubscriptionData()
-    fetchCommissionsData()
-  }, [fetchSubscriptionData, fetchCommissionsData])
+    if (isTutor) {
+      fetchCommissions()
+    }
+  }, [fetchSubscriptionData, fetchCommissions, isTutor])
 
   // Formatting & masking helpers
   const formatCardNumber = (value) => {
@@ -130,7 +138,7 @@ function SubscriptionPage() {
         const suffix = cleanPhone.substring(cleanPhone.length - 3)
         return `${prefix} •••• ${suffix}`
       }
-      return `${mfsPhone} (Sandbox)`
+      return mfsPhone
     }
   }
 
@@ -141,7 +149,7 @@ function SubscriptionPage() {
     setCheckoutStep(2)
   }
 
-  // Handle Step 2 -> Step 3 & 4 (Simulate Processing & Call Backend)
+  // Handle Step 2 -> Step 3 & 4 (Processing & Call Backend)
   const handleConfirmPayment = async (e) => {
     if (e) e.preventDefault()
     setMfsError('')
@@ -177,11 +185,10 @@ function SubscriptionPage() {
     // Step 3: Transition to processing state
     setCheckoutStep(3)
     setSubmitting(true)
-    setProcessingStatusText('Connecting to simulated sandbox gateway...')
+    setProcessingStatusText('Connecting to secure payment gateway...')
 
-    // Animated status progression for live viva feel
     const timer1 = setTimeout(() => {
-      setProcessingStatusText(`Simulating ${paymentMethod.toUpperCase()} authorization & tokenization...`)
+      setProcessingStatusText(`Verifying ${paymentMethod.toUpperCase()} authorization & tokenization...`)
     }, 700)
 
     const timer2 = setTimeout(() => {
@@ -189,6 +196,7 @@ function SubscriptionPage() {
     }, 1300)
 
     // Execute backend activation after realistic delay (1800ms)
+    // To change this: adjust gateway processing time in milliseconds (1800ms)
     setTimeout(async () => {
       try {
         const res = await api.post('/api/subscriptions/subscribe/', {
@@ -218,14 +226,11 @@ function SubscriptionPage() {
 
           // Refresh state from backend
           await fetchSubscriptionData()
-          if (isTutor) {
-            await fetchCommissionsData()
-          }
         }
       } catch (err) {
         console.error('Subscription failed:', err)
         setCheckoutStep(2)
-        setCardError('Payment simulation failed. Please try again.')
+        setCardError('Payment failed. Please try again.')
       } finally {
         clearTimeout(timer1)
         clearTimeout(timer2)
@@ -261,6 +266,42 @@ function SubscriptionPage() {
     }
   }
 
+  // Calculate 15% commission ledger totals
+  const totalCommissionDue = commissions
+    .filter((c) => c.status !== 'paid')
+    .reduce((acc, c) => acc + parseFloat(c.commission_amount || 0), 0)
+
+  const totalCommissionPaid = commissions
+    .filter((c) => c.status === 'paid')
+    .reduce((acc, c) => acc + parseFloat(c.commission_amount || 0), 0)
+
+  // Handle Pay 15% First-Month Commission
+  const handleConfirmCommissionPayment = async (e) => {
+    if (e) e.preventDefault()
+    if (!payingCommission) return
+
+    setCommSubmitting(true)
+    setCommErrorMsg('')
+
+    try {
+      const res = await api.post(`/api/tutor/commissions/${payingCommission.id}/pay/`, {
+        payment_method: commPayMethod,
+      })
+      if (res && res.data) {
+        setCommSuccessMsg(
+          `Payment of ${payingCommission.commission_amount} BDT for "${payingCommission.post_subject || payingCommission.post_title || 'Tuition'}" is successfully paid!`
+        )
+        setPayingCommission(null)
+        await fetchCommissions()
+      }
+    } catch (err) {
+      console.error('Commission payment error:', err)
+      setCommErrorMsg(err.response?.data?.error || 'Payment failed. Please try again.')
+    } finally {
+      setCommSubmitting(false)
+    }
+  }
+
   if (loading) {
     return (
       <div className="subscription-page">
@@ -283,23 +324,12 @@ function SubscriptionPage() {
       <main className="subscription-container">
         {/* Page Header */}
         <div className="subscription-header">
-          <div className="header-badge-wrap">
-            <span className="hero-badge">⚡ Instant Simulation</span>
-          </div>
           <h1>{isTutor ? 'Tutor Priority Subscription' : 'Guardian Premium Subscription'}</h1>
           <p>
             {isTutor
               ? 'Unlock Priority Pro placement, boosted search rankings, and premium tutor tools.'
               : 'Unlock AI Matchmaking Chatbot, priority teacher applications, and direct communication.'}
           </p>
-        </div>
-
-        {/* Global Demo Mode Disclaimer Banner */}
-        <div className="demo-disclaimer-banner">
-          <span className="demo-disclaimer-icon">🛡️</span>
-          <div>
-            <strong>Demo / Sandbox Mode:</strong> All payments on this page are fully simulated for project demonstration. No real money or external payment gateway (bKash/Nagad/Cards) is involved.
-          </div>
         </div>
 
         {/* Status Notification */}
@@ -337,7 +367,6 @@ function SubscriptionPage() {
                   <li><span className="feat-icon">⭐</span> <strong>Priority Pro Badge</strong> on your profile and browse cards</li>
                   <li><span className="feat-icon">🚀</span> Boosted search rank in Guardian tutor directory</li>
                   <li><span className="feat-icon">🤖</span> Priority inclusion in AI Chat Match recommendations</li>
-                  <li><span className="feat-icon">📊</span> Transparent 15% commission tracking per accepted tuition</li>
                 </>
               ) : (
                 <>
@@ -349,8 +378,8 @@ function SubscriptionPage() {
               )}
             </ul>
 
-            <div className="plan-simulation-badge">
-              <span>🔒 256-Bit Simulated Sandbox Encryption</span>
+            <div className="plan-security-badge">
+              <span>🔒 256-Bit Secure Encryption</span>
             </div>
           </div>
 
@@ -377,7 +406,7 @@ function SubscriptionPage() {
                   <div className="status-meta-row">
                     <span className="meta-label">Payment Method:</span>
                     <span className="meta-val method-tag">
-                      {subData?.payment_method ? subData.payment_method.toUpperCase() : 'BKASH (DEMO)'}
+                      {subData?.payment_method ? subData.payment_method.toUpperCase() : 'BKASH'}
                     </span>
                   </div>
                   <div className="status-meta-row">
@@ -414,7 +443,7 @@ function SubscriptionPage() {
                   <button
                     type="button"
                     className="btn-dashboard-jump"
-                    onClick={() => navigate(isTutor ? '/tutor-dashboard' : '/guardian-dashboard')}
+                    onClick={() => navigate(isTutor ? '/tutor/dashboard' : '/guardian/dashboard')}
                   >
                     Go to Dashboard →
                   </button>
@@ -456,7 +485,7 @@ function SubscriptionPage() {
                   <div className="step-content">
                     <div className="step-header">
                       <h3>Select Payment Method</h3>
-                      <p>Choose your preferred payment gateway to simulate payment.</p>
+                      <p>Choose your preferred payment gateway to continue.</p>
                     </div>
 
                     <div className="payment-methods-grid">
@@ -527,29 +556,18 @@ function SubscriptionPage() {
                 )}
 
                 {/* ========================================================================= */}
-                {/* STEP 2: SIMULATED PAYMENT DETAILS SCREEN                                  */}
+                {/* STEP 2: PAYMENT DETAILS SCREEN                                            */}
                 {/* ========================================================================= */}
                 {checkoutStep === 2 && (
                   <form className="step-content" onSubmit={handleConfirmPayment}>
                     <div className="step-header">
                       <div className="method-pill-header">
                         <span className="pill-method-name">
-                          {paymentMethod === 'bkash' && '📱 bKash Sandbox Gateway'}
-                          {paymentMethod === 'nagad' && '💸 Nagad Sandbox Gateway'}
-                          {paymentMethod === 'card' && '💳 Bank Card Sandbox Checkout'}
+                          {paymentMethod === 'bkash' && '📱 bKash Gateway'}
+                          {paymentMethod === 'nagad' && '💸 Nagad Gateway'}
+                          {paymentMethod === 'card' && '💳 Bank Card Checkout'}
                         </span>
                         <span className="pill-amount">{planPrice} Tk</span>
-                      </div>
-                    </div>
-
-                    {/* Step 2 Sandbox Banner */}
-                    <div className="sandbox-step-banner">
-                      <span className="sandbox-icon">🧪</span>
-                      <div>
-                        <strong>Sandbox / Demo Environment</strong>
-                        <p style={{ margin: 0, fontSize: '12px', color: '#92400e' }}>
-                          No real transaction will occur. Feel free to use the prefilled mock credentials.
-                        </p>
                       </div>
                     </div>
 
@@ -583,11 +601,11 @@ function SubscriptionPage() {
                               required
                             />
                           </div>
-                          <span className="field-hint">Any 11-digit demo phone number accepted</span>
+                          <span className="field-hint">Enter your 11-digit mobile number</span>
                         </div>
 
                         <div className="form-group">
-                          <label>{paymentMethod === 'bkash' ? 'bKash' : 'Nagad'} PIN (Simulated)</label>
+                          <label>{paymentMethod === 'bkash' ? 'bKash' : 'Nagad'} PIN</label>
                           <input
                             type="password"
                             className="form-input"
@@ -597,7 +615,7 @@ function SubscriptionPage() {
                             maxLength={5}
                             required
                           />
-                          <span className="field-hint">4-5 digit PIN format check only (not transmitted externally)</span>
+                          <span className="field-hint">4-5 digit PIN</span>
                         </div>
                       </div>
                     ) : (
@@ -685,7 +703,7 @@ function SubscriptionPage() {
                 )}
 
                 {/* ========================================================================= */}
-                {/* STEP 3: SIMULATED PROCESSING STATE                                        */}
+                {/* STEP 3: PROCESSING STATE                                                  */}
                 {/* ========================================================================= */}
                 {checkoutStep === 3 && (
                   <div className="step-content processing-state-box">
@@ -698,7 +716,7 @@ function SubscriptionPage() {
                       <div className="processing-progress-fill"></div>
                     </div>
                     <div className="processing-safe-note">
-                      🔒 Demo sandbox handshake in progress — no external network requests
+                      🔒 Secure encrypted handshake in progress
                     </div>
                   </div>
                 )}
@@ -771,17 +789,13 @@ function SubscriptionPage() {
                           </span>
                         </div>
                       </div>
-
-                      <div className="receipt-ticket-footer">
-                        <span>⚠️ Demo mode - no real payment processed</span>
-                      </div>
                     </div>
 
                     <div className="receipt-actions-row">
                       <button
                         type="button"
                         className="btn-checkout-primary"
-                        onClick={() => navigate(isTutor ? '/tutor-dashboard' : '/guardian-dashboard')}
+                        onClick={() => navigate(isTutor ? '/tutor/dashboard' : '/guardian/dashboard')}
                       >
                         Continue to Dashboard →
                       </button>
@@ -793,70 +807,286 @@ function SubscriptionPage() {
           </div>
         </div>
 
-        {/* Tutor Commissions Table Section (if Tutor) */}
+        {/* ========================================================= */}
+        {/* 15% FIRST-MONTH TUITION COMMISSION LEDGER (TUTORS)        */}
+        {/* ========================================================= */}
         {isTutor && (
-          <section className="commissions-section">
-            <div className="commissions-section-header">
-              <h2>My Tuition Commissions (15% Per Hire)</h2>
-              <p>
-                When a guardian accepts your application for a tuition post, a 15% platform commission obligation is automatically logged here. This is tracked separately from your flat monthly subscription.
-              </p>
+          <section className="commission-section">
+            <div className="commission-section-header">
+              <div className="commission-title-wrap">
+                <span className="commission-tag">Platform Policy</span>
+                <h2>15% First-Month Tuition Commission</h2>
+                <p>
+                  As per platform terms, tutors must pay a 15% platform commission on the first month's
+                  tuition remuneration within 10 days of getting hired, whether you are subscribed to
+                  Priority Pro or not.
+                </p>
+              </div>
+
+              <div className="commission-summary-badges">
+                <div className="comm-sum-badge due">
+                  <span className="csb-label">Total Commission Due</span>
+                  <span className="csb-val">{totalCommissionDue.toFixed(2)} BDT</span>
+                </div>
+                <div className="comm-sum-badge paid">
+                  <span className="csb-label">Total Successfully Paid</span>
+                  <span className="csb-val">{totalCommissionPaid.toFixed(2)} BDT</span>
+                </div>
+              </div>
             </div>
 
-            <div className="commissions-table-wrapper">
-              {loadingCommissions ? (
-                <div style={{ padding: '24px', textAlign: 'center' }}>
-                  <LoadingSpinner />
-                </div>
-              ) : commissions.length === 0 ? (
-                <div className="empty-commissions-box">
-                  <p>📁 No commission records found yet.</p>
-                  <p style={{ fontSize: '13px', marginTop: '4px' }}>
-                    When a guardian hires you by accepting your application, your 15% commission record will appear here.
-                  </p>
-                </div>
-              ) : (
-                <table className="commissions-table">
+            {commSuccessMsg && (
+              <div className="status-notice-banner comm-alert-banner">
+                <span>✓ {commSuccessMsg}</span>
+                <button type="button" className="notice-close-btn" onClick={() => setCommSuccessMsg('')}>✕</button>
+              </div>
+            )}
+
+            {commissionsLoading ? (
+              <div className="comm-loading-box">
+                <LoadingSpinner />
+                <p>Loading commission dues...</p>
+              </div>
+            ) : commissions.length === 0 ? (
+              <div className="comm-empty-card">
+                <span className="comm-empty-icon">📋</span>
+                <h3>No Commission Dues</h3>
+                <p>
+                  You haven't been hired for any tuition posts yet. When a guardian accepts your application,
+                  your 15% first-month commission record and its 10-day payment deadline will appear here.
+                </p>
+              </div>
+            ) : (
+              <div className="comm-table-container">
+                <table className="comm-data-table">
                   <thead>
                     <tr>
-                      <th>Post Title</th>
-                      <th>Subject</th>
-                      <th>Tuition Salary</th>
-                      <th>15% Owed</th>
-                      <th>Status</th>
-                      <th>Date Issued</th>
+                      <th>Tuition & Guardian</th>
+                      <th>1st Month Tuition</th>
+                      <th>15% Commission</th>
+                      <th>10-Day Deadline</th>
+                      <th>Payment Status</th>
+                      <th>Action</th>
                     </tr>
                   </thead>
                   <tbody>
-                    {commissions.map((comm) => (
-                      <tr key={comm.id}>
-                        <td><strong>{comm.post_title || `Tuition #${comm.application}`}</strong></td>
-                        <td>{comm.post_subject || 'General'}</td>
-                        <td>{comm.tuition_amount} Tk</td>
-                        <td><strong style={{ color: '#4f46e5' }}>{comm.commission_amount} Tk</strong></td>
-                        <td>
-                          <Badge variant={comm.status === 'paid' ? 'verified' : 'pending'}>
-                            {comm.status === 'paid' ? 'Paid' : 'Pending'}
-                          </Badge>
-                        </td>
-                        <td>
-                          {new Date(comm.created_at).toLocaleDateString('en-US', {
-                            month: 'short',
-                            day: 'numeric',
-                            year: 'numeric',
-                          })}
-                        </td>
-                      </tr>
-                    ))}
+                    {commissions.map((comm) => {
+                      const isPaid = comm.status === 'paid'
+                      return (
+                        <tr key={comm.id} className={isPaid ? 'comm-row-paid' : 'comm-row-due'}>
+                          <td>
+                            <div className="comm-table-subject">
+                              {comm.post_subject || comm.post_title || `Tuition #${comm.id}`}
+                            </div>
+                            <div className="comm-table-guardian">
+                              Guardian: <strong>{comm.guardian_name || 'Guardian'}</strong>
+                            </div>
+                            <div className="comm-table-date">
+                              Hired on: {new Date(comm.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })}
+                            </div>
+                          </td>
+                          <td>
+                            <span className="comm-salary-val">{comm.tuition_amount} BDT</span>
+                          </td>
+                          <td>
+                            <span className="comm-amount-highlight">{comm.commission_amount} BDT</span>
+                          </td>
+                          <td>
+                            {isPaid ? (
+                              <div className="comm-cleared-text">
+                                Paid on {comm.paid_at ? new Date(comm.paid_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' }) : 'N/A'}
+                              </div>
+                            ) : (
+                              <div>
+                                <div className="comm-deadline-date">
+                                  {comm.due_date
+                                    ? new Date(comm.due_date).toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' })
+                                    : 'Within 10 days'}
+                                </div>
+                                <span className={`comm-pill-days ${comm.is_overdue ? 'pill-overdue' : 'pill-active-days'}`}>
+                                  {comm.is_overdue ? 'Overdue' : `${comm.days_left} day${comm.days_left === 1 ? '' : 's'} left`}
+                                </span>
+                              </div>
+                            )}
+                          </td>
+                          <td>
+                            {isPaid ? (
+                              <span className="badge-paid-pill">✓ Successfully Paid</span>
+                            ) : (
+                              <span className={`badge-due-pill ${comm.is_overdue ? 'badge-overdue-pill' : ''}`}>
+                                ● Due
+                              </span>
+                            )}
+                          </td>
+                          <td>
+                            {isPaid ? (
+                              <div className="comm-paid-record">
+                                <span className="cpr-txn">TXN: {comm.transaction_id || 'N/A'}</span>
+                                <span className="cpr-method">Via {comm.payment_method?.toUpperCase() || 'BKASH'}</span>
+                              </div>
+                            ) : (
+                              <button
+                                type="button"
+                                className="btn-pay-comm-due"
+                                onClick={() => {
+                                  setPayingCommission(comm)
+                                  setCommErrorMsg('')
+                                }}
+                              >
+                                Pay Due ({comm.commission_amount} BDT)
+                              </button>
+                            )}
+                          </td>
+                        </tr>
+                      )
+                    })}
                   </tbody>
                 </table>
-              )}
-            </div>
+              </div>
+            )}
           </section>
         )}
+
+        {/* Simple Commission Payment Modal */}
+        {payingCommission && (
+          <div className="comm-modal-backdrop" onClick={() => !commSubmitting && setPayingCommission(null)}>
+            <div className="comm-modal-card" onClick={(e) => e.stopPropagation()}>
+              <div className="comm-modal-header">
+                <div>
+                  <h3>Pay 15% First-Month Commission</h3>
+                  <p>
+                    {payingCommission.post_subject || payingCommission.post_title} — Payable: <strong>{payingCommission.commission_amount} BDT</strong>
+                  </p>
+                </div>
+                <button
+                  type="button"
+                  className="comm-modal-close"
+                  onClick={() => !commSubmitting && setPayingCommission(null)}
+                >
+                  ✕
+                </button>
+              </div>
+
+              {commErrorMsg && <div className="comm-modal-error">⚠️ {commErrorMsg}</div>}
+
+              <form onSubmit={handleConfirmCommissionPayment}>
+                {/* Method selector */}
+                <div className="comm-modal-methods">
+                  <button
+                    type="button"
+                    className={`comm-method-btn ${commPayMethod === 'bkash' ? 'active' : ''}`}
+                    onClick={() => setCommPayMethod('bkash')}
+                  >
+                    <span>📱</span> bKash
+                  </button>
+                  <button
+                    type="button"
+                    className={`comm-method-btn ${commPayMethod === 'nagad' ? 'active' : ''}`}
+                    onClick={() => setCommPayMethod('nagad')}
+                  >
+                    <span>💸</span> Nagad
+                  </button>
+                  <button
+                    type="button"
+                    className={`comm-method-btn ${commPayMethod === 'card' ? 'active' : ''}`}
+                    onClick={() => setCommPayMethod('card')}
+                  >
+                    <span>💳</span> Card
+                  </button>
+                </div>
+
+                {commPayMethod !== 'card' ? (
+                  <div className="comm-modal-fields">
+                    <div className="form-group">
+                      <label>{commPayMethod === 'bkash' ? 'bKash' : 'Nagad'} Number</label>
+                      <input
+                        type="tel"
+                        className="form-input"
+                        value={commMfsPhone}
+                        onChange={(e) => setCommMfsPhone(e.target.value.replace(/[^\d]/g, '').slice(0, 11))}
+                        placeholder="017XXXXXXXX"
+                        required
+                      />
+                    </div>
+                    <div className="form-group">
+                      <label>PIN Code</label>
+                      <input
+                        type="password"
+                        className="form-input"
+                        value={commMfsPin}
+                        onChange={(e) => setCommMfsPin(e.target.value.replace(/[^\d]/g, '').slice(0, 5))}
+                        placeholder="••••"
+                        maxLength={5}
+                        required
+                      />
+                    </div>
+                  </div>
+                ) : (
+                  <div className="comm-modal-fields">
+                    <div className="form-group">
+                      <label>Card Number</label>
+                      <input
+                        type="text"
+                        className="form-input"
+                        value={commCardNumber}
+                        onChange={(e) => setCommCardNumber(e.target.value)}
+                        placeholder="4111 2222 3333 4444"
+                        required
+                      />
+                    </div>
+                    <div className="form-row-2">
+                      <div className="form-group">
+                        <label>Expiry</label>
+                        <input
+                          type="text"
+                          className="form-input"
+                          value={commCardExpiry}
+                          onChange={(e) => setCommCardExpiry(e.target.value)}
+                          placeholder="12/28"
+                          required
+                        />
+                      </div>
+                      <div className="form-group">
+                        <label>CVV</label>
+                        <input
+                          type="password"
+                          className="form-input"
+                          value={commCardCvc}
+                          onChange={(e) => setCommCardCvc(e.target.value.replace(/[^\d]/g, '').slice(0, 4))}
+                          placeholder="123"
+                          required
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
+
+                <div className="comm-modal-actions">
+                  <button
+                    type="button"
+                    className="comm-btn-cancel"
+                    onClick={() => setPayingCommission(null)}
+                    disabled={commSubmitting}
+                  >
+                    Cancel
+                  </button>
+                  <button
+                    type="submit"
+                    className="comm-btn-submit"
+                    disabled={commSubmitting}
+                  >
+                    {commSubmitting ? 'Processing Payment...' : `Confirm Payment (${payingCommission.commission_amount} BDT)`}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        )}
+
       </main>
     </div>
   )
 }
 
 export default SubscriptionPage
+

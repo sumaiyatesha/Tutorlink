@@ -18,7 +18,9 @@ function ProfilePage() {
   const profileEndpoint = isTutor ? '/api/tutor/profile/' : '/api/guardian/profile/'
 
   // Form State
+  // To change this: add new user profile editable fields below
   const [phone, setPhone] = useState('')
+  const [nidNo, setNidNo] = useState('')
   const [locationStr, setLocationStr] = useState('')
   const [bio, setBio] = useState('')
   const [subjects, setSubjects] = useState('')
@@ -31,6 +33,15 @@ function ProfilePage() {
   const [uploadingCv, setUploadingCv] = useState(false)
   const [cvUploadStatus, setCvUploadStatus] = useState('')
 
+  // Tutor Student / Graduate Verification State
+  const [isCurrentlyStudent, setIsCurrentlyStudent] = useState(true)
+  const [studentId, setStudentId] = useState('')
+  const [certificateName, setCertificateName] = useState('')
+  const [certificateUrl, setCertificateUrl] = useState('')
+  const [selectedCertFile, setSelectedCertFile] = useState(null)
+  const [uploadingCert, setUploadingCert] = useState(false)
+  const [certUploadStatus, setCertUploadStatus] = useState('')
+
   // Coordinates state
   const [latitude, setLatitude] = useState(null)
   const [longitude, setLongitude] = useState(null)
@@ -41,64 +52,6 @@ function ProfilePage() {
   const [loading, setLoading] = useState(true)
   const [saving, setSaving] = useState(false)
 
-  // AI Skill Extraction State
-  const [extractingSkills, setExtractingSkills] = useState(false)
-  const [extractedSkills, setExtractedSkills] = useState([])
-  const [selectedSkills, setSelectedSkills] = useState([])
-  const [aiSkillStatus, setAiSkillStatus] = useState('')
-
-  // Handle Extract Skills with AI
-  async function handleExtractSkills() {
-    setExtractingSkills(true)
-    setAiSkillStatus('')
-    try {
-      const res = await api.post('/api/ai/extract-cv-skills/')
-      if (res && res.data && res.data.skills) {
-        setExtractedSkills(res.data.skills)
-        setSelectedSkills(res.data.skills)
-        setAiSkillStatus('✨ Gemini extracted these skills from your CV. Select the ones you want to keep and click "Merge & Save Skills".')
-      }
-    } catch (err) {
-      console.error('Error extracting CV skills:', err)
-      setAiSkillStatus(
-        err.response && err.response.data && err.response.data.error
-          ? err.response.data.error
-          : 'Failed to extract skills from CV.'
-      )
-    } finally {
-      setExtractingSkills(false)
-    }
-  }
-
-  // Toggle skill selection in checklist
-  function toggleSkill(skill) {
-    setSelectedSkills((prev) =>
-      prev.includes(skill) ? prev.filter((s) => s !== skill) : [...prev, skill]
-    )
-  }
-
-  // Merge selected AI skills into profile subjects and save
-  async function handleMergeSkills() {
-    if (selectedSkills.length === 0) {
-      setAiSkillStatus('Please select at least one skill to merge.')
-      return
-    }
-
-    const existingList = subjects ? subjects.split(',').map((s) => s.trim()).filter(Boolean) : []
-    const combined = Array.from(new Set([...existingList, ...selectedSkills]))
-    const newSubjectsStr = combined.join(', ')
-    setSubjects(newSubjectsStr)
-
-    try {
-      await api.patch(profileEndpoint, { subjects: newSubjectsStr })
-      setAiSkillStatus('✅ Selected skills successfully merged into your Subject Expertise!')
-      setExtractedSkills([])
-    } catch (err) {
-      console.error('Error saving merged skills:', err)
-      setAiSkillStatus('Failed to update subjects. Please click Save Profile Changes manually.')
-    }
-  }
-
   // Fetch current profile data
   useEffect(() => {
     async function fetchProfile() {
@@ -107,6 +60,7 @@ function ProfilePage() {
         if (response && response.data) {
           const d = response.data
           setPhone(d.phone || '')
+          setNidNo(d.nid_no || '')
           setLocationStr(d.location || '')
           setBio(d.bio || '')
           setSubjects(d.subjects || '')
@@ -115,6 +69,10 @@ function ProfilePage() {
           setExpectedSalary(d.expected_salary !== null && d.expected_salary !== undefined ? d.expected_salary : '')
           setCvName(d.cv_name || '')
           setCvUrl(d.cv || '')
+          setIsCurrentlyStudent(d.is_currently_student !== undefined ? Boolean(d.is_currently_student) : true)
+          setStudentId(d.student_id || '')
+          setCertificateName(d.certificate_name || '')
+          setCertificateUrl(d.certificate || '')
           setLatitude(d.latitude !== undefined ? d.latitude : null)
           setLongitude(d.longitude !== undefined ? d.longitude : null)
         }
@@ -157,6 +115,38 @@ function ProfilePage() {
       setCvUploadStatus('Failed to upload CV. Please ensure file is a PDF.')
     } finally {
       setUploadingCv(false)
+    }
+  }
+
+  // Last Institution Certificate Upload Handler (for non-student tutors)
+  async function handleUploadCertificate() {
+    if (!selectedCertFile) {
+      setCertUploadStatus('Please select a certificate file first.')
+      return
+    }
+    setUploadingCert(true)
+    setCertUploadStatus('')
+
+    const formData = new FormData()
+    formData.append('certificate', selectedCertFile)
+
+    try {
+      const res = await api.post('/api/tutor/upload-certificate/', formData, {
+        headers: {
+          'Content-Type': 'multipart/form-data',
+        },
+      })
+      if (res.data) {
+        setCertificateName(res.data.certificate_name || selectedCertFile.name)
+        setCertificateUrl(res.data.certificate || '')
+        setCertUploadStatus('✅ Certificate uploaded successfully!')
+        setSelectedCertFile(null)
+      }
+    } catch (err) {
+      console.error('Error uploading certificate:', err)
+      setCertUploadStatus('Failed to upload certificate. Please try again.')
+    } finally {
+      setUploadingCert(false)
     }
   }
 
@@ -214,6 +204,10 @@ function ProfilePage() {
     const payload = isTutor
       ? {
           phone,
+          nid_no: nidNo,
+          is_currently_student: isCurrentlyStudent,
+          student_id: isCurrentlyStudent ? studentId : '',
+          certificate_name: !isCurrentlyStudent ? certificateName : '',
           location: locationStr,
           bio,
           subjects,
@@ -226,6 +220,7 @@ function ProfilePage() {
         }
       : {
           phone,
+          nid_no: nidNo,
           location: locationStr,
           latitude,
           longitude,
@@ -283,29 +278,218 @@ function ProfilePage() {
             </button>
           </div>
 
+          {/* Guardian Profile Completeness Status Notice */}
+          {!isTutor && (
+            <div style={{
+              padding: '16px 20px',
+              borderRadius: '12px',
+              border: (phone && nidNo && locationStr) ? '1px solid #86efac' : '1px solid #fde047',
+              backgroundColor: (phone && nidNo && locationStr) ? '#f0fdf4' : '#fefce8',
+              marginBottom: '20px'
+            }}>
+              <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                <strong style={{
+                  fontSize: '15px',
+                  color: (phone && nidNo && locationStr) ? '#15803d' : '#854d0e',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '6px'
+                }}>
+                  {(phone && nidNo && locationStr) ? '✅ Guardian Profile Status: Complete' : '⚠️ Guardian Profile Status: Incomplete'}
+                </strong>
+                <Badge variant={(phone && nidNo && locationStr) ? 'success' : 'warning'}>
+                  {(phone && nidNo && locationStr) ? 'Ready to Post Tuitions' : 'Action Required to Post'}
+                </Badge>
+              </div>
+              <p style={{ margin: '6px 0 0 0', fontSize: '13px', color: (phone && nidNo && locationStr) ? '#166534' : '#713f12' }}>
+                {(phone && nidNo && locationStr)
+                  ? 'Your contact number, NID number, and location are all set. You can freely post tuition requirements!'
+                  : 'To post a tuition requirement, you must provide your Contact Number, NID Number, and Location below.'}
+              </p>
+            </div>
+          )}
+
+          {/* Tutor Profile Completeness Status Notice */}
+          {isTutor && (() => {
+            const hasPhone = Boolean(phone && phone.trim())
+            const hasNid = Boolean(nidNo && nidNo.trim())
+            const hasLocation = Boolean(locationStr && locationStr.trim())
+            const hasAcademic = isCurrentlyStudent ? Boolean(studentId && studentId.trim()) : Boolean(certificateName || certificateUrl)
+            const isTutorComplete = hasPhone && hasNid && hasLocation && hasAcademic
+
+            return (
+              <div style={{
+                padding: '16px 20px',
+                borderRadius: '12px',
+                border: isTutorComplete ? '1px solid #86efac' : '1px solid #fde047',
+                backgroundColor: isTutorComplete ? '#f0fdf4' : '#fefce8',
+                marginBottom: '20px'
+              }}>
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', flexWrap: 'wrap', gap: '8px' }}>
+                  <strong style={{
+                    fontSize: '15px',
+                    color: isTutorComplete ? '#15803d' : '#854d0e',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
+                  }}>
+                    {isTutorComplete ? '✅ Tutor Profile Status: Complete' : '⚠️ Tutor Profile Status: Incomplete'}
+                  </strong>
+                  <Badge variant={isTutorComplete ? 'success' : 'warning'}>
+                    {isTutorComplete ? 'Ready to Apply for Tuitions' : 'Action Required to Apply'}
+                  </Badge>
+                </div>
+                <p style={{ margin: '6px 0 0 0', fontSize: '13px', color: isTutorComplete ? '#166534' : '#713f12' }}>
+                  {isTutorComplete
+                    ? 'Your contact number, NID number, academic credentials, and location are verified. You can apply for tuition jobs!'
+                    : `To apply for tuition jobs, please complete: ${[!hasPhone && 'Contact No', !hasNid && 'NID No', !hasAcademic && (isCurrentlyStudent ? 'Student ID' : 'Certificate'), !hasLocation && 'Location'].filter(Boolean).join(', ')}.`}
+                </p>
+              </div>
+            )
+          })()}
+
           {/* Profile Edit Form */}
           <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '20px' }}>
             <div className="form-grid-2col">
               <div className="form-group">
-                <label>Phone Number</label>
+                <label>Contact Phone Number *</label>
                 <input
                   type="text"
                   placeholder="+880 1700-000000"
                   value={phone}
                   onChange={(e) => setPhone(e.target.value)}
+                  required
                 />
               </div>
 
               <div className="form-group">
-                <label>Location / Area</label>
+                <label>National ID (NID) Number *</label>
+                <input
+                  type="text"
+                  placeholder="e.g. 19951234567890123 (10-17 digits)"
+                  value={nidNo}
+                  onChange={(e) => setNidNo(e.target.value)}
+                  required
+                />
+                <small style={{ color: '#64748b', fontSize: '11px', marginTop: '2px', display: 'block' }}>
+                  Required for identity verification & platform safety.
+                </small>
+              </div>
+
+              <div className="form-group">
+                <label>Location / Area *</label>
                 <input
                   type="text"
                   placeholder="e.g. Uttara, Dhaka"
                   value={locationStr}
                   onChange={(e) => setLocationStr(e.target.value)}
+                  required
                 />
               </div>
             </div>
+
+            {/* Tutor Academic & Enrollment Status */}
+            {isTutor && (
+              <div style={{
+                background: '#f8fafc',
+                padding: '20px',
+                borderRadius: '12px',
+                border: '1.5px solid #e2e8f0',
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '14px'
+              }}>
+                <label style={{ fontSize: '15px', fontWeight: 700, color: '#1e293b', margin: 0 }}>
+                  🎓 Current Academic & Enrollment Status *
+                </label>
+
+                <div style={{ display: 'flex', gap: '24px', flexWrap: 'wrap' }}>
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', color: isCurrentlyStudent ? '#4f46e5' : '#334155' }}>
+                    <input
+                      type="radio"
+                      name="isCurrentlyStudentRadio"
+                      checked={isCurrentlyStudent === true}
+                      onChange={() => setIsCurrentlyStudent(true)}
+                    />
+                    <span>Yes, I am currently a student</span>
+                  </label>
+
+                  <label style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer', fontWeight: 600, fontSize: '14px', color: !isCurrentlyStudent ? '#4f46e5' : '#334155' }}>
+                    <input
+                      type="radio"
+                      name="isCurrentlyStudentRadio"
+                      checked={isCurrentlyStudent === false}
+                      onChange={() => setIsCurrentlyStudent(false)}
+                    />
+                    <span>No, I have completed my studies (Graduated / Working)</span>
+                  </label>
+                </div>
+
+                {/* Option A: Current Student -> Student ID */}
+                {isCurrentlyStudent ? (
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label>Student ID Number *</label>
+                    <input
+                      type="text"
+                      placeholder="e.g. 2021-1-60-001 or University ID"
+                      value={studentId}
+                      onChange={(e) => setStudentId(e.target.value)}
+                      required
+                    />
+                    <small style={{ color: '#64748b', fontSize: '12px', marginTop: '2px', display: 'block' }}>
+                      Enter your college or university student ID for academic verification.
+                    </small>
+                  </div>
+                ) : (
+                  /* Option B: Not Student -> Upload Last Institution Certificate */
+                  <div className="form-group" style={{ margin: 0 }}>
+                    <label>Last Institution Certificate / Transcript * (PDF or Image)</label>
+                    {certificateName && (
+                      <div style={{ fontSize: '13px', color: '#1e293b', marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '10px' }}>
+                        <span>Uploaded Certificate: <strong>{certificateName}</strong></span>
+                        {certificateUrl && (
+                          <a
+                            href={certificateUrl.startsWith('http') ? certificateUrl : `http://localhost:8000${certificateUrl}`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            style={{ color: '#4f46e5', fontWeight: 600, textDecoration: 'none' }}
+                          >
+                            📜 View Certificate ↗
+                          </a>
+                        )}
+                      </div>
+                    )}
+
+                    <div style={{ display: 'flex', gap: '12px', alignItems: 'center', flexWrap: 'wrap' }}>
+                      <input
+                        type="file"
+                        accept=".pdf,image/*"
+                        onChange={(e) => setSelectedCertFile(e.target.files[0])}
+                        style={{ fontSize: '14px' }}
+                      />
+                      <button
+                        type="button"
+                        className="btn-detect-location"
+                        onClick={handleUploadCertificate}
+                        disabled={uploadingCert || !selectedCertFile}
+                      >
+                        {uploadingCert ? 'Uploading...' : 'Upload Certificate'}
+                      </button>
+                    </div>
+
+                    {certUploadStatus && (
+                      <p style={{ margin: '6px 0 0 0', fontSize: '13px', fontWeight: 600, color: certUploadStatus.includes('✅') ? '#16a34a' : '#ef4444' }}>
+                        {certUploadStatus}
+                      </p>
+                    )}
+
+                    <small style={{ color: '#64748b', fontSize: '12px', marginTop: '4px', display: 'block' }}>
+                      Upload your graduation certificate, degree provisional certificate, or latest academic transcript.
+                    </small>
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Additional Tutor Fields */}
             {isTutor && (
@@ -389,7 +573,12 @@ function ProfilePage() {
                 </div>
 
                   <div className="form-group">
-                    <label>CV / Resume Document (PDF Upload)</label>
+                    <label>
+                      CV / Resume Document (PDF Upload) <span style={{ color: '#ef4444' }}>*</span>
+                    </label>
+                    <p style={{ margin: '2px 0 8px 0', fontSize: '13px', color: '#64748b' }}>
+                      Uploading your CV is required to apply for tuition jobs. Guardians review your CV when you apply.
+                    </p>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                       {cvName && (
                         <div style={{ fontSize: '14px', color: '#334155', display: 'flex', alignItems: 'center', gap: '12px' }}>
@@ -428,112 +617,6 @@ function ProfilePage() {
                         <p style={{ fontSize: '13px', fontWeight: 600, color: cvUploadStatus.includes('✅') ? '#16a34a' : '#ef4444' }}>
                           {cvUploadStatus}
                         </p>
-                      )}
-
-                      {/* AI Skill Extraction Trigger & Checklist */}
-                      {(cvName || cvUrl) && (
-                        <div style={{
-                          marginTop: '12px',
-                          padding: '14px',
-                          background: '#f5f3ff',
-                          borderRadius: '10px',
-                          border: '1px solid #ddd6fe'
-                        }}>
-                          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                            <div>
-                              <strong style={{ color: '#4f46e5', fontSize: '14px' }}>✨ AI CV Skill Extractor (Gemini)</strong>
-                              <p style={{ margin: '2px 0 0 0', fontSize: '12px', color: '#6b7280' }}>
-                                Automatically parse your uploaded PDF CV to extract subject competencies.
-                              </p>
-                            </div>
-                            <button
-                              type="button"
-                              onClick={handleExtractSkills}
-                              disabled={extractingSkills}
-                              style={{
-                                backgroundColor: '#4f46e5',
-                                color: '#ffffff',
-                                border: 'none',
-                                padding: '8px 14px',
-                                borderRadius: '8px',
-                                fontWeight: 600,
-                                fontSize: '13px',
-                                cursor: 'pointer',
-                                opacity: extractingSkills ? 0.7 : 1,
-                              }}
-                            >
-                              {extractingSkills ? 'Extracting...' : '✨ Extract Skills with AI'}
-                            </button>
-                          </div>
-
-                          {aiSkillStatus && (
-                            <p style={{ margin: '6px 0', fontSize: '13px', fontWeight: 600, color: aiSkillStatus.includes('✅') ? '#16a34a' : '#4f46e5' }}>
-                              {aiSkillStatus}
-                            </p>
-                          )}
-
-                          {/* Extracted Skills Checklist */}
-                          {extractedSkills.length > 0 && (
-                            <div style={{
-                              marginTop: '12px',
-                              backgroundColor: '#ffffff',
-                              padding: '12px 16px',
-                              borderRadius: '8px',
-                              border: '1px solid #e2e8f0'
-                            }}>
-                              <span style={{ fontSize: '13px', fontWeight: 700, color: '#1e293b' }}>
-                                Select skills to merge into your Subject Expertise:
-                              </span>
-                              <div style={{ display: 'flex', flexWrap: 'wrap', gap: '8px', marginTop: '8px', marginBottom: '12px' }}>
-                                {extractedSkills.map((skill) => {
-                                  const isSelected = selectedSkills.includes(skill)
-                                  return (
-                                    <label
-                                      key={skill}
-                                      style={{
-                                        display: 'inline-flex',
-                                        alignItems: 'center',
-                                        gap: '6px',
-                                        padding: '4px 10px',
-                                        borderRadius: '6px',
-                                        backgroundColor: isSelected ? '#ede9fe' : '#f1f5f9',
-                                        border: isSelected ? '1px solid #8b5cf6' : '1px solid #cbd5e1',
-                                        color: isSelected ? '#5b21b6' : '#475569',
-                                        fontSize: '13px',
-                                        fontWeight: 600,
-                                        cursor: 'pointer',
-                                      }}
-                                    >
-                                      <input
-                                        type="checkbox"
-                                        checked={isSelected}
-                                        onChange={() => toggleSkill(skill)}
-                                      />
-                                      <span>{skill}</span>
-                                    </label>
-                                  )
-                                })}
-                              </div>
-
-                              <button
-                                type="button"
-                                onClick={handleMergeSkills}
-                                style={{
-                                  backgroundColor: '#10b981',
-                                  color: '#ffffff',
-                                  border: 'none',
-                                  padding: '6px 14px',
-                                  borderRadius: '6px',
-                                  fontWeight: 600,
-                                  fontSize: '13px',
-                                  cursor: 'pointer',
-                                }}
-                              >
-                                ✓ Merge & Save {selectedSkills.length} Selected Skills
-                              </button>
-                            </div>
-                          )}
-                        </div>
                       )}
                     </div>
                   </div>

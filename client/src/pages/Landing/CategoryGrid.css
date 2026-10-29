@@ -2,7 +2,7 @@
 
 .category-section {
   padding: 60px 0;
-  background-color: #f8fafc;
+  background-color: #dbb7e7;
 }
 
 .category-container {
@@ -37,7 +37,7 @@
 }
 
 .category-card {
-  background-color: #ffffff;
+  background-color: #e33ebd;
   border-radius: 12px;
   padding: 20px 14px;
   text-align: center;
@@ -53,8 +53,8 @@
 }
 
 .category-card:hover {
-  border-color: #cbd5e1;
-  background-color: #f8fafc;
+  border-color: #19191a;
+  background-color: #0d0d0d;
 }
 
 .category-icon-wrapper {

@@ -3,7 +3,7 @@
 .browse-jobs-page {
   display: flex;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #eef1f5;
 }
 
 .browse-jobs-page.with-navbar-layout {
@@ -19,7 +19,8 @@
 }
 
 .browse-jobs-main.with-sidebar {
-  margin-left: 260px; /* Offset for sidebar */
+  margin-left: 260px;
+  /* Offset for sidebar */
 }
 
 .browse-jobs-main.full-width {
@@ -32,7 +33,7 @@
 .browse-jobs-header h1 {
   font-size: 28px;
   font-weight: 800;
-  color: #0f172a;
+  color: #010b24;
   margin: 0 0 6px 0;
 }
 
@@ -44,7 +45,7 @@
 
 .jobs-grid-container {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(3, 1fr);
   gap: 20px;
 }
 

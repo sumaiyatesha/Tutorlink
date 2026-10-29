@@ -2,7 +2,7 @@
 
 .how-it-works-section {
   padding: 60px 0;
-  background-color: #ffffff;
+  background-color: #f2eded;
 }
 
 .how-it-works-container {
@@ -51,12 +51,12 @@
 }
 
 .how-tab-btn:hover {
-  border-color: #4f46e5;
-  color: #4f46e5;
+  border-color: #171718;
+  color: #141419;
 }
 
 .how-tab-btn.active {
-  background-color: #4f46e5;
+  background-color: #151515;
   color: #ffffff;
   border-color: #4f46e5;
 }
@@ -68,7 +68,7 @@
 }
 
 .steps-grid-4 {
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(2, 1fr);
 }
 
 .steps-grid-3 {
@@ -94,7 +94,7 @@
   width: 40px;
   height: 40px;
   border-radius: 50%;
-  background-color: #4f46e5;
+  background-color: #030337;
   color: #ffffff;
   font-size: 16px;
   font-weight: 800;

@@ -44,7 +44,7 @@ function HowItWorksPage() {
         {/* SECTION 1: FOR GUARDIANS */}
         <section className="role-workflow-section">
           <div className="role-section-header">
-            <span className="role-icon-badge">👨‍👩‍👧</span>
+            <span className="role-icon-badge">l</span>
             <div>
               <h2>Workflow for Guardians & Students</h2>
               <p>Find, evaluate, and hire verified tutors for any subject in 4 easy steps.</p>
@@ -89,7 +89,7 @@ function HowItWorksPage() {
         {/* SECTION 2: FOR TUTORS */}
         <section className="role-workflow-section">
           <div className="role-section-header">
-            <span className="role-icon-badge">👨‍🏫</span>
+            <span className="role-icon-badge">l</span>
             <div>
               <h2>Workflow for Tutors</h2>
               <p>Grow your teaching career, find verified tuition posts, and earn platform trust.</p>
@@ -134,7 +134,7 @@ function HowItWorksPage() {
         {/* SECTION 3: AI-POWERED MATCHMAKING FEATURES */}
         <section className="ai-features-overview-section">
           <div className="ai-overview-header">
-            <span className="ai-tag-pill">🤖 Built-in AI Intelligence</span>
+            <span className="ai-tag-pill"> Built-in AI Intelligence</span>
             <h2>Next-Generation Smart Matching</h2>
             <p>
               TutorLink integrates Google Gemini AI to revolutionize how students and educators connect.

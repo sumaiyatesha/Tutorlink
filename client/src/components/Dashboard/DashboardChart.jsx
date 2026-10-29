@@ -12,7 +12,6 @@ import {
   XAxis,
   YAxis,
   CartesianGrid,
-  Tooltip,
   ResponsiveContainer,
   PieChart,
   Pie,
@@ -32,14 +31,16 @@ const PURPLE_COLORS = ['#667eea', '#10b981', '#ef4444', '#f59e0b', '#764ba2']
  * The data is calculated directly from GET /api/applications/ where application.tutor === current_user.
  */
 export function ApplicationsBarChart({ data = [], title = 'Applications Breakdown', vivaNote }) {
-  /* Viva Explanation: Data fed from real Application model counts (Applied/Pending, Accepted, Rejected) */
+  /* Data fed from real Application model counts (Applied/Pending, Accepted, Rejected) */
   return (
     <div className="dash-chart-card">
       <div className="dash-chart-header">
         <h3>{title}</h3>
-        <span className="dash-chart-viva-note">
-          {vivaNote || 'Data Source: GET /api/applications/ (Real Application Model Counts)'}
-        </span>
+        {vivaNote && (
+          <span className="dash-chart-viva-note">
+            {vivaNote}
+          </span>
+        )}
       </div>
 
       <div className="dash-chart-body">
@@ -48,14 +49,6 @@ export function ApplicationsBarChart({ data = [], title = 'Applications Breakdow
             <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" />
             <XAxis dataKey="name" tick={{ fontSize: 12, fill: '#64748b' }} />
             <YAxis allowDecimals={false} tick={{ fontSize: 12, fill: '#64748b' }} />
-            <Tooltip
-              contentStyle={{
-                backgroundColor: '#ffffff',
-                borderRadius: '8px',
-                border: '1px solid #e2e8f0',
-                boxShadow: '0 4px 12px rgba(0,0,0,0.1)',
-              }}
-            />
             <Bar dataKey="count" fill="#667eea" radius={[6, 6, 0, 0]} />
           </BarChart>
         </ResponsiveContainer>
@@ -67,12 +60,11 @@ export function ApplicationsBarChart({ data = [], title = 'Applications Breakdow
 /**
  * ApplicationsPieChart (Donut Chart) Component
  *
- * VIVA EXPLANATION:
  * This Donut Chart renders the ratio of Accepted vs Rejected applications.
  * If zero applications exist, it renders a zero baseline fallback cleanly without crashing.
  */
 export function ApplicationsPieChart({ data = [], title = 'Accepted vs Rejected Ratio', vivaNote }) {
-  /* Viva Explanation: Data ratio of Accepted vs Rejected applications for logged-in user */
+  /* Data ratio of Accepted vs Rejected applications for logged-in user */
   const chartData = data.length > 0 ? data : [
     { name: 'Accepted', value: 0 },
     { name: 'Rejected', value: 0 },
@@ -83,9 +75,11 @@ export function ApplicationsPieChart({ data = [], title = 'Accepted vs Rejected 
     <div className="dash-chart-card">
       <div className="dash-chart-header">
         <h3>{title}</h3>
-        <span className="dash-chart-viva-note">
-          {vivaNote || 'Data Source: Ratio calculated from Application status'}
-        </span>
+        {vivaNote && (
+          <span className="dash-chart-viva-note">
+            {vivaNote}
+          </span>
+        )}
       </div>
 
       <div className="dash-chart-body">
@@ -99,18 +93,12 @@ export function ApplicationsPieChart({ data = [], title = 'Accepted vs Rejected 
               outerRadius={85}
               paddingAngle={4}
               dataKey="value"
+              activeShape={false}
             >
               {chartData.map((entry, index) => (
                 <Cell key={`cell-${index}`} fill={PURPLE_COLORS[index % PURPLE_COLORS.length]} />
               ))}
             </Pie>
-            <Tooltip
-              contentStyle={{
-                backgroundColor: '#ffffff',
-                borderRadius: '8px',
-                border: '1px solid #e2e8f0',
-              }}
-            />
             <Legend verticalAlign="bottom" height={36} />
           </PieChart>
         </ResponsiveContainer>

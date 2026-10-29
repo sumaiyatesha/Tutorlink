@@ -1,9 +1,11 @@
-// App.jsx — Main application routes and providers.
+// client/src/App.jsx
+// Main application routes and page structure for TutorLink.
 
-import { Routes, Route } from 'react-router-dom'
+import { Routes, Route, Navigate } from 'react-router-dom'
 import { AuthProvider } from './AuthContext'
 import ProtectedRoute from './ProtectedRoute.jsx'
 
+// Authentication & Core Pages
 import LandingPage from './LandingPage.jsx'
 import Login from './Login.jsx'
 import Register from './Register.jsx'
@@ -11,7 +13,7 @@ import Dashboard from './Dashboard.jsx'
 import AdminDashboard from './AdminDashboard.jsx'
 import PlaceholderPage from './PlaceholderPage.jsx'
 
-// Updated Modular Dashboard & Profile Pages
+// Modular Dashboard & Profile Pages
 import TutorDashboard from './pages/TutorDashboard/TutorDashboard.jsx'
 import GuardianDashboard from './pages/GuardianDashboard/GuardianDashboard.jsx'
 import BrowseJobs from './pages/TutorDashboard/BrowseJobs.jsx'
@@ -20,12 +22,14 @@ import ProfilePage from './pages/Profile/ProfilePage.jsx'
 import PostTuition from './pages/GuardianDashboard/PostTuition.jsx'
 import GuardianPosts from './pages/GuardianDashboard/GuardianPosts.jsx'
 import GuardianApplicants from './pages/GuardianDashboard/GuardianApplicants.jsx'
-import GuardianFavorites from './pages/GuardianDashboard/GuardianFavorites.jsx'
+import LetsTest from './pages/GuardianDashboard/letstest.jsx'
+import TutorLetsTest from './pages/TutorDashboard/letstest.jsx'
 import BrowseTutors from './pages/TutorBrowse/BrowseTutors.jsx'
 import TutorDetail from './pages/TutorBrowse/TutorDetail.jsx'
 import AdminAnalytics from './pages/Admin/AdminAnalytics.jsx'
 import HowItWorksPage from './pages/HowItWorks/HowItWorksPage.jsx'
 
+// Applications, Subscriptions & AI Matching
 import MyApplications from './pages/TutorDashboard/MyApplications.jsx'
 import SubscriptionPage from './pages/Subscription/SubscriptionPage.jsx'
 import ChatMatchPage from './pages/AIMatching/ChatMatchPage.jsx'
@@ -34,21 +38,40 @@ function App() {
   return (
     <AuthProvider>
       <Routes>
-        {/* Public Routes */}
+        {/* ------------------------------------------------------------- */}
+        {/* 1. Public Visitor Routes                                      */}
+        {/* ------------------------------------------------------------- */}
         <Route path="/" element={<LandingPage />} />
         <Route path="/login" element={<Login />} />
         <Route path="/register" element={<Register />} />
-        <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/tutors" element={<BrowseTutors />} />
+        <Route path="/how-it-works" element={<HowItWorksPage />} />
         <Route path="/tutors/:id" element={<TutorDetail />} />
 
-        {/* Tuition Jobs & Detail Routes */}
+        {/* ------------------------------------------------------------- */}
+        {/* 2. Tuition Jobs & Listings                                    */}
+        {/* ------------------------------------------------------------- */}
         <Route path="/posts" element={<BrowseJobs />} />
         <Route path="/posts/:id" element={<JobDetail />} />
         <Route path="/tutor/jobs" element={<BrowseJobs />} />
         <Route path="/tutor/jobs/:id" element={<JobDetail />} />
 
-        {/* Profile, Subscription & AI Matching Pages */}
+        {/* Testing Page — reuses BrowseJobs in cards-only mode.           */}
+        {/* Sidebar link is currently inactive; see Sidebar.jsx to enable. */}
+        <Route
+          path="/tutor/testing"
+          element={
+            <BrowseJobs
+              cardsOnly
+              title="Testing Page"
+              subtitle="Preview showing tuition job cards only."
+            />
+          }
+        />
+
+        {/* ------------------------------------------------------------- */}
+        {/* 3. Profiles, Monetization & AI Matching                       */}
+        {/* ------------------------------------------------------------- */}
         <Route path="/profile" element={<ProfilePage />} />
         <Route path="/subscription" element={<SubscriptionPage />} />
         <Route
@@ -60,7 +83,9 @@ function App() {
           }
         />
 
-        {/* Guardian Navigation Pages */}
+        {/* ------------------------------------------------------------- */}
+        {/* 4. Guardian-Only Protected Routes                             */}
+        {/* ------------------------------------------------------------- */}
         <Route
           path="/guardian/posts"
           element={
@@ -94,15 +119,25 @@ function App() {
           }
         />
         <Route
-          path="/guardian/favorites"
+          path="/gurdianpost/letstest"
           element={
             <ProtectedRoute allowedRole="guardian">
-              <GuardianFavorites />
+              <LetsTest />
             </ProtectedRoute>
           }
         />
 
-        {/* Tutor Navigation Pages */}
+        {/* ------------------------------------------------------------- */}
+        {/* 5. Tutor-Only Protected Routes                                */}
+        {/* ------------------------------------------------------------- */}
+        <Route
+          path="/tutor/letstest"
+          element={
+            <ProtectedRoute allowedRole="tutor">
+              <TutorLetsTest />
+            </ProtectedRoute>
+          }
+        />
         <Route
           path="/tutor/applications"
           element={
@@ -112,7 +147,9 @@ function App() {
           }
         />
 
-        {/* Admin Navigation Pages */}
+        {/* ------------------------------------------------------------- */}
+        {/* 6. Admin-Only Protected Routes                                */}
+        {/* ------------------------------------------------------------- */}
         <Route
           path="/admin/analytics"
           element={
@@ -122,10 +159,10 @@ function App() {
           }
         />
 
-        {/* General Dashboard Redirect */}
+        {/* ------------------------------------------------------------- */}
+        {/* 7. Role-Based Dashboards                                      */}
+        {/* ------------------------------------------------------------- */}
         <Route path="/dashboard" element={<Dashboard />} />
-
-        {/* Protected Role-Based Dashboards */}
         <Route
           path="/dashboard/guardian"
           element={
@@ -142,7 +179,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/dashboard/tutor"
           element={
@@ -159,7 +195,6 @@ function App() {
             </ProtectedRoute>
           }
         />
-
         <Route
           path="/dashboard/admin"
           element={
@@ -168,6 +203,15 @@ function App() {
             </ProtectedRoute>
           }
         />
+
+        {/* Dashboard URL aliases for backward compatibility */}
+        <Route path="/guardian-dashboard" element={<Navigate to="/guardian/dashboard" replace />} />
+        <Route path="/tutor-dashboard" element={<Navigate to="/tutor/dashboard" replace />} />
+
+        {/* ------------------------------------------------------------- */}
+        {/* 8. 404 Fallback Page                                          */}
+        {/* ------------------------------------------------------------- */}
+        <Route path="*" element={<PlaceholderPage title="Page Not Found" icon="🔍" />} />
       </Routes>
     </AuthProvider>
   )

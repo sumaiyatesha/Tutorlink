@@ -3,11 +3,12 @@
 .tutor-dashboard-page {
   display: flex;
   min-height: 100vh;
-  background-color: #f8fafc;
+  background-color: #f0f1f3;
 }
 
 .tutor-dashboard-main {
-  margin-left: 260px; /* Offset for fixed left sidebar */
+  margin-left: 260px;
+  /* Offset for fixed left sidebar */
   flex: 1;
   padding: 32px 40px;
   display: flex;
@@ -23,7 +24,7 @@
 }
 
 .tutor-greeting-card {
-  background-color: #4f46e5;
+  background-color: #e5a846;
   color: #ffffff;
   border-radius: 16px;
   padding: 32px 36px;
@@ -72,7 +73,7 @@
 .member-since-card h3 {
   font-size: 20px;
   font-weight: 800;
-  color: #4f46e5;
+  color: #46e573;
   margin: 6px 0 0 0;
 }
 
@@ -86,18 +87,18 @@
 /* Status Cards Row */
 .status-cards-row {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 20px;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
 }
 
 .status-mini-card {
   background-color: #ffffff;
   border-radius: 12px;
-  padding: 18px 24px;
+  padding: 18px 20px;
   border: 1px solid #e2e8f0;
   display: flex;
   align-items: center;
-  gap: 16px;
+  gap: 14px;
 }
 
 .status-mini-icon {
@@ -108,11 +109,28 @@
   align-items: center;
   justify-content: center;
   font-size: 20px;
+  flex-shrink: 0;
 }
 
-.status-pending { background-color: #eef2ff; color: #4f46e5; }
-.status-accepted { background-color: #ecfdf5; color: #10b981; }
-.status-rejected { background-color: #fef2f2; color: #ef4444; }
+.status-pending {
+  background-color: #eef2ff;
+  color: #4f46e5;
+}
+
+.status-demo {
+  background-color: #171718;
+  color: #3aeddb;
+}
+
+.status-accepted {
+  background-color: #ecfdf5;
+  color: #10b981;
+}
+
+.status-rejected {
+  background-color: #fef2f2;
+  color: #ef4444;
+}
 
 .status-mini-info h4 {
   font-size: 22px;
@@ -139,12 +157,15 @@
   .tutor-welcome-grid {
     grid-template-columns: 1fr;
   }
+
   .tutor-stats-row {
     grid-template-columns: 1fr;
   }
+
   .status-cards-row {
     grid-template-columns: 1fr;
   }
+
   .tutor-charts-grid {
     grid-template-columns: 1fr;
   }

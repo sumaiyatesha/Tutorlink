@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 import { useAuth, api } from './AuthContext'
 import DashboardNav from './DashboardNav'
 import './Dashboard.css'
+import './AdminDashboard.css'
 
 function AdminDashboard() {
   const { user } = useAuth()
@@ -35,7 +36,7 @@ function AdminDashboard() {
 
       {/* Main Content Area */}
       <div className="dashboard-container">
-        
+
         {/* Welcome Banner */}
         <div className="dashboard-welcome" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <div>
@@ -45,7 +46,7 @@ function AdminDashboard() {
           </div>
 
           <Link to="/admin/analytics" className="admin-link-btn" style={{ padding: '12px 20px', fontSize: '15px' }}>
-            📊 View Platform Analytics Charts →
+            View Platform Analytics Charts →
           </Link>
         </div>
 
@@ -55,7 +56,7 @@ function AdminDashboard() {
             Loading live platform metrics...
           </div>
         ) : (
-          <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))' }}>
+          <div className="dashboard-grid" style={{ gridTemplateColumns: 'repeat(2, 1fr)' }}>
 
             {/* Metric 1: Total Users */}
             <div className="dash-card metric-card">
@@ -84,7 +85,7 @@ function AdminDashboard() {
             {/* Metric 3: Tuition Posts Overview */}
             <div className="dash-card metric-card">
               <div className="metric-header">
-                <span className="metric-icon">📌</span>
+                <span className="metric-icon"></span>
                 <span className="metric-title">Total Tuition Posts</span>
               </div>
               <div className="metric-value">{metrics ? metrics.total_posts : 0}</div>
@@ -96,7 +97,7 @@ function AdminDashboard() {
             {/* Metric 4: Total Applications */}
             <div className="dash-card metric-card">
               <div className="metric-header">
-                <span className="metric-icon">📝</span>
+                <span className="metric-icon"></span>
                 <span className="metric-title">Total Applications</span>
               </div>
               <div className="metric-value">{metrics ? metrics.total_applications : 0}</div>
@@ -105,18 +106,12 @@ function AdminDashboard() {
               </p>
             </div>
 
-            {/* Metric 5: Open Reports */}
-            <div className="dash-card metric-card">
-              <div className="metric-header">
-                <span className="metric-icon">🚩</span>
-                <span className="metric-title">Open System Reports</span>
-              </div>
-              <div className="metric-value badge-success">{metrics ? metrics.reports_open : 0}</div>
-              <p className="metric-subtext">No unresolved user issues</p>
-            </div>
+
 
           </div>
+
         )}
+
 
         {/* Django Admin Console Banner & Link */}
         <div className="admin-console-box" style={{ marginTop: '30px' }}>
@@ -145,7 +140,7 @@ function AdminDashboard() {
         </footer>
 
       </div>
-    </div>
+    </div >
   )
 }
 

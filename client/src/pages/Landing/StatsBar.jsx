@@ -8,6 +8,7 @@ import './StatsBar.css'
 
 function StatsBar() {
   // TODO: replace with real counts from GET /api/stats/ once backend endpoint exists
+  // To change this: adjust public showcase metrics in statsData array below
   const statsData = [
     { label: 'Registered Tutors', value: '1,250+' },
     { label: 'Total Tuition Posts', value: '3,400+' },

@@ -1,11 +1,49 @@
+"""
+TutorLink - Accounts API Views (server/accounts/views.py)
+
+This module handles all REST API endpoints for the core platform:
+1. Authentication & Profile:
+   - RegisterView: Creates new guardian or tutor accounts.
+   - MeView: Returns the logged-in user's profile details.
+   - TutorProfileView: Allows tutors to view/update their profile.
+   - TutorCVUploadView: Handles CV PDF file uploads for tutors.
+   - GuardianProfileView: Allows guardians to view/update their profile.
+2. Tuition Posts:
+   - TuitionPostListCreateView: Lists open tuition jobs or creates new posts.
+   - TuitionPostDetailView: Fetches, updates, or deletes an individual tuition post.
+3. Applications:
+   - ApplicationListCreateView: Tutors apply for jobs, guardians view applicants.
+   - ApplicationDetailView: Guardians accept/reject tutor applications & log platform commission.
+4. Notifications:
+   - NotificationListView: Fetches user alerts.
+   - NotificationMarkReadView: Marks an alert as read.
+5. Bookmarks & Reviews:
+   - FavoriteToggleView & FavoriteListView: Bookmark tutors for later.
+   - ReviewListCreateView & TutorReviewListView: Rating & review system.
+6. Public Directory:
+   - TutorListView & TutorDetailView: Browse tutors with search, filter, and review stats.
+7. Administration:
+   - AdminAnalyticsView: System-wide metrics and signup growth charts.
+"""
+
 from datetime import timedelta
+from decimal import Decimal
 from django.utils import timezone
 from django.db.models import Avg
 from rest_framework import generics, permissions, status, parsers
 from rest_framework.response import Response
 from rest_framework.views import APIView
 
-from .models import User, GuardianProfile, TutorProfile, TuitionPost, Application, Notification, Favorite, Review
+from .models import (
+    User, 
+    GuardianProfile, 
+    TutorProfile, 
+    TuitionPost, 
+    Application, 
+    Notification, 
+    Favorite, 
+    Review
+)
 from .serializers import (
     RegisterSerializer,
     UserSerializer,
@@ -19,9 +57,14 @@ from .serializers import (
 )
 
 
+# ==========================================
+# 1. AUTHENTICATION & USER PROFILE VIEWS
+# ==========================================
+
 class RegisterView(generics.CreateAPIView):
     """
     POST /api/auth/register/
+    Allows any guest to register as a Guardian or Tutor.
     """
     queryset = User.objects.all()
     serializer_class = RegisterSerializer
@@ -31,6 +74,7 @@ class RegisterView(generics.CreateAPIView):
 class MeView(APIView):
     """
     GET /api/auth/me/
+    Returns the currently logged-in user's data using the JWT access token.
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -41,9 +85,9 @@ class MeView(APIView):
 
 class TutorProfileView(APIView):
     """
-    GET /api/tutor/profile/
-    PUT /api/tutor/profile/
-    PATCH /api/tutor/profile/
+    GET /api/tutor/profile/  -> Get tutor profile
+    PUT /api/tutor/profile/  -> Full update
+    PATCH /api/tutor/profile/ -> Partial update
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -60,7 +104,12 @@ class TutorProfileView(APIView):
 
     def update(self, request, partial=False):
         profile, _ = TutorProfile.objects.get_or_create(user=request.user)
-        serializer = TutorProfileSerializer(profile, data=request.data, partial=partial, context={'request': request})
+        serializer = TutorProfileSerializer(
+            profile, 
+            data=request.data, 
+            partial=partial, 
+            context={'request': request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
@@ -70,19 +119,20 @@ class TutorProfileView(APIView):
 class TutorCVUploadView(APIView):
     """
     POST /api/tutor/upload-cv/
-    Uploads a CV file (PDF) for the logged-in tutor using MultiPartParser.
-    Saves file to TutorProfile.cv and updates TutorProfile.cv_name.
+    Uploads a CV file (PDF) for the logged-in tutor and stores it in the media directory.
     """
     permission_classes = [permissions.IsAuthenticated]
     parser_classes = [parsers.MultiPartParser, parsers.FormParser]
 
     def post(self, request):
+        # Step 1: Check if file was included in request
         if 'cv' not in request.FILES:
             return Response({'error': 'No CV file provided.'}, status=status.HTTP_400_BAD_REQUEST)
 
         uploaded_file = request.FILES['cv']
         profile, _ = TutorProfile.objects.get_or_create(user=request.user)
 
+        # Step 2: Save CV file and filename to tutor profile
         profile.cv = uploaded_file
         profile.cv_name = uploaded_file.name
         profile.save()
@@ -91,11 +141,34 @@ class TutorCVUploadView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+class TutorCertificateUploadView(APIView):
+    """
+    POST /api/tutor/upload-certificate/
+    Uploads an educational certificate or transcript for tutors who are not currently students.
+    """
+    permission_classes = [permissions.IsAuthenticated]
+    parser_classes = [parsers.MultiPartParser, parsers.FormParser]
+
+    def post(self, request):
+        if 'certificate' not in request.FILES:
+            return Response({'error': 'No certificate file provided.'}, status=status.HTTP_400_BAD_REQUEST)
+
+        uploaded_file = request.FILES['certificate']
+        profile, _ = TutorProfile.objects.get_or_create(user=request.user)
+
+        profile.certificate = uploaded_file
+        profile.certificate_name = uploaded_file.name
+        profile.save()
+
+        serializer = TutorProfileSerializer(profile, context={'request': request})
+        return Response(serializer.data, status=status.HTTP_200_OK)
+
+
 class GuardianProfileView(APIView):
     """
-    GET /api/guardian/profile/
-    PUT /api/guardian/profile/
-    PATCH /api/guardian/profile/
+    GET /api/guardian/profile/  -> Get guardian profile
+    PUT /api/guardian/profile/  -> Full update
+    PATCH /api/guardian/profile/ -> Partial update
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -112,18 +185,27 @@ class GuardianProfileView(APIView):
 
     def update(self, request, partial=False):
         profile, _ = GuardianProfile.objects.get_or_create(user=request.user)
-        serializer = GuardianProfileSerializer(profile, data=request.data, partial=partial, context={'request': request})
+        serializer = GuardianProfileSerializer(
+            profile, 
+            data=request.data, 
+            partial=partial, 
+            context={'request': request}
+        )
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
 
+# ==========================================
+# 2. TUITION POST VIEWS
+# ==========================================
+
 class IsOwnerOrReadOnly(permissions.BasePermission):
     """
-    Custom permission to only allow guardians who created a post to edit or delete it.
+    Custom Permission: Safe methods (GET) are allowed for everyone,
+    but only the Guardian who created the post can edit (PUT/PATCH) or delete (DELETE) it.
     """
-
     def has_object_permission(self, request, view, obj):
         if request.method in permissions.SAFE_METHODS:
             return True
@@ -132,34 +214,72 @@ class IsOwnerOrReadOnly(permissions.BasePermission):
 
 class TuitionPostListCreateView(generics.ListCreateAPIView):
     """
-    GET /api/tuition-posts/
-    GET /api/tuition-posts/?mine=true
-    POST /api/tuition-posts/
+    GET /api/tuition-posts/ -> Lists tuition jobs (filterable by location or ?mine=true)
+    POST /api/tuition-posts/ -> Creates a new tuition post (Guardian only)
     """
     serializer_class = TuitionPostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly]
 
     def get_queryset(self):
         queryset = TuitionPost.objects.all().order_by('-created_at')
+        
+        # Optional filter by location
         location_param = self.request.query_params.get('location')
         if location_param:
             queryset = queryset.filter(location__icontains=location_param)
 
+        # Optional filter for guardian's own posts
         mine_param = self.request.query_params.get('mine')
         if mine_param and mine_param.lower() == 'true' and self.request.user.is_authenticated:
             queryset = queryset.filter(guardian=self.request.user)
 
         return queryset
 
+    def create(self, request, *args, **kwargs):
+        """
+        Guards tuition post creation:
+        Guardian must complete their profile status (contact number, NID number, and location)
+        before they can post a tuition requirement.
+        """
+        user = request.user
+        if not user.is_authenticated:
+            return Response({'error': 'Authentication required.'}, status=status.HTTP_401_UNAUTHORIZED)
+
+        # Check guardian role
+        if getattr(user, 'role', '') != 'guardian' and not user.is_staff:
+            return Response(
+                {'error': 'Only registered guardians can post a tuition requirement.'},
+                status=status.HTTP_403_FORBIDDEN
+            )
+
+        # Check guardian profile completeness
+        profile = getattr(user, 'guardian_profile', None)
+        if not profile or not profile.is_profile_complete:
+            missing = []
+            if not profile or not (profile.phone and profile.phone.strip()):
+                missing.append('Contact Number')
+            if not profile or not (profile.nid_no and profile.nid_no.strip()):
+                missing.append('NID Number')
+            if not profile or not (profile.location and profile.location.strip()):
+                missing.append('Location')
+
+            return Response({
+                'error': f'Profile incomplete. You must provide your {", ".join(missing)} in your profile before posting a tuition.',
+                'missing_fields': missing,
+                'is_profile_complete': False
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         from .utils import get_district_coordinates
 
-        # Set guardian coordinates automatically if available on guardian profile
+        # Step 1: Try to retrieve coordinates from the guardian's profile
         guardian_profile = getattr(self.request.user, 'guardian_profile', None)
         lat = guardian_profile.latitude if guardian_profile else None
         lng = guardian_profile.longitude if guardian_profile else None
 
-        # Fallback to district coordinate mapping from location text if profile coords not set yet
+        # Step 2: If profile has no coordinates, lookup from district name dictionary
         if lat is None or lng is None:
             location_str = self.request.data.get('location', '')
             district_coords = get_district_coordinates(location_str)
@@ -171,20 +291,23 @@ class TuitionPostListCreateView(generics.ListCreateAPIView):
 
 class TuitionPostDetailView(generics.RetrieveUpdateDestroyAPIView):
     """
-    GET /api/tuition-posts/:id/
-    PUT /api/tuition-posts/:id/
-    DELETE /api/tuition-posts/:id/
+    GET /api/tuition-posts/<id>/   -> Retrieve a post
+    PUT /api/tuition-posts/<id>/   -> Update a post (owner only)
+    DELETE /api/tuition-posts/<id>/-> Delete a post (owner only)
     """
     queryset = TuitionPost.objects.all()
     serializer_class = TuitionPostSerializer
     permission_classes = [permissions.IsAuthenticatedOrReadOnly, IsOwnerOrReadOnly]
 
 
+# ==========================================
+# 3. JOB APPLICATION VIEWS
+# ==========================================
 
 class ApplicationListCreateView(generics.ListCreateAPIView):
     """
-    GET /api/applications/
-    POST /api/applications/
+    GET /api/applications/  -> Lists applications (tutor sees sent apps, guardian sees received apps)
+    POST /api/applications/ -> Tutors apply for an open tuition post
     """
     serializer_class = ApplicationSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -197,6 +320,45 @@ class ApplicationListCreateView(generics.ListCreateAPIView):
             return Application.objects.filter(post__guardian=user).order_by('-created_at')
         return Application.objects.all().order_by('-created_at')
 
+    def create(self, request, *args, **kwargs):
+        """
+        Guards tutor job application submission:
+        Tutor must complete their profile status:
+        - Contact Number (phone)
+        - NID Number (nid_no)
+        - CV Document (cv) - Mandatory requirement
+        - If currently student: Student ID (student_id)
+        - If not currently student: Last institution certificate
+        - Location
+        """
+        user = request.user
+        if getattr(user, 'role', '') != 'tutor' and not user.is_staff:
+            return Response({'error': 'Only registered tutors can apply for tuition jobs.'}, status=status.HTTP_403_FORBIDDEN)
+
+        profile = getattr(user, 'tutor_profile', None)
+        if not profile or not profile.is_profile_complete:
+            missing = []
+            if not profile or not (profile.phone and profile.phone.strip()):
+                missing.append('Contact Number')
+            if not profile or not (profile.nid_no and profile.nid_no.strip()):
+                missing.append('NID Number')
+            if not profile or not profile.cv:
+                missing.append('CV Document')
+            if not profile or (profile.is_currently_student and not (profile.student_id and profile.student_id.strip())):
+                missing.append('Student ID')
+            elif not profile or (not profile.is_currently_student and not (profile.certificate or profile.certificate_name)):
+                missing.append('Last Institution Certificate')
+            if not profile or not (profile.location and profile.location.strip()):
+                missing.append('Location')
+
+            return Response({
+                'error': f'Profile incomplete. You must provide your {", ".join(missing)} in your profile before applying for tuitions.',
+                'missing_fields': missing,
+                'is_profile_complete': False
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        return super().create(request, *args, **kwargs)
+
     def perform_create(self, serializer):
         serializer.save(tutor=self.request.user)
 
@@ -204,44 +366,58 @@ class ApplicationListCreateView(generics.ListCreateAPIView):
 class ApplicationDetailView(APIView):
     """
     PATCH /api/applications/<id>/
-    Allows guardian (owner of the post) to update application status to 'accepted' or 'rejected'.
-    When 'accepted': sets TuitionPost.status to 'closed' and creates a Notification for the tutor.
-    When 'rejected': creates a Notification for the tutor.
+    Allows the guardian who owns the post to accept or reject a tutor's application.
+    When accepted:
+    - Post status is changed to 'closed'.
+    - Platform logs a 15% commission record for the tutor.
+    - Tutor receives an acceptance notification.
     """
     permission_classes = [permissions.IsAuthenticated]
 
     def patch(self, request, pk):
+        # Step 1: Find the application
         try:
             application = Application.objects.get(pk=pk)
         except Application.DoesNotExist:
             return Response({'error': 'Application not found.'}, status=status.HTTP_404_NOT_FOUND)
 
-        # Only allow the guardian who created the tuition post to update application status
+        # Step 2: Ensure only the authoring guardian can accept/reject
         if application.post.guardian != request.user:
-            return Response({'error': 'You do not have permission to update this application.'}, status=status.HTTP_403_FORBIDDEN)
+            return Response(
+                {'error': 'You do not have permission to update this application.'}, 
+                status=status.HTTP_403_FORBIDDEN
+            )
 
         new_status = request.data.get('status')
-        if new_status not in ['accepted', 'rejected']:
-            return Response({'error': "Status must be 'accepted' or 'rejected'."}, status=status.HTTP_400_BAD_REQUEST)
+        # Allow 'demo' as an intuitive alias for 'demo_requested'
+        if new_status == 'demo':
+            new_status = 'demo_requested'
 
+        if new_status not in ['accepted', 'rejected', 'demo_requested']:
+            return Response(
+                {'error': "Status must be 'accepted', 'rejected', or 'demo_requested'."}, 
+                status=status.HTTP_400_BAD_REQUEST
+            )
+
+        # Step 3: Update application status
         application.status = new_status
         application.save()
 
-        # Handle accept / reject triggers
+        # Step 4: Handle Status-Specific Actions
         if new_status == 'accepted':
-            # Set related post to closed
+            # Mark the post as closed so no more applications are accepted
             application.post.status = 'closed'
             application.post.save()
 
-            # Automatically create a TutorCommission record (15% of tuition salary) upon hire.
-            # Note for Viva Defense:
-            # We use application.post.salary directly as TuitionPost defines salary as a single Decimal figure.
-            # 15% of this tuition salary is automatically logged as a pending commission obligation owed by the tutor.
+            # Calculate and log the 15% platform commission fee (due within 10 days)
             from subscriptions.models import TutorCommission
-            from decimal import Decimal
+            from datetime import timedelta
+            from django.utils import timezone
 
             tuition_amt = application.post.salary
             commission_amt = round(Decimal(str(tuition_amt)) * Decimal('0.15'), 2)
+            now = timezone.now()
+            due_deadline = now + timedelta(days=10)
 
             TutorCommission.objects.get_or_create(
                 application=application,
@@ -250,16 +426,23 @@ class ApplicationDetailView(APIView):
                     'tuition_amount': tuition_amt,
                     'commission_amount': commission_amt,
                     'status': 'pending',
+                    'due_date': due_deadline,
                 }
             )
 
-            # Create notification for tutor
+            # Send acceptance alert to the tutor
             Notification.objects.create(
                 user=application.tutor,
-                message=f"Your application for '{application.post.subject}' was accepted!",
+                message=f"Congratulations! Your application for '{application.post.subject}' was accepted. 15% platform commission ({commission_amt} BDT) is due within 10 days.",
+            )
+        elif new_status == 'demo_requested':
+            # Send demo class selection alert to the tutor
+            Notification.objects.create(
+                user=application.tutor,
+                message=f"Great news! You have been selected for a demo class for '{application.post.subject}' by guardian {request.user.username}. Please prepare your demo class.",
             )
         elif new_status == 'rejected':
-            # Create notification for tutor
+            # Send rejection alert to the tutor
             Notification.objects.create(
                 user=application.tutor,
                 message=f"Your application for '{application.post.subject}' was not selected.",
@@ -269,10 +452,14 @@ class ApplicationDetailView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# ==========================================
+# 4. NOTIFICATIONS
+# ==========================================
+
 class NotificationListView(generics.ListAPIView):
     """
     GET /api/notifications/
-    Lists current user's notifications, most recent first.
+    Returns the current user's notifications sorted with newest first.
     """
     serializer_class = NotificationSerializer
     permission_classes = [permissions.IsAuthenticated]
@@ -284,7 +471,7 @@ class NotificationListView(generics.ListAPIView):
 class NotificationMarkReadView(APIView):
     """
     PUT /api/notifications/<id>/read/
-    Marks a single notification as read if it belongs to request.user.
+    Marks a single notification as read.
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -301,10 +488,14 @@ class NotificationMarkReadView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# ==========================================
+# 5. FAVORITES (BOOKMARKS)
+# ==========================================
+
 class FavoriteToggleView(APIView):
     """
-    POST /api/favorites/<tutor_id>/ — add a tutor to favorites (IsAuthenticated + IsGuardian)
-    DELETE /api/favorites/<tutor_id>/ — remove a tutor from favorites (IsAuthenticated + IsGuardian)
+    POST /api/favorites/<tutor_id>/   -> Add a tutor to guardian favorites
+    DELETE /api/favorites/<tutor_id>/ -> Remove a tutor from favorites
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -318,7 +509,10 @@ class FavoriteToggleView(APIView):
             return Response({'error': 'Tutor not found.'}, status=status.HTTP_404_NOT_FOUND)
 
         favorite, created = Favorite.objects.get_or_create(guardian=request.user, tutor=tutor)
-        return Response({'status': 'favorited', 'is_favorited': True}, status=status.HTTP_201_CREATED if created else status.HTTP_200_OK)
+        return Response(
+            {'status': 'favorited', 'is_favorited': True}, 
+            status=status.HTTP_201_CREATED if created else status.HTTP_200_OK
+        )
 
     def delete(self, request, tutor_id):
         if request.user.role != 'guardian':
@@ -335,7 +529,8 @@ class FavoriteToggleView(APIView):
 
 class FavoriteListView(APIView):
     """
-    GET /api/favorites/ — list the guardian's favorited tutors (IsAuthenticated + IsGuardian)
+    GET /api/favorites/
+    Lists all tutors favorited by the logged-in guardian.
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -349,10 +544,14 @@ class FavoriteListView(APIView):
         return Response(serializer.data, status=status.HTTP_200_OK)
 
 
+# ==========================================
+# 6. REVIEWS & RATINGS
+# ==========================================
+
 class ReviewListCreateView(APIView):
     """
-    POST /api/reviews/ (IsAuthenticated + IsGuardian)
-    Allows a guardian to submit a review for a tutor ONLY if they have an accepted application.
+    POST /api/reviews/
+    Allows a guardian to submit a 1-5 star review for a tutor they have hired.
     """
     permission_classes = [permissions.IsAuthenticated]
 
@@ -401,8 +600,8 @@ class ReviewListCreateView(APIView):
 
 class TutorReviewListView(APIView):
     """
-    GET /api/tutors/<tutor_id>/reviews/ (public, AllowAny)
-    Lists reviews for a tutor with rating summary.
+    GET /api/tutors/<tutor_id>/reviews/
+    Public endpoint: Returns all reviews and average star rating for a tutor.
     """
     permission_classes = [permissions.AllowAny]
 
@@ -421,24 +620,29 @@ class TutorReviewListView(APIView):
         }, status=status.HTTP_200_OK)
 
 
+# ==========================================
+# 7. PUBLIC TUTOR DIRECTORY
+# ==========================================
+
 class TutorListView(APIView):
     """
-    GET /api/tutors/ (public, AllowAny)
-    Lists all tutor profiles with rating summary & favorite status.
+    GET /api/tutors/
+    Public directory: Returns all tutor profiles.
+    Subscribed tutors are placed at the top of results.
     """
     permission_classes = [permissions.AllowAny]
 
     def get(self, request):
         from subscriptions.models import Subscription
 
-        # Get user IDs of all active subscribers
+        # Step 1: Find all tutors with active subscriptions
         active_subscriber_user_ids = set(
             Subscription.objects.filter(status='active').values_list('user_id', flat=True)
         )
 
         tutor_profiles = list(TutorProfile.objects.all().select_related('user'))
 
-        # Boost subscribed tutors so they appear at the top of listings
+        # Step 2: Sort subscribed tutors first
         tutor_profiles.sort(key=lambda tp: tp.user_id not in active_subscriber_user_ids)
 
         serializer = TutorCardSerializer(tutor_profiles, many=True, context={'request': request})
@@ -447,8 +651,9 @@ class TutorListView(APIView):
 
 class TutorDetailView(APIView):
     """
-    GET /api/tutors/<tutor_id>/ (public, AllowAny)
-    Gets detailed tutor profile including rating, review count, favorite status, and whether current guardian can review.
+    GET /api/tutors/<tutor_id>/
+    Public endpoint: Returns full tutor profile details.
+    Also indicates whether the requesting guardian is eligible to write a review.
     """
     permission_classes = [permissions.AllowAny]
 
@@ -461,7 +666,7 @@ class TutorDetailView(APIView):
         serializer = TutorCardSerializer(profile, context={'request': request})
         data = serializer.data
 
-        # Check if request.user is a guardian who has hired this tutor
+        # Check if the requesting user is a guardian who hired this tutor
         can_review = False
         if request.user.is_authenticated and request.user.role == 'guardian':
             can_review = Application.objects.filter(
@@ -474,52 +679,48 @@ class TutorDetailView(APIView):
         return Response(data, status=status.HTTP_200_OK)
 
 
-class IsAdmin(permissions.BasePermission):
-    """
-    Custom permission class to check request.user.role == 'admin'.
-    """
+# ==========================================
+# 8. ADMIN ANALYTICS
+# ==========================================
 
+class IsAdmin(permissions.BasePermission):
+    """Permission check ensuring only admin users can access analytics."""
     def has_permission(self, request, view):
         return bool(request.user and request.user.is_authenticated and request.user.role == 'admin')
 
 
 class AdminAnalyticsView(APIView):
     """
-    GET /api/admin/analytics/ (IsAuthenticated + IsAdmin)
-    Returns aggregated system analytics and 8-week signup metrics for admin dashboard & charts.
+    GET /api/admin/analytics/
+    Admin-only dashboard metrics: user counts, post stats, applications, and weekly signups.
     """
-
     permission_classes = [permissions.IsAuthenticated, IsAdmin]
 
     def get(self, request):
         now = timezone.now()
 
-        # User counts
+        # Total counts by role
         total_users = User.objects.count()
         total_guardians = User.objects.filter(role='guardian').count()
         total_tutors = User.objects.filter(role='tutor').count()
         total_admins = User.objects.filter(role='admin').count()
 
-        # Tutor verification
+        # Verification stats
         tutors_verified = TutorProfile.objects.filter(is_verified=True).count()
         tutors_unverified = TutorProfile.objects.filter(is_verified=False).count()
 
-        # Tuition post status
+        # Post stats
         posts_open = TuitionPost.objects.filter(status='open').count()
         posts_closed = TuitionPost.objects.filter(status='closed').count()
         total_posts = TuitionPost.objects.count()
 
-        # Application status
+        # Application stats
         total_applications = Application.objects.count()
         applications_pending = Application.objects.filter(status='pending').count()
         applications_accepted = Application.objects.filter(status='accepted').count()
         applications_rejected = Application.objects.filter(status='rejected').count()
 
-        # Moderation reports (Reports feature not built yet — return 0 as specified)
-        total_reports = 0
-        reports_open = 0
-
-        # Signups per week for the last 8 weeks
+        # Signups per week over the last 8 weeks
         signups_per_week = []
         for i in range(7, -1, -1):
             start_date = now - timedelta(days=(i + 1) * 7)
@@ -545,10 +746,7 @@ class AdminAnalyticsView(APIView):
             'applications_pending': applications_pending,
             'applications_accepted': applications_accepted,
             'applications_rejected': applications_rejected,
-            'total_reports': total_reports,
-            'reports_open': reports_open,
+            'total_reports': 0,
+            'reports_open': 0,
             'signups_per_week': signups_per_week,
         }, status=status.HTTP_200_OK)
-
-
-

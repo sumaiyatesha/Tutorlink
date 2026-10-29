@@ -6,7 +6,7 @@
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 
-from .models import User
+from .models import User, TutorProfile
 
 
 class UserAdmin(BaseUserAdmin):
@@ -32,5 +32,31 @@ class UserAdmin(BaseUserAdmin):
     )
 
 
+class TutorProfileAdmin(admin.ModelAdmin):
+    """
+    Admin configuration for TutorProfile to review tutor credentials,
+    inspect uploaded CVs and certificates, and verify tutors.
+    """
+
+    # Add key tutor info to the list of columns in the tutor list page.
+    list_display = ('user', 'phone', 'location', 'is_verified', 'is_currently_student')
+
+    # Add verification status to the filter sidebar to filter unverified tutors.
+    list_filter = ('is_verified',)
+
+    # Allow ticking the verification checkbox directly from the list view.
+    list_editable = ('is_verified',)
+
+    # Add search bar to quickly find tutors by username or email.
+    search_fields = ('user__username', 'user__email')
+
+    # Show CV and certificate as clickable download links in the detail view.
+    readonly_fields = ('cv', 'certificate')
+
+
 # Register our custom User model with our custom admin class.
 admin.site.register(User, UserAdmin)
+
+# Register the TutorProfile model with our TutorProfileAdmin class.
+admin.site.register(TutorProfile, TutorProfileAdmin)
+

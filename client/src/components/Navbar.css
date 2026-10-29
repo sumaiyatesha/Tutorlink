@@ -27,7 +27,7 @@
   font-size: 22px;
   font-weight: 800;
   text-decoration: none;
-  color: #4f46e5;
+  color: #141313;
   letter-spacing: -0.3px;
 }
 
@@ -52,7 +52,7 @@
 
 /* Flat Primary Register / CTA Button */
 .site-nav-cta {
-  background-color: #4f46e5;
+  background-color: #bdabed;
   color: #ffffff;
   padding: 8px 18px;
   border-radius: 8px;
@@ -64,7 +64,7 @@
 }
 
 .site-nav-cta:hover {
-  background-color: #4338ca;
+  background-color: #161616;
 }
 
 /* Right-side user controls wrapper */

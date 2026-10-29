@@ -113,8 +113,24 @@ function GuardianApplicants() {
                       </p>
 
                       <div className="applicant-tags-row">
-                        <Badge variant={app.status === 'accepted' ? 'verified' : app.status === 'rejected' ? 'danger' : 'primary'}>
-                          Status: {app.status}
+                        <Badge
+                          variant={
+                            app.status === 'accepted'
+                              ? 'verified'
+                              : app.status === 'demo_requested'
+                              ? 'warning'
+                              : app.status === 'rejected'
+                              ? 'danger'
+                              : 'primary'
+                          }
+                        >
+                          {app.status === 'demo_requested'
+                            ? '🎓 Demo Requested'
+                            : app.status === 'accepted'
+                            ? '✓ Accepted / Hired'
+                            : app.status === 'rejected'
+                            ? '✕ Rejected'
+                            : 'Pending Review'}
                         </Badge>
 
                         {app.distance_km !== undefined && app.distance_km !== null && (
@@ -123,6 +139,29 @@ function GuardianApplicants() {
                           </Badge>
                         )}
                       </div>
+
+                      {/* Tutor CV view option for guardian */}
+                      <div style={{ marginTop: '10px' }}>
+                        {app.tutor_cv ? (
+                          <a
+                            href={app.tutor_cv}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="btn-view-cv"
+                            title="View tutor CV document"
+                          >
+                            📄 View Tutor CV {app.tutor_cv_name ? `(${app.tutor_cv_name})` : ''}
+                          </a>
+                        ) : (
+                          <span className="no-cv-badge">No CV document uploaded</span>
+                        )}
+                      </div>
+
+                      {app.status === 'demo_requested' && (
+                        <p style={{ marginTop: '8px', fontSize: '12.5px', color: '#b45309', fontWeight: 600 }}>
+                          ℹ️ Demo class requested. You can evaluate the tutor and then click Accept to hire, or Reject.
+                        </p>
+                      )}
                     </div>
                   </div>
 
@@ -130,18 +169,52 @@ function GuardianApplicants() {
                     {app.status === 'pending' && (
                       <>
                         <button
+                          type="button"
+                          className="btn-demo"
+                          disabled={updatingId === app.id}
+                          onClick={() => handleUpdateStatus(app.id, 'demo_requested')}
+                          title="Ask teacher for a demo class before final decision"
+                        >
+                          {updatingId === app.id ? 'Sending...' : '🎓 Ask for Demo'}
+                        </button>
+                        <button
+                          type="button"
                           className="btn-accept"
                           disabled={updatingId === app.id}
                           onClick={() => handleUpdateStatus(app.id, 'accepted')}
+                          title="Directly accept and hire tutor"
                         >
-                          {updatingId === app.id ? 'Accepting...' : 'Accept'}
+                          {updatingId === app.id ? 'Accepting...' : '✓ Accept'}
                         </button>
                         <button
+                          type="button"
                           className="btn-reject"
                           disabled={updatingId === app.id}
                           onClick={() => handleUpdateStatus(app.id, 'rejected')}
                         >
-                          {updatingId === app.id ? 'Rejecting...' : 'Reject'}
+                          {updatingId === app.id ? 'Rejecting...' : '✕ Reject'}
+                        </button>
+                      </>
+                    )}
+
+                    {app.status === 'demo_requested' && (
+                      <>
+                        <button
+                          type="button"
+                          className="btn-accept"
+                          disabled={updatingId === app.id}
+                          onClick={() => handleUpdateStatus(app.id, 'accepted')}
+                          title="Accept and hire tutor after demo session"
+                        >
+                          {updatingId === app.id ? 'Accepting...' : '✓ Accept Tutor'}
+                        </button>
+                        <button
+                          type="button"
+                          className="btn-reject"
+                          disabled={updatingId === app.id}
+                          onClick={() => handleUpdateStatus(app.id, 'rejected')}
+                        >
+                          {updatingId === app.id ? 'Rejecting...' : '✕ Reject'}
                         </button>
                       </>
                     )}

@@ -8,7 +8,7 @@
 //
 // Simple, lightweight, and thoroughly commented for viva defense.
 
-import { useState } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { useAuth } from '../AuthContext'
 import NotificationBell from './NotificationBell'
@@ -20,9 +20,21 @@ function Navbar() {
 
   // State to track whether profile dropdown menu is open or closed
   const [dropdownOpen, setDropdownOpen] = useState(false)
+  const profileMenuRef = useRef(null)
 
   // React Router hook for programmatically navigating after logout
   const navigate = useNavigate()
+
+  // Close dropdown when clicking outside
+  useEffect(() => {
+    function handleClickOutside(event) {
+      if (profileMenuRef.current && !profileMenuRef.current.contains(event.target)) {
+        setDropdownOpen(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   // Function to toggle dropdown menu visibility when avatar is clicked
   function toggleDropdown() {
@@ -33,7 +45,7 @@ function Navbar() {
   function handleLogout() {
     logout()
     setDropdownOpen(false)
-    navigate('/login')
+    navigate('/')
   }
 
   // Helper function to extract user's avatar initial (e.g. 'J' from 'John')
@@ -54,9 +66,6 @@ function Navbar() {
           </Link>
           <Link to="/guardian/posts" className="site-nav-link">
             My Posts
-          </Link>
-          <Link to="/guardian/favorites" className="site-nav-link">
-            Favorites
           </Link>
         </>
       )
@@ -127,7 +136,7 @@ function Navbar() {
 
         {/* User Controls: Bell Icon & Profile Dropdown (Shown when logged in) */}
         {user && (
-          <div className="site-nav-user-area">
+          <div className="site-nav-user-area" ref={profileMenuRef}>
             
             {/* Interactive Notification Bell */}
             <NotificationBell />

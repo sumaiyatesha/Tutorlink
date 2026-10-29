@@ -75,11 +75,13 @@ function JobDetail() {
         cover_note: 'I am interested in this tuition job and have relevant experience.',
       })
       setApplied(true)
-      setMessage('Application submitted successfully!')
+      setMessage('✅ Application submitted successfully!')
     } catch (err) {
-      // If already applied or endpoint error, set feedback gracefully
-      setApplied(true)
-      setMessage('Application received! Your profile has been sent to the guardian.')
+      console.error('Application error:', err)
+      const errorMsg = err.response && err.response.data && err.response.data.error
+        ? err.response.data.error
+        : 'Failed to submit application. Please ensure your profile (Contact No, NID No, Student ID/Certificate, Location) is complete.'
+      setMessage(`⚠️ ${errorMsg}`)
     } finally {
       setApplying(false)
     }
@@ -136,6 +138,9 @@ function JobDetail() {
   }
 
   const isTutorLoggedIn = user && user.role === 'tutor'
+  const appStatus = job?.my_application_status
+  const isDemoOrAccepted = isTutorLoggedIn && (appStatus === 'demo_requested' || appStatus === 'accepted')
+  const isPending = Boolean(applied || appStatus === 'pending')
 
   return (
     <div className={`job-detail-page ${isTutorLoggedIn ? 'with-sidebar-layout' : 'with-navbar-layout'}`}>
@@ -259,32 +264,66 @@ function JobDetail() {
               </div>
             </div>
 
-            {message && (
-              <div style={{ backgroundColor: '#ecfdf5', color: '#10b981', padding: '10px', borderRadius: '8px', fontSize: '13px', fontWeight: 600 }}>
-                {message}
+            {/* When tutor has Demo Offer or is Accepted: Show ONLY Guardian Cell No & Directions */}
+            {isDemoOrAccepted ? (
+              <div className="guardian-contact-panel">
+                <div className={`contact-status-banner ${appStatus === 'accepted' ? 'accepted' : 'demo'}`}>
+                  <span className="cs-icon">{appStatus === 'accepted' ? '🎉' : '🎓'}</span>
+                  <div>
+                    <strong>
+                      {appStatus === 'accepted' ? 'You are Hired & Accepted!' : 'Selected for Demo Class!'}
+                    </strong>
+                    <p>
+                      {appStatus === 'accepted'
+                        ? 'Congratulations! Call the guardian to confirm tuition schedule and start date.'
+                        : 'The guardian has requested a demo class. Call the guardian to schedule your demo class.'}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="guardian-cell-card">
+                  <span className="cell-card-label">Guardian Contact Number</span>
+                  <div className="cell-card-number">
+                    📱 {job.guardian_phone || 'Cell on file'}
+                  </div>
+                  {job.guardian_phone && (
+                    <a href={`tel:${job.guardian_phone}`} className="btn-call-guardian">
+                      📞 Call Guardian
+                    </a>
+                  )}
+                </div>
+
+                {/* Get Direction Button */}
+                <button className="btn-get-direction" onClick={handleGetDirection}>
+                  📍 Get Direction
+                </button>
               </div>
+            ) : (
+              /* When not yet selected for demo/accepted: Show standard Apply, Bookmark, Directions */
+              <>
+                {message && (
+                  <div style={{ backgroundColor: '#ecfdf5', color: '#10b981', padding: '10px', borderRadius: '8px', fontSize: '13px', fontWeight: 600 }}>
+                    {message}
+                  </div>
+                )}
+
+                {/* Apply Button */}
+                <button
+                  className="btn-apply-now"
+                  onClick={handleApply}
+                  disabled={applying || isPending}
+                >
+                  {isPending ? '✓ Application Submitted' : applying ? 'Submitting...' : 'Apply Now'}
+                </button>
+
+                
+
+                {/* Get Direction Button */}
+                <button className="btn-get-direction" onClick={handleGetDirection}>
+                  📍 Get Direction
+                </button>
+              </>
             )}
-
-            {/* Apply Button */}
-            <button
-              className="btn-apply-now"
-              onClick={handleApply}
-              disabled={applying || applied}
-            >
-              {applied ? '✓ Application Submitted' : applying ? 'Submitting...' : 'Apply Now'}
-            </button>
-
-            {/* Bookmark Button */}
-            {/* TODO: Wire up bookmark favorite endpoint once available */}
-            <button className="btn-bookmark" onClick={handleBookmark}>
-              {bookmarked ? '⭐ Bookmarked' : '☆ Bookmark Job'}
-            </button>
-
-            {/* Get Direction Button */}
-            {/* TODO: Wire up interactive map directions in Phase 11 */}
-            <button className="btn-get-direction" onClick={handleGetDirection}>
-              📍 Get Direction
-            </button>
           </div>
 
         </div>

@@ -1,0 +1,12 @@
+/* letstest.css — styles scoped to the tutor letstest page only */
+
+.tutor-letstest-page {
+  padding: 40px;
+}
+
+.tutor-letstest-page h1 {
+  font-size: 28px;
+  font-weight: 800;
+  color: #0f172a;
+  margin-bottom: 4px;
+}

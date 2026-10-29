@@ -1,56 +1,17 @@
-# accounts/utils.py — Shared utility functions for TutorLink backend.
-#
-# Contains the Haversine formula calculation for computing great-circle
-# distances between two latitude/longitude pairs on Earth in kilometers.
+"""
+TutorLink - Utility Functions (server/accounts/utils.py)
+
+This module contains shared helper functions:
+1. haversine_distance: Calculates real-world geographic distance (in kilometers)
+   between two (latitude, longitude) coordinates.
+2. get_district_coordinates: Looks up approximate coordinates for Bangladeshi districts
+   and neighborhoods to enable location-based matching.
+"""
 
 import math
 
-
-def haversine_distance(lat1, lon1, lat2, lon2):
-    """
-    Calculates the great-circle distance between two points on the Earth (lat/lng) in kilometers.
-
-    HAVERSINE FORMULA EXPLANATION FOR VIVA:
-    --------------------------------------
-    1. The Earth is spherical, so flat 2D distance formulas (like Pythagorean theorem) produce incorrect distances over spherical coordinates.
-    2. Haversine converts latitude and longitude from degrees to radians.
-    3. It calculates the angular difference in latitude (dlat = lat2 - lat1) and longitude (dlon = lon2 - lon1).
-    4. Using spherical trigonometry (sine and cosine of latitudes), it computes the square of half the chord length ('a').
-    5. The angular distance in radians 'c' is 2 * atan2(sqrt(a), sqrt(1-a)).
-    6. Multiplying 'c' by the Earth's mean radius (R = 6371.0 km) produces the true distance in kilometers.
-
-    Returns:
-        float: Distance in kilometers rounded to 1 decimal place (e.g. 6.2), or None if coordinates are missing.
-    """
-    if None in (lat1, lon1, lat2, lon2):
-        return None
-
-    try:
-        lat1, lon1, lat2, lon2 = map(float, [lat1, lon1, lat2, lon2])
-    except (TypeError, ValueError):
-        return None
-
-    # Earth's mean radius in kilometers
-    R = 6371.0
-
-    # Convert degrees to radians
-    phi1 = math.radians(lat1)
-    phi2 = math.radians(lat2)
-    dphi = math.radians(lat2 - lat1)
-    dlambda = math.radians(lon2 - lon1)
-
-    # Haversine formula computation
-    a = (
-        math.sin(dphi / 2.0) ** 2
-        + math.cos(phi1) * math.cos(phi2) * math.sin(dlambda / 2.0) ** 2
-    )
-    c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
-    distance = R * c
-
-    return round(distance, 1)
-
-
-# Approximate coordinates for major Bangladeshi districts and Dhaka areas for distance fallback
+# Approximate GPS Coordinates for major Bangladeshi districts and Dhaka neighborhoods.
+# Key: lowercase name, Value: (Latitude, Longitude)
 DISTRICT_COORDINATES = {
     'dhaka': (23.8103, 90.4125),
     'uttara': (23.8759, 90.3795),
@@ -75,17 +36,81 @@ DISTRICT_COORDINATES = {
 }
 
 
+def haversine_distance(lat1, lon1, lat2, lon2):
+    """
+    Calculate the great-circle distance between two GPS points on Earth in kilometers.
+
+    Why Haversine?
+    - The Earth is curved (spherical), so standard 2D Euclidean distance produces inaccurate results.
+    - Haversine trigonometry accounts for the curvature of the Earth.
+
+    Parameters:
+        lat1 (float): Latitude of the starting location.
+        lon1 (float): Longitude of the starting location.
+        lat2 (float): Latitude of the destination location.
+        lon2 (float): Longitude of the destination location.
+
+    Returns:
+        float: Distance in kilometers (rounded to 1 decimal place), or None if coordinates are invalid.
+    """
+    # Step 1: Ensure all four coordinates are provided
+    if None in (lat1, lon1, lat2, lon2):
+        return None
+
+    # Step 2: Safely convert input values to floating point numbers
+    try:
+        lat1 = float(lat1)
+        lon1 = float(lon1)
+        lat2 = float(lat2)
+        lon2 = float(lon2)
+    except (TypeError, ValueError):
+        return None
+
+    # Step 3: Mean radius of Planet Earth in kilometers
+    EARTH_RADIUS_KM = 6371.0
+
+    # Step 4: Convert degree coordinates to radians for trigonometric calculation
+    phi1 = math.radians(lat1)
+    phi2 = math.radians(lat2)
+    delta_phi = math.radians(lat2 - lat1)
+    delta_lambda = math.radians(lon2 - lon1)
+
+    # Step 5: Haversine mathematical formula
+    # a is the square of half the chord length between the points
+    a = (
+        math.sin(delta_phi / 2.0) ** 2
+        + math.cos(phi1) * math.cos(phi2) * math.sin(delta_lambda / 2.0) ** 2
+    )
+
+    # c is the angular distance in radians
+    c = 2.0 * math.atan2(math.sqrt(a), math.sqrt(1.0 - a))
+
+    # Step 6: Compute final distance in kilometers
+    distance = EARTH_RADIUS_KM * c
+
+    return round(distance, 1)
+
+
 def get_district_coordinates(location_str):
     """
-    Extracts approximate latitude and longitude coordinates from a Bangladeshi location string.
-    Returns (lat, lng) tuple or None if no match found.
+    Look up approximate GPS (latitude, longitude) coordinates for a given location text.
+
+    Parameters:
+        location_str (str): Address or city name text (e.g. 'Dhanmondi, Dhaka').
+
+    Returns:
+        tuple (float, float): (latitude, longitude) pair, or None if not found.
     """
+    # Step 1: Check if a valid string is provided
     if not location_str or not isinstance(location_str, str):
         return None
 
+    # Step 2: Normalize text to lowercase and strip extra whitespace
     cleaned = location_str.lower().strip()
-    for key, coords in DISTRICT_COORDINATES.items():
-        if key in cleaned:
+
+    # Step 3: Check against known locations
+    for district_name, coords in DISTRICT_COORDINATES.items():
+        if district_name in cleaned:
             return coords
 
     return None

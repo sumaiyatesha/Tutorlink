@@ -1,1034 +1,2381 @@
-/* SubscriptionPage.css — Modern Purple Aesthetic for In-App Simulated Checkout */
+/* =========================================================
+   Subscription Page
+   Modern Purple Aesthetic for In-App Checkout
+   ========================================================= */
 
 .subscription-page {
+  /* Make the page at least as tall as the viewport */
   min-height: 100vh;
+
+  /* Light background for the entire subscription page */
   background-color: #f8fafc;
+
+  /* Primary font stack */
   font-family: Inter, system-ui, -apple-system, sans-serif;
+
+  /* Default text color */
   color: #1e293b;
 }
 
 .subscription-container {
+  /* Limit the maximum width of the content */
   max-width: 1100px;
+
+  /* Center the container horizontally */
   margin: 0 auto;
+
+  /* Top, horizontal, and bottom spacing */
   padding: 36px 24px 72px 24px;
 }
 
-/* --- Page Header --- */
+
+/* =========================================================
+   PAGE HEADER
+   ========================================================= */
+
 .subscription-header {
+  /* Center all header content */
   text-align: center;
+
+  /* Space below the header */
   margin-bottom: 28px;
 }
 
-.header-badge-wrap {
-  margin-bottom: 12px;
-}
-
-.hero-badge {
-  display: inline-block;
-  background-color: #eef2ff;
-  color: #4f46e5;
-  font-size: 13px;
-  font-weight: 600;
-  padding: 6px 16px;
-  border-radius: 20px;
-  border: 1px solid #c7d2fe;
-}
-
 .subscription-header h1 {
+  /* Main heading size */
   font-size: 32px;
+
+  /* Extra-bold heading */
   font-weight: 800;
+
+  /* Dark heading color */
   color: #0f172a;
+
+  /* Slightly tighten letter spacing */
   letter-spacing: -0.5px;
+
+  /* Space below heading */
   margin-bottom: 8px;
 }
 
 .subscription-header p {
+  /* Description text size */
   font-size: 15px;
+
+  /* Gray text */
   color: #64748b;
+
+  /* Limit paragraph width */
   max-width: 620px;
+
+  /* Center the paragraph */
   margin: 0 auto;
+
+  /* Improve readability */
   line-height: 1.6;
 }
 
-/* --- Global Demo Disclaimer Banner --- */
-.demo-disclaimer-banner {
-  background-color: #fffbeb;
-  border: 1px solid #fde68a;
-  color: #92400e;
-  padding: 14px 20px;
-  border-radius: 12px;
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  font-size: 13.5px;
-  margin-bottom: 28px;
-}
 
-.demo-disclaimer-icon {
-  font-size: 22px;
-  flex-shrink: 0;
-}
+/* =========================================================
+   STATUS ALERT BANNER
+   ========================================================= */
 
-/* --- Status Alert Banner --- */
 .status-notice-banner {
+  /* Light green success background */
   background-color: #f0fdf4;
+
+  /* Green border */
   border: 1px solid #bbf7d0;
+
+  /* Green text */
   color: #166534;
+
+  /* Internal spacing */
   padding: 12px 18px;
+
+  /* Rounded corners */
   border-radius: 10px;
+
+  /* Text size */
   font-size: 14px;
+
+  /* Semi-bold text */
   font-weight: 600;
+
+  /* Space below banner */
   margin-bottom: 24px;
+
+  /* Horizontal layout */
   display: flex;
-  justify-content: space-between;
+
+  /* Vertical alignment */
   align-items: center;
+
+  /* Put content at opposite sides */
+  justify-content: space-between;
 }
 
 .notice-close-btn {
+  /* Remove default button background */
   background: none;
+
+  /* Remove default button border */
   border: none;
+
+  /* Green button/icon color */
   color: #166534;
+
+  /* Button text/icon size */
   font-size: 16px;
+
+  /* Show pointer cursor */
   cursor: pointer;
 }
 
-/* --- Main Grid Layout --- */
+
+/* =========================================================
+   MAIN GRID LAYOUT
+   ========================================================= */
+
 .subscription-grid {
+  /* Use CSS Grid for the two-column layout */
   display: grid;
+
+  /* Left column is smaller than right column */
   grid-template-columns: 1fr 1.3fr;
+
+  /* Space between the two columns */
   gap: 30px;
+
+  /* Align items to the top */
   align-items: start;
 }
 
+
+/* Responsive layout:
+   At screens 900px or smaller, use one column. */
 @media (max-width: 900px) {
   .subscription-grid {
+    /* Stack columns vertically */
     grid-template-columns: 1fr;
   }
 }
 
-/* --- Left Column: Plan Hero Card --- */
+
+/* =========================================================
+   LEFT COLUMN — PLAN HERO CARD
+   ========================================================= */
+
 .plan-hero-card {
-  background-color: #4f46e5;
+  /* Purple background */
+  background-color: #101011;
+
+  /* White text */
   color: #ffffff;
+
+  /* Rounded card corners */
   border-radius: 16px;
+
+  /* Internal spacing */
   padding: 32px;
+
+  /* Allows positioned child elements */
   position: relative;
 }
 
 .plan-role-badge {
+  /* Keep badge only as wide as its content */
   display: inline-block;
+
+  /* Semi-transparent white background */
   background-color: rgba(255, 255, 255, 0.2);
+
+  /* White text */
   color: #ffffff;
+
+  /* Small text */
   font-size: 12px;
+
+  /* Semi-bold text */
   font-weight: 600;
+
+  /* Badge spacing */
   padding: 5px 14px;
+
+  /* Pill-shaped badge */
   border-radius: 20px;
+
+  /* Space below badge */
   margin-bottom: 14px;
 }
 
 .plan-title {
+  /* Plan name size */
   font-size: 28px;
+
+  /* Extra-bold title */
   font-weight: 800;
+
+  /* Space below title */
   margin-bottom: 10px;
+
+  /* Slightly tighter letters */
   letter-spacing: -0.5px;
 }
 
 .plan-price-row {
+  /* Put price elements in one row */
   display: flex;
+
+  /* Vertically align price elements */
   align-items: baseline;
+
+  /* Small gap between amount/currency/period */
   gap: 6px;
+
+  /* Vertical spacing around price */
   margin: 16px 0 18px 0;
 }
 
 .plan-amount {
+  /* Large price amount */
   font-size: 46px;
+
+  /* Very bold price */
   font-weight: 900;
+
+  /* Compact line height */
   line-height: 1;
 }
 
 .plan-currency {
+  /* Currency text size */
   font-size: 20px;
+
+  /* Bold currency */
   font-weight: 700;
+
+  /* Slight transparency */
   opacity: 0.9;
 }
 
 .plan-period {
+  /* Period text size */
   font-size: 14px;
+
+  /* Slight transparency */
   opacity: 0.8;
+
+  /* Medium font weight */
   font-weight: 500;
 }
 
 .plan-description {
+  /* Description text size */
   font-size: 14px;
+
+  /* Improve readability */
   line-height: 1.6;
+
+  /* Slightly transparent white */
   opacity: 0.92;
+
+  /* Space below description */
   margin-bottom: 22px;
 }
 
 .plan-features-divider {
+  /* Thin horizontal divider */
   height: 1px;
+
+  /* Semi-transparent white */
   background-color: rgba(255, 255, 255, 0.18);
+
+  /* Space below divider */
   margin-bottom: 20px;
 }
 
 .plan-features-list {
+  /* Remove default list bullets */
   list-style: none;
+
+  /* Remove default left padding */
   padding: 0;
+
+  /* Remove default margin and add bottom spacing */
   margin: 0 0 24px 0;
+
+  /* Use flex layout */
   display: flex;
+
+  /* Stack features vertically */
   flex-direction: column;
+
+  /* Space between features */
   gap: 12px;
 }
 
 .plan-features-list li {
+  /* Put icon and text in a row */
   display: flex;
+
+  /* Align items at the top */
   align-items: flex-start;
+
+  /* Space between icon and text */
   gap: 10px;
+
+  /* Feature text size */
   font-size: 14px;
+
+  /* Medium-bold text */
   font-weight: 500;
+
+  /* Improve readability */
   line-height: 1.4;
 }
 
 .feat-icon {
+  /* Feature icon size */
   font-size: 16px;
+
+  /* Prevent icon from shrinking */
   flex-shrink: 0;
 }
 
-.plan-simulation-badge {
+.plan-security-badge {
+  /* Slightly transparent dark background */
   background: rgba(0, 0, 0, 0.2);
+
+  /* Badge spacing */
   padding: 10px 14px;
+
+  /* Rounded corners */
   border-radius: 10px;
+
+  /* Small text */
   font-size: 12px;
+
+  /* Semi-bold text */
   font-weight: 600;
+
+  /* Light purple text */
   color: #e0e7ff;
+
+  /* Horizontal layout */
   display: flex;
+
+  /* Vertical alignment */
   align-items: center;
+
+  /* Space between icon and text */
   gap: 8px;
 }
 
-/* --- Right Column: Checkout Card --- */
+
+/* =========================================================
+   RIGHT COLUMN — CHECKOUT CARD
+   ========================================================= */
+
 .checkout-card {
+  /* White card background */
   background: #ffffff;
+
+  /* Light gray border */
   border: 1px solid #e2e8f0;
+
+  /* Rounded corners */
   border-radius: 16px;
+
+  /* Internal spacing */
   padding: 28px;
 }
 
-/* --- Stepper Indicator --- */
+
+/* =========================================================
+   CHECKOUT STEPPER
+   ========================================================= */
+
 .checkout-stepper {
+  /* Place steps horizontally */
   display: flex;
+
+  /* Vertically align steps */
   align-items: center;
+
+  /* Distribute steps across the row */
   justify-content: space-between;
+
+  /* Space below stepper */
   margin-bottom: 26px;
+
+  /* Bottom internal spacing */
   padding-bottom: 20px;
+
+  /* Divider below stepper */
   border-bottom: 1px solid #f1f5f9;
 }
 
 .step-node {
+  /* Keep number and label together */
   display: flex;
+
+  /* Vertically align number and text */
   align-items: center;
+
+  /* Space between number and label */
   gap: 8px;
+
+  /* Inactive step color */
   color: #94a3b8;
+
+  /* Step text size */
   font-size: 13px;
+
+  /* Semi-bold */
   font-weight: 600;
 }
 
 .step-node.active {
-  color: #4f46e5;
+  /* Active step color */
+  color: #161617;
+
+  /* Make active step slightly bolder */
   font-weight: 700;
 }
 
 .step-node.completed {
+  /* Completed step color */
   color: #059669;
 }
 
 .step-num {
+  /* Circle width */
   width: 26px;
+
+  /* Circle height */
   height: 26px;
+
+  /* Make it circular */
   border-radius: 50%;
+
+  /* Center the number */
   display: flex;
   align-items: center;
   justify-content: center;
+
+  /* Default background */
   background-color: #f1f5f9;
+
+  /* Default number color */
   color: #64748b;
+
+  /* Number size */
   font-size: 12px;
+
+  /* Bold number */
   font-weight: 700;
+
+  /* Smooth state transition */
   transition: all 0.2s ease;
 }
 
 .step-node.active .step-num {
+  /* Purple active circle */
   background-color: #4f46e5;
+
+  /* White number */
   color: #ffffff;
 }
 
 .step-node.completed .step-num {
+  /* Green completed circle */
   background-color: #059669;
+
+  /* White number */
   color: #ffffff;
 }
 
 .step-line {
+  /* Allow the connecting line to grow */
   flex: 1;
+
+  /* Line thickness */
   height: 2px;
+
+  /* Default inactive line */
   background-color: #f1f5f9;
+
+  /* Horizontal spacing */
   margin: 0 12px;
+
+  /* Smooth color transition */
   transition: background-color 0.2s ease;
 }
 
 .step-line.active {
+  /* Purple active connecting line */
   background-color: #4f46e5;
 }
 
-/* --- Step 1: Methods Grid --- */
+
+/* =========================================================
+   STEP 1 — PAYMENT METHODS
+   ========================================================= */
+
 .step-header {
+  /* Space below the step heading */
   margin-bottom: 20px;
 }
 
 .step-header h3 {
+  /* Heading size */
+  font-size: 18px;
+
+  /* Extra-bold heading */
+  font-weight: 800;
+
+  /* Dark heading color */
+  color: #0f172a;
+
+  /* Small spacing below */
+  margin-bottom: 4px;
+}
+
+.step-header p {
+  /* Supporting text size */
+  font-size: 13.5px;
+
+  /* Gray supporting text */
+  color: #64748b;
+}
+
+.payment-methods-grid {
+  /* Grid layout for payment methods */
+  display: grid;
+
+  /* Three equal columns */
+  grid-template-columns: repeat(3, 1fr);
+
+  /* Space between cards */
+  gap: 14px;
+
+  /* Space below payment methods */
+  margin-bottom: 22px;
+}
+
+.payment-method-card {
+  /* Card border */
+  border: 1px solid #e2e8f0;
+
+  /* Rounded corners */
+  border-radius: 12px;
+
+  /* Internal spacing */
+  padding: 16px 12px;
+
+  /* White background */
+  background: #ffffff;
+
+  /* Pointer indicates clickable card */
+  cursor: pointer;
+
+  /* Smooth hover/selection transition */
+  transition: border-color 0.2s ease, background-color 0.2s ease;
+
+  /* Vertical flex layout */
+  display: flex;
+  flex-direction: column;
+
+  /* Center content */
+  align-items: center;
+
+  /* Center text */
+  text-align: center;
+
+  /* Allows positioned check icon */
+  position: relative;
+}
+
+.payment-method-card:hover {
+  /* Slightly darker border on hover */
+  border-color: #cbd5e1;
+}
+
+.payment-method-card.selected {
+  /* Purple border for selected method */
+  border-color: #4f46e5;
+
+  /* Light purple selected background */
+  background-color: #f5f3ff;
+}
+
+.pm-header {
+  /* Header takes full card width */
+  width: 100%;
+
+  /* Horizontal flex layout */
+  display: flex;
+
+  /* Center icon */
+  justify-content: center;
+
+  /* Allows absolute check positioning */
+  position: relative;
+
+  /* Space below icon */
+  margin-bottom: 8px;
+}
+
+.pm-icon {
+  /* Payment method icon size */
+  font-size: 28px;
+}
+
+.pm-check {
+  /* Position check badge independently */
+  position: absolute;
+
+  /* Move slightly outside the right edge */
+  right: -4px;
+
+  /* Move slightly upward */
+  top: -8px;
+
+  /* Check circle width */
+  width: 18px;
+
+  /* Check circle height */
+  height: 18px;
+
+  /* Make it circular */
+  border-radius: 50%;
+
+  /* Purple background */
+  background-color: #4f46e5;
+
+  /* White check */
+  color: #ffffff;
+
+  /* Check size */
+  font-size: 11px;
+
+  /* Center check */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Bold check */
+  font-weight: 700;
+}
+
+.pm-name {
+  /* Payment method name size */
+  font-size: 14px;
+
+  /* Bold name */
+  font-weight: 700;
+
+  /* Dark text */
+  color: #0f172a;
+
+  /* Small spacing below */
+  margin-bottom: 2px;
+}
+
+.pm-badge {
+  /* Small supporting text */
+  font-size: 11px;
+
+  /* Semi-bold */
+  font-weight: 600;
+
+  /* Gray text */
+  color: #64748b;
+}
+
+
+/* =========================================================
+   ORDER SUMMARY BOX
+   ========================================================= */
+
+.order-summary-box {
+  /* Light gray background */
+  background-color: #f8fafc;
+
+  /* Border */
+  border: 1px solid #e2e8f0;
+
+  /* Rounded corners */
+  border-radius: 12px;
+
+  /* Internal spacing */
+  padding: 16px 18px;
+
+  /* Space below summary */
+  margin-bottom: 24px;
+
+  /* Vertical flex layout */
+  display: flex;
+  flex-direction: column;
+
+  /* Space between summary rows */
+  gap: 8px;
+}
+
+.summary-row {
+  /* Put label and value on opposite sides */
+  display: flex;
+
+  /* Horizontal spacing */
+  justify-content: space-between;
+
+  /* Summary text size */
+  font-size: 13.5px;
+
+  /* Gray text */
+  color: #64748b;
+}
+
+.summary-row.total-row {
+  /* Divider above total */
+  border-top: 1px solid #e2e8f0;
+
+  /* Space above content */
+  padding-top: 10px;
+
+  /* Small top margin */
+  margin-top: 4px;
+
+  /* Dark total text */
+  color: #0f172a;
+
+  /* Bold total */
+  font-weight: 700;
+
+  /* Slightly larger text */
+  font-size: 15px;
+}
+
+.total-price {
+  /* Purple total price */
+  color: #4f46e5;
+
+  /* Larger price */
+  font-size: 18px;
+
+  /* Extra-bold price */
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   CHECKOUT BUTTONS
+   ========================================================= */
+
+.btn-checkout-primary {
+  /* Purple primary button */
+  background-color: #302c33;
+
+  /* White button text */
+  color: #ffffff;
+
+  /* Remove default border */
+  border: none;
+
+  /* Button spacing */
+  padding: 14px 24px;
+
+  /* Rounded corners */
+  border-radius: 10px;
+
+  /* Text size */
+  font-size: 15px;
+
+  /* Semi-bold text */
+  font-weight: 600;
+
+  /* Show pointer cursor */
+  cursor: pointer;
+
+  /* Full available width */
+  width: 100%;
+
+  /* Smooth background transition */
+  transition: background-color 0.2s ease;
+
+  /* Center button contents */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Space between icon and text */
+  gap: 8px;
+}
+
+.btn-checkout-primary:hover {
+  /* Darker purple when hovering */
+  background-color: #4338ca;
+}
+
+.btn-checkout-primary:active {
+  /* Even darker purple while clicking */
+  background-color: #3730a3;
+}
+
+.btn-checkout-primary:disabled {
+  /* Make disabled button visually faded */
+  opacity: 0.65;
+
+  /* Show disabled cursor */
+  cursor: not-allowed;
+}
+
+.btn-checkout-secondary {
+  /* White secondary button */
+  background-color: #ffffff;
+
+  /* Gray text */
+  color: #475569;
+
+  /* Gray border */
+  border: 1px solid #cbd5e1;
+
+  /* Button spacing */
+  padding: 13px 20px;
+
+  /* Rounded corners */
+  border-radius: 10px;
+
+  /* Text size */
+  font-size: 14px;
+
+  /* Semi-bold */
+  font-weight: 600;
+
+  /* Pointer cursor */
+  cursor: pointer;
+
+  /* Smooth hover transition */
+  transition: background-color 0.2s ease, border-color 0.2s ease;
+}
+
+.btn-checkout-secondary:hover {
+  /* Light background on hover */
+  background-color: #f8fafc;
+
+  /* Darker text on hover */
+  color: #1e293b;
+
+  /* Darker border on hover */
+  border-color: #94a3b8;
+}
+
+.step-actions-row {
+  /* Place action buttons in a row */
+  display: flex;
+
+  /* Space between buttons */
+  gap: 12px;
+
+  /* Space above buttons */
+  margin-top: 24px;
+}
+
+.step-actions-row .btn-checkout-primary {
+  /* Primary button gets more width */
+  flex: 2;
+}
+
+.step-actions-row .btn-checkout-secondary {
+  /* Secondary button gets less width */
+  flex: 1;
+}
+
+
+/* =========================================================
+   STEP 2 — PAYMENT DETAILS PANELS
+   ========================================================= */
+
+.method-pill-header {
+  /* Horizontal layout */
+  display: flex;
+
+  /* Space items apart */
+  justify-content: space-between;
+
+  /* Vertical alignment */
+  align-items: center;
+
+  /* Internal spacing */
+  padding: 10px 14px;
+
+  /* Light purple background */
+  background-color: #f5f3ff;
+
+  /* Rounded corners */
+  border-radius: 10px;
+
+  /* Purple border */
+  border: 1px solid #ddd6fe;
+}
+
+.pill-method-name {
+  /* Method name weight */
+  font-weight: 700;
+
+  /* Method name size */
+  font-size: 14px;
+
+  /* Purple text */
+  color: #4338ca;
+}
+
+.pill-amount {
+  /* Amount weight */
+  font-weight: 800;
+
+  /* Amount size */
+  font-size: 15px;
+
+  /* Purple amount */
+  color: #4f46e5;
+}
+
+.mfs-form-panel,
+.card-form-panel {
+  /* Arrange form fields vertically */
+  display: flex;
+  flex-direction: column;
+
+  /* Space between fields */
+  gap: 16px;
+}
+
+.mfs-branding-box {
+  /* Horizontal layout */
+  display: flex;
+
+  /* Vertical alignment */
+  align-items: center;
+
+  /* Space between branding elements */
+  gap: 12px;
+
+  /* Light purple background */
+  background-color: #faf5ff;
+
+  /* Dashed purple border */
+  border: 1px dashed #d8b4fe;
+
+  /* Internal spacing */
+  padding: 12px 14px;
+
+  /* Rounded corners */
+  border-radius: 10px;
+}
+
+.mfs-avatar {
+  /* Purple avatar background */
+  background-color: #7e22ce;
+
+  /* White text */
+  color: #ffffff;
+
+  /* Bold text */
+  font-weight: 800;
+
+  /* Small text */
+  font-size: 12px;
+
+  /* Avatar spacing */
+  padding: 6px 10px;
+
+  /* Rounded corners */
+  border-radius: 6px;
+}
+
+.mfs-merchant-title {
+  /* Merchant title size */
+  font-size: 13px;
+
+  /* Bold title */
+  font-weight: 700;
+
+  /* Dark text */
+  color: #1e293b;
+}
+
+.mfs-merchant-id {
+  /* Merchant ID size */
+  font-size: 11.5px;
+
+  /* Gray text */
+  color: #64748b;
+}
+
+
+/* =========================================================
+   FORM GROUPS AND INPUTS
+   ========================================================= */
+
+.form-group {
+  /* Stack label and input vertically */
+  display: flex;
+  flex-direction: column;
+
+  /* Space between label and input */
+  gap: 6px;
+}
+
+.form-group label {
+  /* Label size */
+  font-size: 13px;
+
+  /* Semi-bold label */
+  font-weight: 600;
+
+  /* Dark gray label */
+  color: #334155;
+}
+
+.form-input {
+  /* Input internal spacing */
+  padding: 11px 14px;
+
+  /* Input border */
+  border: 1px solid #cbd5e1;
+
+  /* Rounded input */
+  border-radius: 10px;
+
+  /* Input text size */
+  font-size: 14.5px;
+
+  /* Input text color */
+  color: #0f172a;
+
+  /* White input background */
+  background-color: #ffffff;
+
+  /* Smooth focus transition */
+  transition: border-color 0.2s, box-shadow 0.2s;
+
+  /* Fill available width */
+  width: 100%;
+}
+
+.form-input:focus {
+  /* Remove browser default focus outline */
+  outline: none;
+
+  /* Purple focus border */
+  border-color: #4f46e5;
+
+  /* Purple focus glow */
+  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
+}
+
+.input-with-prefix {
+  /* Keep prefix and input together */
+  display: flex;
+
+  /* Vertical alignment */
+  align-items: center;
+}
+
+.phone-prefix {
+  /* Light background for phone prefix */
+  background-color: #f1f5f9;
+
+  /* Border around prefix */
+  border: 1px solid #cbd5e1;
+
+  /* Remove right border because input touches it */
+  border-right: none;
+
+  /* Prefix spacing */
+  padding: 11px 12px;
+
+  /* Round top-left corner */
+  border-top-left-radius: 10px;
+
+  /* Round bottom-left corner */
+  border-bottom-left-radius: 10px;
+
+  /* Prefix text size */
+  font-size: 13.5px;
+
+  /* Semi-bold prefix */
+  font-weight: 600;
+
+  /* Prefix text color */
+  color: #475569;
+}
+
+.prefixed-input {
+  /* Remove left rounding so it connects to prefix */
+  border-top-left-radius: 0;
+
+  /* Remove left rounding so it connects to prefix */
+  border-bottom-left-radius: 0;
+}
+
+.input-with-icon {
+  /* Allows icon/hint to be positioned inside */
+  position: relative;
+}
+
+.card-type-hint {
+  /* Position the card type hint */
+  position: absolute;
+
+  /* Align to right side */
+  right: 12px;
+
+  /* Start at vertical center */
+  top: 50%;
+
+  /* Correct vertical alignment */
+  transform: translateY(-50%);
+
+  /* Small hint text */
+  font-size: 12px;
+
+  /* Semi-bold */
+  font-weight: 600;
+
+  /* Gray color */
+  color: #64748b;
+
+  /* Prevent mouse interaction */
+  pointer-events: none;
+}
+
+.form-row-2 {
+  /* Use grid for two form fields */
+  display: grid;
+
+  /* Two equal columns */
+  grid-template-columns: 1fr 1fr;
+
+  /* Space between fields */
+  gap: 12px;
+}
+
+.field-hint {
+  /* Small helper text */
+  font-size: 11.5px;
+
+  /* Gray helper text */
+  color: #64748b;
+}
+
+.form-error-banner {
+  /* Light red error background */
+  background-color: #fef2f2;
+
+  /* Red border */
+  border: 1px solid #fecaca;
+
+  /* Red text */
+  color: #b91c1c;
+
+  /* Error spacing */
+  padding: 10px 14px;
+
+  /* Rounded corners */
+  border-radius: 8px;
+
+  /* Error text size */
+  font-size: 13px;
+
+  /* Bold error message */
+  font-weight: 600;
+}
+
+
+/* =========================================================
+   STEP 3 — PROCESSING STATE
+   ========================================================= */
+
+.processing-state-box {
+  /* Internal spacing */
+  padding: 36px 20px;
+
+  /* Center text */
+  text-align: center;
+
+  /* Vertical flex layout */
+  display: flex;
+  flex-direction: column;
+
+  /* Center all children */
+  align-items: center;
+}
+
+.processing-spinner-wrap {
+  /* Space below spinner */
+  margin-bottom: 20px;
+}
+
+.custom-pulse-spinner {
+  /* Spinner size */
+  width: 56px;
+  height: 56px;
+
+  /* Spinner border */
+  border: 4px solid #e0e7ff;
+
+  /* Different color for spinning section */
+  border-top-color: #4f46e5;
+
+  /* Make it circular */
+  border-radius: 50%;
+
+  /* Apply spinning animation */
+  animation: spin 0.9s linear infinite;
+}
+
+
+/* Spinner animation:
+   Rotates the element continuously. */
+@keyframes spin {
+  to {
+    /* Complete rotation */
+    transform: rotate(360deg);
+  }
+}
+
+.processing-state-box h3 {
+  /* Processing heading size */
+  font-size: 20px;
+
+  /* Extra-bold heading */
+  font-weight: 800;
+
+  /* Dark heading */
+  color: #0f172a;
+
+  /* Space below heading */
+  margin-bottom: 6px;
+}
+
+.processing-status-text {
+  /* Status message size */
+  font-size: 14px;
+
+  /* Purple status text */
+  color: #4f46e5;
+
+  /* Bold status */
+  font-weight: 600;
+
+  /* Space below status */
+  margin-bottom: 22px;
+}
+
+.processing-progress-bar {
+  /* Full available width */
+  width: 100%;
+
+  /* Maximum width */
+  max-width: 300px;
+
+  /* Progress bar height */
+  height: 6px;
+
+  /* Background */
+  background-color: #e2e8f0;
+
+  /* Rounded bar */
+  border-radius: 10px;
+
+  /* Hide overflowing animation */
+  overflow: hidden;
+
+  /* Space below progress bar */
+  margin-bottom: 20px;
+}
+
+.processing-progress-fill {
+  /* Fill entire bar width */
+  width: 100%;
+
+  /* Fill height */
+  height: 100%;
+
+  /* Purple progress color */
+  background-color: #4f46e5;
+
+  /* Rounded fill */
+  border-radius: 10px;
+
+  /* Animated progress effect */
+  animation: progressPulse 1.6s ease-in-out infinite;
+}
+
+
+/* Progress animation:
+   Moves the fill horizontally. */
+@keyframes progressPulse {
+  0% {
+    /* Start outside the left side */
+    transform: translateX(-100%);
+  }
+
+  100% {
+    /* Move outside the right side */
+    transform: translateX(100%);
+  }
+}
+
+.processing-safe-note {
+  /* Small safety message */
+  font-size: 12px;
+
+  /* Gray text */
+  color: #64748b;
+
+  /* Light background */
+  background-color: #f8fafc;
+
+  /* Internal spacing */
+  padding: 8px 14px;
+
+  /* Rounded corners */
+  border-radius: 8px;
+
+  /* Light border */
+  border: 1px solid #e2e8f0;
+}
+
+
+/* =========================================================
+   STEP 4 — DIGITAL RECEIPT
+   ========================================================= */
+
+.receipt-state-box {
+  /* Vertical layout */
+  display: flex;
+  flex-direction: column;
+
+  /* Center receipt contents */
+  align-items: center;
+
+  /* Center text */
+  text-align: center;
+}
+
+.receipt-success-badge {
+  /* Success icon circle size */
+  width: 56px;
+  height: 56px;
+
+  /* Make it circular */
+  border-radius: 50%;
+
+  /* Green success background */
+  background-color: #059669;
+
+  /* White icon */
+  color: #ffffff;
+
+  /* Center icon */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  /* Space below icon */
+  margin-bottom: 14px;
+}
+
+.success-check-icon {
+  /* Check icon size */
+  font-size: 28px;
+
+  /* Very bold check */
+  font-weight: 900;
+}
+
+.receipt-state-box h3 {
+  /* Receipt heading size */
+  font-size: 22px;
+
+  /* Extra-bold heading */
+  font-weight: 800;
+
+  /* Dark heading color */
+  color: #0f172a;
+
+  /* Small space below */
+  margin-bottom: 4px;
+}
+
+.receipt-subtitle {
+  /* Subtitle size */
+  font-size: 13.5px;
+
+  /* Gray subtitle */
+  color: #64748b;
+
+  /* Space below subtitle */
+  margin-bottom: 20px;
+}
+
+.receipt-ticket {
+  /* Use full available width */
+  width: 100%;
+
+  /* Light background */
+  background-color: #f8fafc;
+
+  /* Border */
+  border: 1px solid #e2e8f0;
+
+  /* Rounded corners */
+  border-radius: 12px;
+
+  /* Internal spacing */
+  padding: 18px 20px;
+
+  /* Space below receipt */
+  margin-bottom: 24px;
+
+  /* Align receipt content to left */
+  text-align: left;
+}
+
+.receipt-ticket-header {
+  /* Horizontal header layout */
+  display: flex;
+
+  /* Put content on opposite sides */
+  justify-content: space-between;
+
+  /* Vertical alignment */
+  align-items: center;
+
+  /* Small text */
+  font-size: 11.5px;
+
+  /* Bold header */
+  font-weight: 700;
+
+  /* Letter spacing */
+  letter-spacing: 0.5px;
+
+  /* Gray header */
+  color: #64748b;
+
+  /* Space below header */
+  padding-bottom: 12px;
+
+  /* Header divider */
+  border-bottom: 1px solid #e2e8f0;
+
+  /* Space after divider */
+  margin-bottom: 14px;
+}
+
+.receipt-status-pill {
+  /* Green receipt status */
+  color: #059669;
+
+  /* Extra-bold status */
+  font-weight: 800;
+}
+
+.receipt-ticket-body {
+  /* Stack receipt rows vertically */
+  display: flex;
+  flex-direction: column;
+
+  /* Space between rows */
+  gap: 11px;
+}
+
+.receipt-item-row {
+  /* Put label and value on opposite sides */
+  display: flex;
+
+  /* Horizontal spacing */
+  justify-content: space-between;
+
+  /* Vertical alignment */
+  align-items: center;
+
+  /* Row text size */
+  font-size: 13.5px;
+}
+
+.r-label {
+  /* Receipt label color */
+  color: #64748b;
+
+  /* Medium weight */
+  font-weight: 500;
+}
+
+.r-val {
+  /* Receipt value color */
+  color: #0f172a;
+
+  /* Bold value */
+  font-weight: 700;
+}
+
+.r-txn-code {
+  /* Monospace font for transaction ID */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Transaction ID size */
+  font-size: 13px;
+
+  /* Purple text */
+  color: #4f46e5;
+
+  /* Light purple background */
+  background-color: #eef2ff;
+
+  /* Internal spacing */
+  padding: 3px 8px;
+
+  /* Rounded corners */
+  border-radius: 6px;
+}
+
+.r-val-copy-wrap {
+  /* Keep transaction ID and copy button together */
+  display: flex;
+
+  /* Vertically align them */
+  align-items: center;
+
+  /* Space between them */
+  gap: 6px;
+}
+
+.btn-copy-txn {
+  /* White copy button */
+  background: #ffffff;
+
+  /* Light border */
+  border: 1px solid #cbd5e1;
+
+  /* Small text */
+  font-size: 11px;
+
+  /* Semi-bold */
+  font-weight: 600;
+
+  /* Gray text */
+  color: #475569;
+
+  /* Button spacing */
+  padding: 3px 8px;
+
+  /* Rounded corners */
+  border-radius: 6px;
+
+  /* Pointer cursor */
+  cursor: pointer;
+
+  /* Smooth transition */
+  transition: all 0.2s;
+}
+
+.btn-copy-txn:hover {
+  /* Light background on hover */
+  background: #f1f5f9;
+
+  /* Darker text on hover */
+  color: #0f172a;
+}
+
+.amount-val {
+  /* Purple amount */
+  font-size: 16px;
+
+  /* Purple text */
+  color: #4f46e5;
+
+  /* Extra-bold amount */
+  font-weight: 800;
+}
+
+.method-val {
+  /* Light gray method badge */
+  background: #f1f5f9;
+
+  /* Badge spacing */
+  padding: 2px 8px;
+
+  /* Rounded corners */
+  border-radius: 6px;
+
+  /* Method text size */
+  font-size: 12px;
+}
+
+.receipt-ticket-footer {
+  /* Space above footer */
+  margin-top: 14px;
+
+  /* Internal top spacing */
+  padding-top: 10px;
+
+  /* Footer divider */
+  border-top: 1px solid #e2e8f0;
+
+  /* Small footer text */
+  font-size: 12px;
+
+  /* Light gray text */
+  color: #94a3b8;
+
+  /* Center footer text */
+  text-align: center;
+}
+
+.receipt-actions-row {
+  /* Make action row use full width */
+  width: 100%;
+}
+
+
+/* =========================================================
+   ACTIVE SUBSCRIBER STATUS BOX
+   ========================================================= */
+
+.status-card {
+  /* White card background */
+  background: #ffffff;
+
+  /* Light border */
+  border: 1px solid #e2e8f0;
+
+  /* Rounded corners */
+  border-radius: 16px;
+
+  /* Internal spacing */
+  padding: 26px;
+}
+
+.status-header {
+  /* Horizontal header layout */
+  display: flex;
+
+  /* Separate left and right content */
+  justify-content: space-between;
+
+  /* Align items at the top */
+  align-items: flex-start;
+
+  /* Space below header */
+  margin-bottom: 18px;
+
+  /* Bottom spacing before divider */
+  padding-bottom: 16px;
+
+  /* Divider */
+  border-bottom: 1px solid #f1f5f9;
+}
+
+.status-sub-label {
+  /* Small status label */
+  font-size: 12px;
+
+  /* Semi-bold */
+  font-weight: 600;
+
+  /* Gray text */
+  color: #64748b;
+
+  /* Letter spacing */
+  letter-spacing: 0.5px;
+}
+
+.status-header h3 {
+  /* Status heading size */
+  font-size: 20px;
+
+  /* Extra-bold */
+  font-weight: 800;
+
+  /* Dark heading */
+  color: #0f172a;
+
+  /* Small top spacing */
+  margin-top: 2px;
+}
+
+.status-meta {
+  /* Stack metadata vertically */
+  display: flex;
+  flex-direction: column;
+
+  /* Space between metadata rows */
+  gap: 12px;
+
+  /* Space below metadata */
+  margin-bottom: 20px;
+}
+
+.status-meta-row {
+  /* Horizontal metadata layout */
+  display: flex;
+
+  /* Separate label and value */
+  justify-content: space-between;
+
+  /* Vertical alignment */
+  align-items: center;
+
+  /* Text size */
+  font-size: 14px;
+}
+
+.meta-label {
+  /* Metadata label color */
+  color: #64748b;
+
+  /* Medium weight */
+  font-weight: 500;
+}
+
+.meta-val {
+  /* Metadata value color */
+  color: #0f172a;
+
+  /* Bold value */
+  font-weight: 700;
+}
+
+.method-tag {
+  /* Light gray method background */
+  background-color: #f1f5f9;
+
+  /* Tag spacing */
+  padding: 3px 10px;
+
+  /* Rounded corners */
+  border-radius: 6px;
+
+  /* Method text size */
+  font-size: 12.5px;
+}
+
+.code-val {
+  /* Monospace font for code/transaction values */
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+
+  /* Code text size */
+  font-size: 13px;
+
+  /* Purple code color */
+  color: #4f46e5;
+}
+
+.active-unlocked-banner {
+  /* Light green success background */
+  background-color: #f0fdf4;
+
+  /* Green border */
+  border: 1px solid #bbf7d0;
+
+  /* Internal spacing */
+  padding: 14px;
+
+  /* Rounded corners */
+  border-radius: 12px;
+
+  /* Horizontal layout */
+  display: flex;
+
+  /* Align content at the top */
+  align-items: flex-start;
+
+  /* Space between icon and text */
+  gap: 12px;
+
+  /* Space below banner */
+  margin-bottom: 22px;
+}
+
+.unlocked-icon {
+  /* Unlock icon size */
+  font-size: 20px;
+
+  /* Prevent shrinking */
+  flex-shrink: 0;
+}
+
+.status-actions-row {
+  /* Stack status buttons vertically */
+  display: flex;
+  flex-direction: column;
+
+  /* Space between buttons */
+  gap: 10px;
+}
+
+.btn-dashboard-jump {
+  /* Purple dashboard button */
+  background-color: #4f46e5;
+
+  /* White text */
+  color: #ffffff;
+
+  /* Remove border */
+  border: none;
+
+  /* Button spacing */
+  padding: 12px 20px;
+
+  /* Rounded corners */
+  border-radius: 10px;
+
+  /* Text size */
+  font-size: 14.5px;
+
+  /* Semi-bold */
+  font-weight: 600;
+
+  /* Pointer cursor */
+  cursor: pointer;
+
+  /* Full width */
+  width: 100%;
+
+  /* Smooth hover transition */
+  transition: background-color 0.2s ease;
+}
+
+.btn-dashboard-jump:hover {
+  /* Darker purple on hover */
+  background-color: #4338ca;
+}
+
+.btn-cancel-sub {
+  /* Transparent background */
+  background: transparent;
+
+  /* Red text */
+  color: #dc2626;
+
+  /* Light red border */
+  border: 1px solid #fecaca;
+
+  /* Button spacing */
+  padding: 10px 18px;
+
+  /* Rounded corners */
+  border-radius: 10px;
+
+  /* Text size */
+  font-size: 13.5px;
+
+  /* Semi-bold */
+  font-weight: 600;
+
+  /* Pointer cursor */
+  cursor: pointer;
+
+  /* Smooth background transition */
+  transition: background-color 0.2s ease;
+}
+
+.btn-cancel-sub:hover {
+  /* Light red background on hover */
+  background-color: #fef2f2;
+}
+
+
+/* =========================================================
+   15% FIRST-MONTH TUITION COMMISSION LEDGER
+   Simple, clean, authentic dashboard styling
+   ========================================================= */
+
+.commission-section {
+  /* Spacing above commission section */
+  margin-top: 48px;
+
+  /* Subtle separator line */
+  border-top: 1px solid #e2e8f0;
+
+  /* Spacing below line */
+  padding-top: 36px;
+}
+
+.commission-section-header {
+  /* Flex row layout */
+  display: flex;
+
+  /* Space out title and summary pills */
+  justify-content: space-between;
+
+  /* Align at top */
+  align-items: flex-start;
+
+  /* Spacing */
+  gap: 24px;
+  margin-bottom: 24px;
+}
+
+@media (max-width: 800px) {
+  .commission-section-header {
+    flex-direction: column;
+  }
+}
+
+.commission-title-wrap h2 {
+  /* Heading size */
+  font-size: 22px;
+  font-weight: 800;
+  color: #0f172a;
+  letter-spacing: -0.3px;
+  margin: 6px 0 8px 0;
+}
+
+.commission-title-wrap p {
+  /* Subtitle text */
+  font-size: 14px;
+  color: #64748b;
+  max-width: 600px;
+  line-height: 1.5;
+}
+
+.commission-tag {
+  /* Policy badge */
+  display: inline-block;
+  background-color: #ede9fe;
+  color: #6d28d9;
+  font-size: 11px;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  padding: 3px 10px;
+  border-radius: 6px;
+}
+
+.commission-summary-badges {
+  /* Two summary badges side by side */
+  display: flex;
+  gap: 14px;
+  flex-shrink: 0;
+}
+
+.comm-sum-badge {
+  /* Summary pill card */
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.comm-sum-badge.due {
+  border-color: #fde68a;
+  background-color: #fffbeb;
+}
+
+.comm-sum-badge.paid {
+  border-color: #bbf7d0;
+  background-color: #f0fdf4;
+}
+
+.csb-label {
+  font-size: 11.5px;
+  font-weight: 600;
+  color: #64748b;
+}
+
+.comm-sum-badge.due .csb-label {
+  color: #92400e;
+}
+
+.comm-sum-badge.paid .csb-label {
+  color: #166534;
+}
+
+.csb-val {
+  font-size: 18px;
+  font-weight: 800;
+  color: #0f172a;
+}
+
+.comm-sum-badge.due .csb-val {
+  color: #b45309;
+}
+
+.comm-sum-badge.paid .csb-val {
+  color: #166534;
+}
+
+/* Empty state */
+.comm-empty-card {
+  background: #ffffff;
+  border: 1px dashed #cbd5e1;
+  border-radius: 12px;
+  padding: 36px 20px;
+  text-align: center;
+}
+
+.comm-empty-icon {
+  font-size: 32px;
+  display: block;
+  margin-bottom: 10px;
+}
+
+.comm-empty-card h3 {
+  font-size: 16px;
+  font-weight: 700;
+  color: #334155;
+  margin-bottom: 6px;
+}
+
+.comm-empty-card p {
+  font-size: 13.5px;
+  color: #64748b;
+  max-width: 520px;
+  margin: 0 auto;
+  line-height: 1.5;
+}
+
+.comm-loading-box {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 36px;
+  text-align: center;
+  color: #64748b;
+  font-size: 14px;
+}
+
+/* Table styling */
+.comm-table-container {
+  background: #ffffff;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  overflow-x: auto;
+}
+
+.comm-data-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+  font-size: 13.5px;
+}
+
+.comm-data-table th {
+  background-color: #f8fafc;
+  color: #475569;
+  font-weight: 700;
+  font-size: 12px;
+  text-transform: uppercase;
+  letter-spacing: 0.4px;
+  padding: 14px 16px;
+  border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
+}
+
+.comm-data-table td {
+  padding: 16px;
+  border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
+}
+
+.comm-data-table tr:last-child td {
+  border-bottom: none;
+}
+
+.comm-row-due:hover {
+  background-color: #fbfbfe;
+}
+
+.comm-row-paid:hover {
+  background-color: #fcfdfc;
+}
+
+.comm-table-subject {
+  font-weight: 700;
+  color: #0f172a;
+  font-size: 14px;
+}
+
+.comm-table-guardian {
+  font-size: 12.5px;
+  color: #475569;
+  margin-top: 2px;
+}
+
+.comm-table-date {
+  font-size: 11.5px;
+  color: #94a3b8;
+  margin-top: 2px;
+}
+
+.comm-salary-val {
+  font-weight: 600;
+  color: #334155;
+}
+
+.comm-amount-highlight {
+  font-weight: 800;
+  font-size: 15px;
+  color: #4f46e5;
+}
+
+.comm-deadline-date {
+  font-size: 13px;
+  color: #334155;
+  font-weight: 600;
+}
+
+.comm-cleared-text {
+  font-size: 12.5px;
+  color: #166534;
+  font-weight: 500;
+}
+
+.comm-pill-days {
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 2px 8px;
+  border-radius: 12px;
+  margin-top: 4px;
+}
+
+.comm-pill-days.pill-active-days {
+  background-color: #fef3c7;
+  color: #92400e;
+}
+
+.comm-pill-days.pill-overdue {
+  background-color: #fee2e2;
+  color: #b91c1c;
+}
+
+/* Badges */
+.badge-due-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.badge-due-pill.badge-overdue-pill {
+  background-color: #fee2e2;
+  color: #dc2626;
+  border-color: #fecaca;
+}
+
+.badge-paid-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+  font-size: 12px;
+  font-weight: 700;
+  padding: 4px 10px;
+  border-radius: 20px;
+}
+
+.comm-paid-record {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  font-size: 11.5px;
+}
+
+.cpr-txn {
+  font-family: monospace;
+  color: #475569;
+  font-weight: 600;
+}
+
+.cpr-method {
+  color: #166534;
+  font-weight: 600;
+}
+
+.btn-pay-comm-due {
+  background-color: #4f46e5;
+  color: #ffffff;
+  border: none;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 8px 14px;
+  border-radius: 8px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background-color 0.2s ease;
+}
+
+.btn-pay-comm-due:hover {
+  background-color: #4338ca;
+}
+
+/* Modal styling */
+.comm-modal-backdrop {
+  position: fixed;
+  inset: 0;
+  background-color: rgba(15, 23, 42, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1000;
+  padding: 16px;
+}
+
+.comm-modal-card {
+  background: #ffffff;
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  width: 100%;
+  max-width: 480px;
+  padding: 24px;
+  box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.1);
+}
+
+.comm-modal-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  margin-bottom: 18px;
+}
+
+.comm-modal-header h3 {
   font-size: 18px;
   font-weight: 800;
   color: #0f172a;
   margin-bottom: 4px;
 }
 
-.step-header p {
-  font-size: 13.5px;
+.comm-modal-header p {
+  font-size: 13px;
   color: #64748b;
 }
 
-.payment-methods-grid {
-  display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 14px;
-  margin-bottom: 22px;
-}
-
-.payment-method-card {
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 16px 12px;
-  background: #ffffff;
-  cursor: pointer;
-  transition: border-color 0.2s ease, background-color 0.2s ease;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-  position: relative;
-}
-
-.payment-method-card:hover {
-  border-color: #cbd5e1;
-}
-
-.payment-method-card.selected {
-  border-color: #4f46e5;
-  background-color: #f5f3ff;
-}
-
-.pm-header {
-  width: 100%;
-  display: flex;
-  justify-content: center;
-  position: relative;
-  margin-bottom: 8px;
-}
-
-.pm-icon {
-  font-size: 28px;
-}
-
-.pm-check {
-  position: absolute;
-  right: -4px;
-  top: -8px;
-  width: 18px;
-  height: 18px;
-  border-radius: 50%;
-  background-color: #4f46e5;
-  color: #ffffff;
-  font-size: 11px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  font-weight: 700;
-}
-
-.pm-name {
-  font-size: 14px;
-  font-weight: 700;
-  color: #0f172a;
-  margin-bottom: 2px;
-}
-
-.pm-badge {
-  font-size: 11px;
-  font-weight: 600;
-  color: #64748b;
-}
-
-/* Order Summary Box */
-.order-summary-box {
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 16px 18px;
-  margin-bottom: 24px;
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.summary-row {
-  display: flex;
-  justify-content: space-between;
-  font-size: 13.5px;
-  color: #64748b;
-}
-
-.summary-row.total-row {
-  border-top: 1px solid #e2e8f0;
-  padding-top: 10px;
-  margin-top: 4px;
-  color: #0f172a;
-  font-weight: 700;
-  font-size: 15px;
-}
-
-.total-price {
-  color: #4f46e5;
-  font-size: 18px;
-  font-weight: 800;
-}
-
-/* --- Buttons --- */
-.btn-checkout-primary {
-  background-color: #4f46e5;
-  color: #ffffff;
+.comm-modal-close {
+  background: none;
   border: none;
-  padding: 14px 24px;
-  border-radius: 10px;
-  font-size: 15px;
-  font-weight: 600;
-  cursor: pointer;
-  width: 100%;
-  transition: background-color 0.2s ease;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 8px;
-}
-
-.btn-checkout-primary:hover {
-  background-color: #4338ca;
-}
-
-.btn-checkout-primary:active {
-  background-color: #3730a3;
-}
-
-.btn-checkout-primary:disabled {
-  opacity: 0.65;
-  cursor: not-allowed;
-}
-
-.btn-checkout-secondary {
-  background-color: #ffffff;
-  color: #475569;
-  border: 1px solid #cbd5e1;
-  padding: 13px 20px;
-  border-radius: 10px;
-  font-size: 14px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease, border-color 0.2s ease;
-}
-
-.btn-checkout-secondary:hover {
-  background-color: #f8fafc;
-  color: #1e293b;
-  border-color: #94a3b8;
-}
-
-.step-actions-row {
-  display: flex;
-  gap: 12px;
-  margin-top: 24px;
-}
-
-.step-actions-row .btn-checkout-primary {
-  flex: 2;
-}
-
-.step-actions-row .btn-checkout-secondary {
-  flex: 1;
-}
-
-/* --- Step 2: Details Panels --- */
-.method-pill-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  padding: 10px 14px;
-  background-color: #f5f3ff;
-  border-radius: 10px;
-  border: 1px solid #ddd6fe;
-}
-
-.pill-method-name {
-  font-weight: 700;
-  font-size: 14px;
-  color: #4338ca;
-}
-
-.pill-amount {
-  font-weight: 800;
-  font-size: 15px;
-  color: #4f46e5;
-}
-
-.sandbox-step-banner {
-  background-color: #fef3c7;
-  border: 1px solid #fde68a;
-  border-radius: 10px;
-  padding: 10px 14px;
-  display: flex;
-  align-items: center;
-  gap: 10px;
-  font-size: 13px;
-  color: #92400e;
-  margin: 14px 0 18px 0;
-}
-
-.sandbox-icon {
   font-size: 18px;
-  flex-shrink: 0;
+  color: #94a3b8;
+  cursor: pointer;
+  padding: 4px;
 }
 
-.mfs-form-panel, .card-form-panel {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-}
-
-.mfs-branding-box {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  background-color: #faf5ff;
-  border: 1px dashed #d8b4fe;
-  padding: 12px 14px;
-  border-radius: 10px;
-}
-
-.mfs-avatar {
-  background-color: #7e22ce;
-  color: #ffffff;
-  font-weight: 800;
-  font-size: 12px;
-  padding: 6px 10px;
-  border-radius: 6px;
-}
-
-.mfs-merchant-title {
-  font-size: 13px;
-  font-weight: 700;
-  color: #1e293b;
-}
-
-.mfs-merchant-id {
-  font-size: 11.5px;
-  color: #64748b;
-}
-
-.form-group {
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
-}
-
-.form-group label {
-  font-size: 13px;
-  font-weight: 600;
-  color: #334155;
-}
-
-.form-input {
-  padding: 11px 14px;
-  border: 1px solid #cbd5e1;
-  border-radius: 10px;
-  font-size: 14.5px;
+.comm-modal-close:hover {
   color: #0f172a;
-  background-color: #ffffff;
-  transition: border-color 0.2s, box-shadow 0.2s;
-  width: 100%;
 }
 
-.form-input:focus {
-  outline: none;
-  border-color: #4f46e5;
-  box-shadow: 0 0 0 3px rgba(79, 70, 229, 0.12);
-}
-
-.input-with-prefix {
-  display: flex;
-  align-items: center;
-}
-
-.phone-prefix {
-  background-color: #f1f5f9;
-  border: 1px solid #cbd5e1;
-  border-right: none;
-  padding: 11px 12px;
-  border-top-left-radius: 10px;
-  border-bottom-left-radius: 10px;
-  font-size: 13.5px;
-  font-weight: 600;
-  color: #475569;
-}
-
-.prefixed-input {
-  border-top-left-radius: 0;
-  border-bottom-left-radius: 0;
-}
-
-.input-with-icon {
-  position: relative;
-}
-
-.card-type-hint {
-  position: absolute;
-  right: 12px;
-  top: 50%;
-  transform: translateY(-50%);
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  pointer-events: none;
-}
-
-.form-row-2 {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 12px;
-}
-
-.field-hint {
-  font-size: 11.5px;
-  color: #64748b;
-}
-
-.form-error-banner {
+.comm-modal-error {
   background-color: #fef2f2;
   border: 1px solid #fecaca;
   color: #b91c1c;
   padding: 10px 14px;
   border-radius: 8px;
   font-size: 13px;
-  font-weight: 600;
+  margin-bottom: 16px;
 }
 
-/* --- Step 3: Processing State --- */
-.processing-state-box {
-  padding: 36px 20px;
-  text-align: center;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
+.comm-modal-methods {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 10px;
+  margin-bottom: 18px;
 }
 
-.processing-spinner-wrap {
-  margin-bottom: 20px;
-}
-
-.custom-pulse-spinner {
-  width: 56px;
-  height: 56px;
-  border: 4px solid #e0e7ff;
-  border-top-color: #4f46e5;
-  border-radius: 50%;
-  animation: spin 0.9s linear infinite;
-}
-
-@keyframes spin {
-  to {
-    transform: rotate(360deg);
-  }
-}
-
-.processing-state-box h3 {
-  font-size: 20px;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 6px;
-}
-
-.processing-status-text {
-  font-size: 14px;
-  color: #4f46e5;
-  font-weight: 600;
-  margin-bottom: 22px;
-}
-
-.processing-progress-bar {
-  width: 100%;
-  max-width: 300px;
-  height: 6px;
-  background-color: #e2e8f0;
-  border-radius: 10px;
-  overflow: hidden;
-  margin-bottom: 20px;
-}
-
-.processing-progress-fill {
-  width: 100%;
-  height: 100%;
-  background-color: #4f46e5;
-  border-radius: 10px;
-  animation: progressPulse 1.6s ease-in-out infinite;
-}
-
-@keyframes progressPulse {
-  0% { transform: translateX(-100%); }
-  100% { transform: translateX(100%); }
-}
-
-.processing-safe-note {
-  font-size: 12px;
-  color: #64748b;
-  background-color: #f8fafc;
-  padding: 8px 14px;
+.comm-method-btn {
+  background: #f8fafc;
+  border: 1px solid #cbd5e1;
   border-radius: 8px;
-  border: 1px solid #e2e8f0;
-}
-
-/* --- Step 4: Digital Receipt Box --- */
-.receipt-state-box {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  text-align: center;
-}
-
-.receipt-success-badge {
-  width: 56px;
-  height: 56px;
-  border-radius: 50%;
-  background-color: #059669;
-  color: #ffffff;
+  padding: 10px 8px;
+  font-size: 13px;
+  font-weight: 600;
+  color: #334155;
+  cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  margin-bottom: 14px;
+  gap: 6px;
+  transition: all 0.2s ease;
 }
 
-.success-check-icon {
-  font-size: 28px;
-  font-weight: 900;
+.comm-method-btn:hover {
+  border-color: #94a3b8;
 }
 
-.receipt-state-box h3 {
-  font-size: 22px;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 4px;
+.comm-method-btn.active {
+  background-color: #eef2ff;
+  border-color: #4f46e5;
+  color: #4f46e5;
+  font-weight: 700;
 }
 
-.receipt-subtitle {
-  font-size: 13.5px;
-  color: #64748b;
+.comm-modal-fields {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
   margin-bottom: 20px;
 }
 
-.receipt-ticket {
-  width: 100%;
-  background-color: #f8fafc;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  padding: 18px 20px;
-  margin-bottom: 24px;
-  text-align: left;
-}
-
-.receipt-ticket-header {
+.comm-modal-actions {
   display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 11.5px;
-  font-weight: 700;
-  letter-spacing: 0.5px;
-  color: #64748b;
-  padding-bottom: 12px;
-  border-bottom: 1px solid #e2e8f0;
-  margin-bottom: 14px;
+  gap: 10px;
+  margin-top: 10px;
 }
 
-.receipt-status-pill {
-  color: #059669;
-  font-weight: 800;
-}
-
-.receipt-ticket-body {
-  display: flex;
-  flex-direction: column;
-  gap: 11px;
-}
-
-.receipt-item-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 13.5px;
-}
-
-.r-label {
-  color: #64748b;
-  font-weight: 500;
-}
-
-.r-val {
-  color: #0f172a;
-  font-weight: 700;
-}
-
-.r-txn-code {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 13px;
-  color: #4f46e5;
-  background-color: #eef2ff;
-  padding: 3px 8px;
-  border-radius: 6px;
-}
-
-.r-val-copy-wrap {
-  display: flex;
-  align-items: center;
-  gap: 6px;
-}
-
-.btn-copy-txn {
+.comm-btn-cancel {
+  flex: 1;
   background: #ffffff;
   border: 1px solid #cbd5e1;
-  font-size: 11px;
+  border-radius: 8px;
+  padding: 11px;
+  font-size: 14px;
   font-weight: 600;
   color: #475569;
-  padding: 3px 8px;
-  border-radius: 6px;
   cursor: pointer;
-  transition: all 0.2s;
 }
 
-.btn-copy-txn:hover {
-  background: #f1f5f9;
-  color: #0f172a;
+.comm-btn-cancel:hover {
+  background-color: #f8fafc;
 }
 
-.amount-val {
-  font-size: 16px;
-  color: #4f46e5;
-  font-weight: 800;
-}
-
-.method-val {
-  background: #f1f5f9;
-  padding: 2px 8px;
-  border-radius: 6px;
-  font-size: 12px;
-}
-
-.receipt-ticket-footer {
-  margin-top: 14px;
-  padding-top: 10px;
-  border-top: 1px solid #e2e8f0;
-  font-size: 12px;
-  color: #94a3b8;
-  text-align: center;
-}
-
-.receipt-actions-row {
-  width: 100%;
-}
-
-/* --- Active Subscriber Status Box --- */
-.status-card {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 16px;
-  padding: 26px;
-}
-
-.status-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
-  margin-bottom: 18px;
-  padding-bottom: 16px;
-  border-bottom: 1px solid #f1f5f9;
-}
-
-.status-sub-label {
-  font-size: 12px;
-  font-weight: 600;
-  color: #64748b;
-  letter-spacing: 0.5px;
-}
-
-.status-header h3 {
-  font-size: 20px;
-  font-weight: 800;
-  color: #0f172a;
-  margin-top: 2px;
-}
-
-.status-meta {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-bottom: 20px;
-}
-
-.status-meta-row {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-  font-size: 14px;
-}
-
-.meta-label {
-  color: #64748b;
-  font-weight: 500;
-}
-
-.meta-val {
-  color: #0f172a;
-  font-weight: 700;
-}
-
-.method-tag {
-  background-color: #f1f5f9;
-  padding: 3px 10px;
-  border-radius: 6px;
-  font-size: 12.5px;
-}
-
-.code-val {
-  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-  font-size: 13px;
-  color: #4f46e5;
-}
-
-.active-unlocked-banner {
-  background-color: #f0fdf4;
-  border: 1px solid #bbf7d0;
-  padding: 14px;
-  border-radius: 12px;
-  display: flex;
-  align-items: flex-start;
-  gap: 12px;
-  margin-bottom: 22px;
-}
-
-.unlocked-icon {
-  font-size: 20px;
-  flex-shrink: 0;
-}
-
-.status-actions-row {
-  display: flex;
-  flex-direction: column;
-  gap: 10px;
-}
-
-.btn-dashboard-jump {
+.comm-btn-submit {
+  flex: 2;
   background-color: #4f46e5;
-  color: #ffffff;
   border: none;
-  padding: 12px 20px;
-  border-radius: 10px;
-  font-size: 14.5px;
+  border-radius: 8px;
+  padding: 11px;
+  font-size: 14px;
   font-weight: 600;
+  color: #ffffff;
   cursor: pointer;
-  width: 100%;
   transition: background-color 0.2s ease;
 }
 
-.btn-dashboard-jump:hover {
+.comm-btn-submit:hover {
   background-color: #4338ca;
 }
 
-.btn-cancel-sub {
-  background: transparent;
-  color: #dc2626;
-  border: 1px solid #fecaca;
-  padding: 10px 18px;
-  border-radius: 10px;
-  font-size: 13.5px;
-  font-weight: 600;
-  cursor: pointer;
-  transition: background-color 0.2s ease;
+.comm-btn-submit:disabled,
+.comm-btn-cancel:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
 }
 
-.btn-cancel-sub:hover {
-  background-color: #fef2f2;
-}
-
-/* --- Tutor Commissions Section --- */
-.commissions-section {
-  margin-top: 48px;
-}
-
-.commissions-section-header {
-  margin-bottom: 18px;
-}
-
-.commissions-section-header h2 {
-  font-size: 22px;
-  font-weight: 800;
-  color: #0f172a;
-  margin-bottom: 4px;
-}
-
-.commissions-section-header p {
-  font-size: 14px;
-  color: #64748b;
-  line-height: 1.5;
-}
-
-.commissions-table-wrapper {
-  background: #ffffff;
-  border: 1px solid #e2e8f0;
-  border-radius: 12px;
-  overflow: hidden;
-}
-
-.commissions-table {
-  width: 100%;
-  border-collapse: collapse;
-  text-align: left;
-  font-size: 14px;
-}
-
-.commissions-table th {
-  background-color: #f8fafc;
-  padding: 14px 18px;
-  font-size: 13px;
-  font-weight: 600;
-  color: #64748b;
-  border-bottom: 1px solid #e2e8f0;
-}
-
-.commissions-table td {
-  padding: 16px 18px;
-  border-bottom: 1px solid #f1f5f9;
-  color: #334155;
-}
-
-.commissions-table tr:last-child td {
-  border-bottom: none;
-}
-
-.empty-commissions-box {
-  padding: 36px 20px;
-  text-align: center;
-  color: #94a3b8;
-  font-size: 14px;
-}
